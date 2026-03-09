@@ -372,3 +372,281 @@ renderChapters();
 </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Practice Arena</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+background:#050b12;
+color:white;
+font-family:'Share Tech Mono';
+text-align:center;
+}
+
+h1{
+font-family:'Orbitron';
+color:#00d4ff;
+text-shadow:0 0 10px #00d4ff;
+}
+
+.card{
+width:90%;
+margin:auto;
+padding:25px;
+border-radius:16px;
+background:rgba(255,255,255,0.03);
+margin-top:20px;
+}
+
+table{
+width:100%;
+margin-top:20px;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:8px;
+font-family:'Orbitron';
+background:#00d4ff;
+cursor:pointer;
+}
+
+.timer{
+font-family:'Orbitron';
+font-size:22px;
+color:#ff6b35;
+text-shadow:0 0 10px #ff6b35;
+margin-top:10px;
+}
+
+.hidden{
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Practice & Analysis Arena</h1>
+
+<div class="card">
+
+Questions:
+<input type="number" id="qCount" value="10">
+
+<br><br>
+
+<button onclick="startPractice()">Start Practice</button>
+
+<div class="timer" id="timer">20:00</div>
+
+</div>
+
+<div class="card hidden" id="practiceArea">
+
+<table id="table">
+<thead>
+
+<tr>
+<th>Q</th>
+<th>Type</th>
+<th>Your Answer</th>
+<th id="keyHead" class="hidden">Correct</th>
+</tr>
+
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+<button onclick="lockAnswers()">Lock Answers</button>
+
+<button onclick="calculateScore()" id="scoreBtn" class="hidden">Calculate Score</button>
+
+</div>
+
+<div class="card hidden" id="result">
+
+<h2 id="score"></h2>
+
+</div>
+
+<script>
+
+let questions=[]
+let time=1200
+let timer
+
+function startPractice(){
+
+let n=document.getElementById("qCount").value
+
+let tbody=document.querySelector("#table tbody")
+
+tbody.innerHTML=""
+
+for(let i=0;i<n;i++){
+
+let row=document.createElement("tr")
+
+row.innerHTML=`
+
+<td>${i+1}</td>
+
+<td>
+
+<select id="type${i}">
+<option value="MCQ">MCQ</option>
+<option value="NUM">Numerical</option>
+</select>
+
+</td>
+
+<td>
+
+<div id="mcq${i}">
+
+<label><input type="radio" name="q${i}" value="A">A</label>
+<label><input type="radio" name="q${i}" value="B">B</label>
+<label><input type="radio" name="q${i}" value="C">C</label>
+<label><input type="radio" name="q${i}" value="D">D</label>
+
+</div>
+
+<input type="text" id="num${i}" class="hidden">
+
+</td>
+
+<td class="hidden">
+
+<input id="key${i}">
+
+</td>
+
+`
+
+tbody.appendChild(row)
+
+document.getElementById("type"+i).onchange=function(){
+
+if(this.value=="MCQ"){
+
+document.getElementById("mcq"+i).style.display="block"
+document.getElementById("num"+i).style.display="none"
+
+}
+
+else{
+
+document.getElementById("mcq"+i).style.display="none"
+document.getElementById("num"+i).style.display="inline"
+
+}
+
+}
+
+}
+
+document.getElementById("practiceArea").classList.remove("hidden")
+
+startTimer()
+
+}
+
+function startTimer(){
+
+timer=setInterval(()=>{
+
+time--
+
+let m=Math.floor(time/60)
+
+let s=time%60
+
+document.getElementById("timer").innerText=
+
+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")
+
+if(time==0){
+
+clearInterval(timer)
+
+alert("Time Over")
+
+}
+
+},1000)
+
+}
+
+function lockAnswers(){
+
+document.getElementById("keyHead").classList.remove("hidden")
+
+document.querySelectorAll("#table tbody tr").forEach(r=>{
+r.children[3].classList.remove("hidden")
+})
+
+document.getElementById("scoreBtn").classList.remove("hidden")
+
+}
+
+function calculateScore(){
+
+let n=document.getElementById("qCount").value
+
+let score=0
+
+for(let i=0;i<n;i++){
+
+let type=document.getElementById("type"+i).value
+
+let correct=document.getElementById("key"+i).value
+
+let user=""
+
+if(type=="MCQ"){
+
+let r=document.querySelector(`input[name=q${i}]:checked`)
+
+if(r) user=r.value
+
+if(user==correct) score+=4
+else if(user!="") score-=1
+
+}
+
+else{
+
+user=document.getElementById("num"+i).value
+
+if(user==correct) score+=4
+
+}
+
+}
+
+document.getElementById("result").classList.remove("hidden")
+
+document.getElementById("score").innerText="Score : "+score
+
+}
+
+</script>
+
+</body>
+</html>
