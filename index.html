@@ -166,3 +166,36 @@ function calculateScore() {
 </script>
 </body>
 </html>
+row.innerHTML=`
+
+<td>${i+1}</td>
+
+<td>
+<input placeholder="Chapter name">
+</td>
+
+<td>
+<select id="type${i}">
+<option value="MCQ">MCQ</option>
+<option value="NUM">Numerical</option>
+</select>
+</td>
+
+<td>
+
+<div id="mcq${i}">
+<label><input type="radio" name="q${i}" value="A">A</label>
+<label><input type="radio" name="q${i}" value="B">B</label>
+<label><input type="radio" name="q${i}" value="C">C</label>
+<label><input type="radio" name="q${i}" value="D">D</label>
+</div>
+
+<input type="text" id="num${i}" style="display:none">
+
+</td>
+
+<td class="hidden">
+<input id="key${i}">
+</td>
+
+`
