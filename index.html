@@ -1,652 +1,168 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>JEE Main 99ile Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<title>JEE Main 99ile Tracker & Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #050810;
-    --phy: #00d4ff;
-    --chem: #00ff9d;
-    --math: #ff6b35;
-    --text: #c8d0e0;
-    --muted: #4a5568;
-    --card: rgba(255,255,255,0.03);
-    --border: rgba(255,255,255,0.07);
+    --bg: #050810; --phy: #00d4ff; --chem: #00ff9d; --math: #ff6b35;
+    --text: #c8d0e0; --muted: #4a5568; --card: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.07);
   }
-
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    min-height: 100vh;
-    background-image:
-      radial-gradient(ellipse at 15% 15%, #0a1628 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 85%, #0d0a1e 0%, transparent 55%);
+    background: var(--bg); color: var(--text); font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh; text-align: center;
+    background-image: radial-gradient(ellipse at 15% 15%, #0a1628 0%, transparent 55%), radial-gradient(ellipse at 85% 85%, #0d0a1e 0%, transparent 55%);
   }
-
-  .grid-bg {
-    position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-
+  .grid-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
   .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 28px 16px; }
-
-  /* HEADER */
-  .header { text-align: center; margin-bottom: 28px; }
-  .header .label { font-size: 10px; letter-spacing: 6px; color: var(--phy); text-transform: uppercase; margin-bottom: 8px; }
-  .header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(26px, 7vw, 54px);
-    font-weight: 900;
-    background: linear-gradient(135deg, #00d4ff 0%, #fff 50%, #ff6b35 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    letter-spacing: -1px; line-height: 1.1;
-  }
-  .header .sub { font-size: 11px; color: var(--muted); letter-spacing: 4px; margin-top: 4px; }
-
-  /* CARDS */
-  .card {
-    border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;
-    border: 1px solid var(--border); background: var(--card);
-  }
-  .card-title { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 14px; }
-
-  /* COUNTDOWN */
-  .countdown-card { border-color: rgba(0,212,255,0.18); background: rgba(0,212,255,0.04); box-shadow: 0 0 40px rgba(0,212,255,0.05); }
-  .countdown-card .card-title { color: var(--phy); }
-  .countdown-grid { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .cd-box { text-align: center; min-width: 76px; }
-  .cd-num {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(28px, 5vw, 46px); font-weight: 900; color: #fff;
-    background: rgba(0,0,0,0.4); border: 1px solid rgba(0,212,255,0.25);
-    border-radius: 8px; padding: 8px 14px; line-height: 1;
-    text-shadow: 0 0 20px rgba(0,212,255,0.5);
-  }
-  .cd-lbl { font-size: 9px; color: var(--muted); letter-spacing: 3px; margin-top: 6px; }
-
-  /* PROGRESS */
-  .progress-card { border-color: rgba(255,107,53,0.18); background: rgba(255,107,53,0.04); }
-  .progress-card .card-title { color: var(--math); }
-  .prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .prog-pct { font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900; color: #fff; }
-  .prog-pct span { font-size: 13px; color: var(--muted); }
-  .bar-track { background: rgba(255,255,255,0.06); border-radius: 99px; height: 8px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
-  .prog-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 7px; }
-
-  .sub-bars { display: flex; gap: 14px; margin-top: 18px; flex-wrap: wrap; }
-  .sub-bar-item { flex: 1; min-width: 150px; }
-  .sub-bar-label { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 5px; }
-  .sub-bar-track { background: rgba(255,255,255,0.06); border-radius: 99px; height: 4px; }
-  .sub-bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
-
-  /* QUOTE */
-  .quote-card { border-color: rgba(0,255,157,0.18); background: rgba(0,255,157,0.04); display: flex; align-items: center; gap: 16px; }
-  .quote-card .card-title { color: var(--chem); margin-bottom: 6px; }
-  .quote-emoji { font-size: 30px; flex-shrink: 0; }
-  .quote-text { font-size: 13px; line-height: 1.7; color: var(--text); }
-
-  /* TABS */
-  .tabs-card { border-color: var(--border); background: rgba(255,255,255,0.02); border-radius: 12px; overflow: hidden; }
-  .tabs-row { display: flex; border-bottom: 1px solid var(--border); }
-  .tab-btn {
-    flex: 1; padding: 14px 6px; border: none; cursor: pointer;
-    background: transparent; color: var(--muted);
-    font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 2px;
-    border-bottom: 2px solid transparent; transition: all 0.2s;
-  }
-  .tab-btn.active { border-bottom-color: currentColor; }
-
-  /* CHAPTERS */
-  .chapters-list { padding: 10px 14px; max-height: 420px; overflow-y: auto; }
-  .chapters-list::-webkit-scrollbar { width: 4px; }
-  .chapters-list::-webkit-scrollbar-track { background: transparent; }
-  .chapters-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
-
-  .ch-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 12px; border-radius: 8px; cursor: pointer;
-    margin-bottom: 3px; border: 1px solid transparent; transition: all 0.18s;
-  }
+  
+  /* COMMON CARD STYLE */
+  .card { border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; border: 1px solid var(--border); background: var(--card); backdrop-filter: blur(8px); }
+  h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(26px, 7vw, 54px); background: linear-gradient(135deg, #00d4ff 0%, #fff 50%, #ff6b35 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+  
+  /* PRACTICE SPECIFIC */
+  button { padding: 10px 20px; border: none; font-family: 'Orbitron'; background: var(--phy); color: black; cursor: pointer; border-radius: 8px; margin-top: 15px; font-weight: 900; }
+  button:hover { box-shadow: 0 0 15px var(--phy); }
+  input[type="number"], input[type="text"] { background: #000; color: #fff; padding: 6px; border: 1px solid var(--border); border-radius: 6px; text-align: center; }
+  table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 14px; }
+  td, th { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .timer { font-size: 24px; color: var(--math); font-family: 'Orbitron'; text-shadow: 0 0 10px var(--math); margin: 10px 0; }
+  .hidden { display: none; }
+  
+  /* TRACKER STYLES (FROM ORIGINAL) */
+  .cd-num { font-family: 'Orbitron', sans-serif; font-size: 30px; font-weight: 900; color: #fff; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+  .prog-pct { font-family: 'Orbitron', sans-serif; font-size: 26px; color: #fff; }
+  .bar-track { background: rgba(255,255,255,0.06); border-radius: 99px; height: 8px; overflow: hidden; margin: 10px 0; }
+  .bar-fill { height: 100%; transition: width 0.6s ease; }
+  .ch-item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; text-align: left; }
   .ch-item:hover { background: rgba(255,255,255,0.03); }
-  .ch-check {
-    width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0;
-    border: 1.5px solid #2a3040; display: flex; align-items: center;
-    justify-content: center; transition: all 0.2s; font-size: 12px; font-weight: 900;
-  }
-  .ch-label { font-size: 13px; color: #8892a4; transition: color 0.2s; }
-  .ch-done-tag { margin-left: auto; font-size: 9px; letter-spacing: 2px; opacity: 0.7; }
-
-  .footer { text-align: center; margin-top: 24px; font-size: 10px; color: #1e2535; letter-spacing: 3px; }
 </style>
 </head>
 <body>
 <div class="grid-bg"></div>
 <div class="wrap">
+  <h1>MISSION: JEE 99ile</h1>
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="label">Mission Control</div>
-    <h1>JEE MAIN 99ile</h1>
-    <div class="sub">TARGET TRACKER v1.0</div>
-  </div>
-
-  <!-- COUNTDOWN -->
-  <div class="card countdown-card">
-    <div class="card-title">◈ T-Minus: JEE Main 2026</div>
-    <div class="countdown-grid" id="countdown">
-      <div class="cd-box"><div class="cd-num" id="cd-days">00</div><div class="cd-lbl">DAYS</div></div>
-      <div class="cd-box"><div class="cd-num" id="cd-hrs">00</div><div class="cd-lbl">HRS</div></div>
-      <div class="cd-box"><div class="cd-num" id="cd-min">00</div><div class="cd-lbl">MIN</div></div>
-      <div class="cd-box"><div class="cd-num" id="cd-sec">00</div><div class="cd-lbl">SEC</div></div>
+  <div class="card">
+    <div style="color:var(--phy); font-size:10px; letter-spacing:4px;">COUNTDOWN TO 2026</div>
+    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;" id="countdown">
+      <div><div class="cd-num" id="cd-days">00</div><div style="font-size:10px;">DAYS</div></div>
+      <div><div class="cd-num" id="cd-hrs">00</div><div style="font-size:10px;">HRS</div></div>
+      <div><div class="cd-num" id="cd-min">00</div><div style="font-size:10px;">MIN</div></div>
+      <div><div class="cd-num" id="cd-sec">00</div><div style="font-size:10px;">SEC</div></div>
     </div>
   </div>
 
-  <!-- PROGRESS -->
-  <div class="card progress-card">
-    <div class="card-title">◈ Syllabus Progress</div>
-    <div class="prog-header">
-      <div style="font-size:12px;color:var(--muted)">Overall Completion</div>
-      <div class="prog-pct" id="overall-pct">0<span>%</span></div>
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="color:var(--math)">Syllabus Progress</span>
+      <span class="prog-pct" id="overall-pct">0%</span>
     </div>
-    <div class="bar-track">
-      <div class="bar-fill" id="overall-bar" style="width:0%"></div>
-    </div>
-    <div class="prog-meta">
-      <span id="done-count">0 chapters done</span>
-      <span id="rem-count">67 remaining</span>
-    </div>
-    <div class="sub-bars">
-      <div class="sub-bar-item">
-        <div class="sub-bar-label">
-          <span style="color:var(--phy)">⚛ Physics</span>
-          <span style="color:var(--muted)" id="phy-count">0/23</span>
-        </div>
-        <div class="sub-bar-track"><div class="sub-bar-fill" id="phy-bar" style="width:0%;background:var(--phy);box-shadow:0 0 8px #00d4ff66"></div></div>
-      </div>
-      <div class="sub-bar-item">
-        <div class="sub-bar-label">
-          <span style="color:var(--chem)">🧪 Chemistry</span>
-          <span style="color:var(--muted)" id="chem-count">0/25</span>
-        </div>
-        <div class="sub-bar-track"><div class="sub-bar-fill" id="chem-bar" style="width:0%;background:var(--chem);box-shadow:0 0 8px #00ff9d66"></div></div>
-      </div>
-      <div class="sub-bar-item">
-        <div class="sub-bar-label">
-          <span style="color:var(--math)">∑ Maths</span>
-          <span style="color:var(--muted)" id="math-count">0/19</span>
-        </div>
-        <div class="sub-bar-track"><div class="sub-bar-fill" id="math-bar" style="width:0%;background:var(--math);box-shadow:0 0 8px #ff6b3566"></div></div>
-      </div>
-    </div>
+    <div class="bar-track"><div class="bar-fill" id="overall-bar" style="width:0%; background:var(--chem);"></div></div>
+    <div id="done-count" style="font-size:12px; color:var(--muted);">0/67 chapters</div>
   </div>
 
-  <!-- QUOTE -->
-  <div class="card quote-card">
-    <div class="quote-emoji">💫</div>
-    <div>
-      <div class="card-title">Daily Fuel</div>
-      <div class="quote-text" id="daily-quote"></div>
+  <div class="card" style="border-color: var(--chem);">
+    <h2 style="font-family:'Orbitron'; color:var(--chem);">PRACTICE ARENA</h2>
+    <div id="setup-practice">
+      <label>Questions:</label>
+      <input type="number" id="qCount" value="10" min="1" max="100">
+      <button onclick="startPractice()">LAUNCH SESSION</button>
+    </div>
+    <div class="timer hidden" id="timer">00:00</div>
+    
+    <div class="hidden" id="practiceArea">
+      <table id="questionTable">
+        <thead><tr><th>Q</th><th>Type</th><th>Your Ans</th><th class="hidden" id="keyHead">Correct Key</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button onclick="lockAnswers()" id="lockBtn">LOCK ANSWERS</button>
+      <button onclick="calculateScore()" class="hidden" id="scoreBtn" style="background:var(--chem)">CALCULATE SCORE</button>
+    </div>
+
+    <div class="hidden" id="resultArea" style="margin-top:20px; border-top:1px solid var(--border); padding-top:20px;">
+      <h2 id="scoreText" style="font-family:'Orbitron'; font-size:32px;"></h2>
+      <div id="badge" style="font-size:20px; margin:10px 0; color:var(--phy);"></div>
+      <div id="history" style="font-size:12px; color:var(--chem);"></div>
+      <button onclick="location.reload()" style="background:transparent; color:var(--text); border:1px solid var(--muted);">RESET</button>
     </div>
   </div>
-
-  <!-- CHAPTER CHECKLIST -->
-  <div class="tabs-card">
-    <div class="tabs-row" id="tabs-row"></div>
-    <div class="chapters-list" id="chapters-list"></div>
-  </div>
-
-  <div class="footer">JEE MAIN 99ile TRACKER • BUILT FOR TOPPERS</div>
 </div>
 
 <script>
+// --- TRACKER LOGIC ---
 const JEE_DATE = new Date("2026-04-05T00:00:00");
-
-const QUOTES = [
-  "99 percentile nahi, 100 percentile socho — fir 99 toh pakka hai! 🚀",
-  "Aaj ka struggle, kal ki success ka blueprint hai. Keep going! 💪",
-  "IIT ka sapna dekha hai? Ab neend mat lena. Pad ja! 📚",
-  "Ek chapter aur. Bas ek aur. Yahi habit topper banati hai.",
-  "Galti karo, seekho, aur aage badho. Yahi formula hai. ⚡",
-  "Tu akela nahi — lakhon pad rahe hain. Par sirf tu smarter padh raha hai.",
-  "Rank 1 wala bhi insaan hai. Fark sirf dedication ka hai. 🔥",
-  "Har revision ek naya neuron connection hai. Brain ko train kar!",
-  "Thaka hua feel ho raha hai? Good. Matlab kuch ho raha hai. 💡",
-  "JEE Advanced ka ticket sirf Main se aata hai. Main ko seriously le!",
-];
-
-const SUBJECTS = {
-  Physics: {
-    color: "#00d4ff", icon: "⚛", id: "phy",
-    chapters: [
-      "Units & Measurements","Kinematics","Laws of Motion","Work, Energy & Power",
-      "Rotational Motion","Gravitation","Properties of Solids & Liquids",
-      "Thermodynamics","Kinetic Theory of Gases","Oscillations","Waves",
-      "Electrostatics","Current Electricity","Magnetic Effects of Current",
-      "Magnetism & Matter","Electromagnetic Induction","Alternating Current",
-      "Electromagnetic Waves","Ray Optics","Wave Optics",
-      "Dual Nature of Matter","Atoms & Nuclei","Electronic Devices"
-    ]
-  },
-  Chemistry: {
-    color: "#00ff9d", icon: "🧪", id: "chem",
-    chapters: [
-      "Some Basic Concepts","Atomic Structure","Chemical Bonding",
-      "States of Matter","Thermodynamics (Chem)","Equilibrium",
-      "Redox Reactions","Hydrogen","s-Block Elements","p-Block Elements",
-      "d & f Block Elements","Coordination Compounds","Organic Chemistry Basics",
-      "Hydrocarbons","Haloalkanes & Haloarenes","Alcohols, Phenols & Ethers",
-      "Aldehydes, Ketones & Acids","Amines","Biomolecules","Polymers",
-      "Environmental Chemistry","Solutions","Electrochemistry",
-      "Chemical Kinetics","Surface Chemistry"
-    ]
-  },
-  Maths: {
-    color: "#ff6b35", icon: "∑", id: "math",
-    chapters: [
-      "Sets, Relations & Functions","Complex Numbers","Matrices & Determinants",
-      "Permutations & Combinations","Binomial Theorem","Sequences & Series",
-      "Limits, Continuity & Differentiability","Integral Calculus",
-      "Differential Equations","Straight Lines","Conic Sections",
-      "3D Geometry","Vector Algebra","Statistics","Probability",
-      "Trigonometric Functions","Inverse Trigonometry",
-      "Mathematical Reasoning","Mathematical Induction"
-    ]
-  }
-};
-
-const TOTAL = 67;
-let checked = {};
-let activeTab = "Physics";
-
-// Load from localStorage
-try { checked = JSON.parse(localStorage.getItem("jee99-checked") || "{}"); } catch(e) { checked = {}; }
-
-function save() {
-  try { localStorage.setItem("jee99-checked", JSON.stringify(checked)); } catch(e) {}
-}
-
-// Countdown
 function updateCountdown() {
-  const now = new Date();
-  const diff = JEE_DATE - now;
-  if (diff <= 0) {
-    document.getElementById("countdown").innerHTML = '<div style="color:#00ff9d;font-size:20px;text-align:center;padding:10px">🎯 Exam Day! All the best!</div>';
-    return;
-  }
+  const diff = JEE_DATE - new Date();
+  if (diff <= 0) return;
   const pad = n => String(n).padStart(2, "0");
   document.getElementById("cd-days").textContent = pad(Math.floor(diff / 86400000));
-  document.getElementById("cd-hrs").textContent  = pad(Math.floor((diff % 86400000) / 3600000));
-  document.getElementById("cd-min").textContent  = pad(Math.floor((diff % 3600000) / 60000));
-  document.getElementById("cd-sec").textContent  = pad(Math.floor((diff % 60000) / 1000));
+  document.getElementById("cd-hrs").textContent = pad(Math.floor((diff % 86400000) / 3600000));
+  document.getElementById("cd-min").textContent = pad(Math.floor((diff % 3600000) / 60000));
+  document.getElementById("cd-sec").textContent = pad(Math.floor((diff % 60000) / 1000));
 }
-updateCountdown();
 setInterval(updateCountdown, 1000);
+updateCountdown();
 
-// Quote
-document.getElementById("daily-quote").textContent = QUOTES[Math.floor(Date.now() / 86400000) % QUOTES.length];
-
-// Progress
-function updateProgress() {
-  let total = 0;
-  Object.entries(SUBJECTS).forEach(([sub, data]) => {
-    const done = data.chapters.filter(ch => checked[sub + "::" + ch]).length;
-    total += done;
-    const pct = Math.round(done / data.chapters.length * 100);
-    document.getElementById(data.id + "-bar").style.width = pct + "%";
-    document.getElementById(data.id + "-count").textContent = done + "/" + data.chapters.length;
+// --- PRACTICE LOGIC ---
+let timerInterval, seconds=0, questions=[];
+function startPractice() {
+  let count = parseInt(document.getElementById("qCount").value);
+  questions = [];
+  let mcqCount = Math.floor(count * 0.7);
+  for(let i=0; i<count; i++) questions.push({type: i < mcqCount ? "MCQ" : "NUM"});
+  
+  let tbody = document.querySelector("#questionTable tbody");
+  tbody.innerHTML = "";
+  questions.forEach((q, i) => {
+    let row = `<tr><td>${i+1}</td><td>${q.type}</td>
+      <td>${q.type=="MCQ" ? `<input type="radio" name="q${i}" value="A">A <input type="radio" name="q${i}" value="B">B <input type="radio" name="q${i}" value="C">C <input type="radio" name="q${i}" value="D">D` : `<input type="text" id="ans${i}" style="width:60px">`}</td>
+      <td class="hidden"><input id="key${i}" style="width:50px; border:1px dashed #555"></td></tr>`;
+    tbody.innerHTML += row;
   });
-  const pct = Math.round(total / TOTAL * 100);
-  document.getElementById("overall-pct").innerHTML = pct + '<span>%</span>';
-  const bar = document.getElementById("overall-bar");
-  bar.style.width = pct + "%";
-  bar.style.background = pct >= 80
-    ? "linear-gradient(90deg,#00ff9d,#00d4ff)"
-    : pct >= 50 ? "linear-gradient(90deg,#ff6b35,#ffb347)"
-    : "linear-gradient(90deg,#ff6b35,#ff4040)";
-  bar.style.boxShadow = "0 0 12px " + (pct >= 80 ? "#00ff9d" : "#ff6b35") + "88";
-  document.getElementById("done-count").textContent = total + " chapters done";
-  document.getElementById("rem-count").textContent = (TOTAL - total) + " remaining";
+
+  document.getElementById("setup-practice").classList.add("hidden");
+  document.getElementById("practiceArea").classList.remove("hidden");
+  document.getElementById("timer").classList.remove("hidden");
+  timerInterval = setInterval(() => {
+    seconds++;
+    document.getElementById("timer").innerText = String(Math.floor(seconds/60)).padStart(2,'0')+":"+String(seconds%60).padStart(2,'0');
+  }, 1000);
 }
 
-// Render tabs
-function renderTabs() {
-  const row = document.getElementById("tabs-row");
-  row.innerHTML = "";
-  Object.entries(SUBJECTS).forEach(([sub, data]) => {
-    const done = data.chapters.filter(ch => checked[sub + "::" + ch]).length;
-    const pct = Math.round(done / data.chapters.length * 100);
-    const btn = document.createElement("button");
-    btn.className = "tab-btn" + (activeTab === sub ? " active" : "");
-    btn.style.color = activeTab === sub ? data.color : "";
-    btn.innerHTML = data.icon + " " + sub.toUpperCase() + ' <span style="font-size:10px;opacity:.7">' + pct + '%</span>';
-    btn.onclick = () => { activeTab = sub; renderTabs(); renderChapters(); };
-    row.appendChild(btn);
-  });
+function lockAnswers() {
+  document.getElementById("keyHead").classList.remove("hidden");
+  document.querySelectorAll("#questionTable tbody tr").forEach(r => r.children[3].classList.remove("hidden"));
+  document.getElementById("scoreBtn").classList.remove("hidden");
+  document.getElementById("lockBtn").classList.add("hidden");
+  alert("Now enter Correct Answers from your Answer Key and click Calculate.");
 }
 
-// Render chapters
-function renderChapters() {
-  const list = document.getElementById("chapters-list");
-  list.innerHTML = "";
-  const data = SUBJECTS[activeTab];
-  data.chapters.forEach((ch, i) => {
-    const key = activeTab + "::" + ch;
-    const done = !!checked[key];
-    const item = document.createElement("div");
-    item.className = "ch-item";
-    if (done) {
-      item.style.background = data.color + "0a";
-      item.style.borderColor = data.color + "28";
-    }
-    item.innerHTML = `
-      <div class="ch-check" style="border-color:${done ? data.color : "#2a3040"};background:${done ? data.color : "transparent"};box-shadow:${done ? "0 0 8px " + data.color + "66" : "none"};color:#000;">
-        ${done ? "✓" : ""}
-      </div>
-      <span class="ch-label" style="color:${done ? data.color : "#8892a4"}">${i + 1}. ${ch}</span>
-      ${done ? '<span class="ch-done-tag" style="color:' + data.color + '">DONE</span>' : ""}
-    `;
-    item.onclick = () => {
-      checked[key] = !checked[key];
-      save();
-      updateProgress();
-      renderTabs();
-      renderChapters();
-    };
-    list.appendChild(item);
+function calculateScore() {
+  clearInterval(timerInterval);
+  let score = 0;
+  questions.forEach((q, i) => {
+    let correct = document.getElementById("key"+i).value.trim().toUpperCase();
+    let user = q.type=="MCQ" ? (document.querySelector(`input[name=q${i}]:checked`)?.value || "") : document.getElementById("ans"+i).value.trim();
+    if(user === "") return;
+    if(user == correct) score += 4;
+    else if(q.type == "MCQ") score -= 1;
   });
+  
+  document.getElementById("practiceArea").classList.add("hidden");
+  document.getElementById("resultArea").classList.remove("hidden");
+  document.getElementById("scoreText").innerText = "Score: " + score;
+  let badge = score > 30 ? "🏆 AIR-1 MATERIAL" : score > 15 ? "🔥 STRONG" : "📚 KEEP WORKING";
+  document.getElementById("badge").innerText = badge;
+  
+  let history = JSON.parse(localStorage.getItem("jeeScores")||"[]");
+  history.unshift(score);
+  localStorage.setItem("jeeScores", JSON.stringify(history.slice(0,5)));
+  document.getElementById("history").innerText = "Recent: " + history.slice(0,5).join(", ");
 }
-
-updateProgress();
-renderTabs();
-renderChapters();
 </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-
-<title>Practice Arena</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-<style>
-
-body{
-background:#050b12;
-color:white;
-font-family:'Share Tech Mono';
-text-align:center;
-}
-
-h1{
-font-family:'Orbitron';
-color:#00d4ff;
-text-shadow:0 0 10px #00d4ff;
-}
-
-.card{
-width:90%;
-margin:auto;
-padding:25px;
-border-radius:16px;
-background:rgba(255,255,255,0.03);
-margin-top:20px;
-}
-
-table{
-width:100%;
-margin-top:20px;
-}
-
-td{
-padding:10px;
-border-bottom:1px solid rgba(255,255,255,0.1);
-}
-
-button{
-padding:10px 20px;
-border:none;
-border-radius:8px;
-font-family:'Orbitron';
-background:#00d4ff;
-cursor:pointer;
-}
-
-.timer{
-font-family:'Orbitron';
-font-size:22px;
-color:#ff6b35;
-text-shadow:0 0 10px #ff6b35;
-margin-top:10px;
-}
-
-.hidden{
-display:none;
-}
-
-</style>
-</head>
-
-<body>
-
-<h1>Practice & Analysis Arena</h1>
-
-<div class="card">
-
-Questions:
-<input type="number" id="qCount" value="10">
-
-<br><br>
-
-<button onclick="startPractice()">Start Practice</button>
-
-<div class="timer" id="timer">20:00</div>
-
-</div>
-
-<div class="card hidden" id="practiceArea">
-
-<table id="table">
-<thead>
-
-<tr>
-<th>Q</th>
-<th>Type</th>
-<th>Your Answer</th>
-<th id="keyHead" class="hidden">Correct</th>
-</tr>
-
-</thead>
-
-<tbody></tbody>
-
-</table>
-
-<button onclick="lockAnswers()">Lock Answers</button>
-
-<button onclick="calculateScore()" id="scoreBtn" class="hidden">Calculate Score</button>
-
-</div>
-
-<div class="card hidden" id="result">
-
-<h2 id="score"></h2>
-
-</div>
-
-<script>
-
-let questions=[]
-let time=1200
-let timer
-
-function startPractice(){
-
-let n=document.getElementById("qCount").value
-
-let tbody=document.querySelector("#table tbody")
-
-tbody.innerHTML=""
-
-for(let i=0;i<n;i++){
-
-let row=document.createElement("tr")
-
-row.innerHTML=`
-
-<td>${i+1}</td>
-
-<td>
-
-<select id="type${i}">
-<option value="MCQ">MCQ</option>
-<option value="NUM">Numerical</option>
-</select>
-
-</td>
-
-<td>
-
-<div id="mcq${i}">
-
-<label><input type="radio" name="q${i}" value="A">A</label>
-<label><input type="radio" name="q${i}" value="B">B</label>
-<label><input type="radio" name="q${i}" value="C">C</label>
-<label><input type="radio" name="q${i}" value="D">D</label>
-
-</div>
-
-<input type="text" id="num${i}" class="hidden">
-
-</td>
-
-<td class="hidden">
-
-<input id="key${i}">
-
-</td>
-
-`
-
-tbody.appendChild(row)
-
-document.getElementById("type"+i).onchange=function(){
-
-if(this.value=="MCQ"){
-
-document.getElementById("mcq"+i).style.display="block"
-document.getElementById("num"+i).style.display="none"
-
-}
-
-else{
-
-document.getElementById("mcq"+i).style.display="none"
-document.getElementById("num"+i).style.display="inline"
-
-}
-
-}
-
-}
-
-document.getElementById("practiceArea").classList.remove("hidden")
-
-startTimer()
-
-}
-
-function startTimer(){
-
-timer=setInterval(()=>{
-
-time--
-
-let m=Math.floor(time/60)
-
-let s=time%60
-
-document.getElementById("timer").innerText=
-
-String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")
-
-if(time==0){
-
-clearInterval(timer)
-
-alert("Time Over")
-
-}
-
-},1000)
-
-}
-
-function lockAnswers(){
-
-document.getElementById("keyHead").classList.remove("hidden")
-
-document.querySelectorAll("#table tbody tr").forEach(r=>{
-r.children[3].classList.remove("hidden")
-})
-
-document.getElementById("scoreBtn").classList.remove("hidden")
-
-}
-
-function calculateScore(){
-
-let n=document.getElementById("qCount").value
-
-let score=0
-
-for(let i=0;i<n;i++){
-
-let type=document.getElementById("type"+i).value
-
-let correct=document.getElementById("key"+i).value
-
-let user=""
-
-if(type=="MCQ"){
-
-let r=document.querySelector(`input[name=q${i}]:checked`)
-
-if(r) user=r.value
-
-if(user==correct) score+=4
-else if(user!="") score-=1
-
-}
-
-else{
-
-user=document.getElementById("num"+i).value
-
-if(user==correct) score+=4
-
-}
-
-}
-
-document.getElementById("result").classList.remove("hidden")
-
-document.getElementById("score").innerText="Score : "+score
-
-}
-
-</script>
-
 </body>
 </html>
