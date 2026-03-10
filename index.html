@@ -6,99 +6,56 @@
 <title>MISSION: JEE 99ile</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#08090f;
-  --card:rgba(18,14,8,0.92);
-  --card2:rgba(12,10,5,0.95);
-  --border:rgba(200,160,60,0.2);
-  --blue:#7dd8ff;
-  --orange:#fbbf24;
-  --green:#86d9a0;
-  --red:#f87171;
-  --gold:#f5c842;
-  --text:#f5ecd7;
-  --muted:#a89070;
-  --fh:'Orbitron',monospace;
-  --fb:'Rajdhani',sans-serif;
-  --fm:'Share Tech Mono',monospace;
-}
+:root{--bg:#08090f;--card:rgba(18,14,8,0.92);--card2:rgba(12,10,5,0.95);--border:rgba(200,160,60,0.2);--blue:#7dd8ff;--orange:#fbbf24;--green:#86d9a0;--red:#f87171;--gold:#f5c842;--text:#f5ecd7;--muted:#a89070;--fh:'Orbitron',monospace;--fb:'Rajdhani',sans-serif;--fm:'Share Tech Mono',monospace;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;font-size:16px;}
-
-/* ── IIT BOMBAY BACKGROUND ── */
-#iitbg{
-  position:fixed;inset:0;z-index:0;
-  background:
-    radial-gradient(ellipse 100% 40% at 50% 0%, #1a1200 0%, transparent 65%),
-    radial-gradient(ellipse 60% 50% at 15% 80%, #0a0800 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 85% 80%, #0a0800 0%, transparent 55%),
-    linear-gradient(180deg, #060500 0%, #0c0900 35%, #06050a 70%, #060508 100%);
-}
-
-/* Stars */
+#iitbg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 100% 40% at 50% 0%, #1a1200 0%, transparent 65%),radial-gradient(ellipse 60% 50% at 15% 80%, #0a0800 0%, transparent 55%),radial-gradient(ellipse 60% 50% at 85% 80%, #0a0800 0%, transparent 55%),linear-gradient(180deg, #060500 0%, #0c0900 35%, #06050a 70%, #060508 100%);}
 .st{position:fixed;border-radius:50%;background:#fff8e7;pointer-events:none;z-index:0;}
 @keyframes tw{0%{opacity:.15}50%{opacity:1}100%{opacity:.2}}
-
-/* Lake */
-#lake{
-  position:fixed;bottom:0;left:0;right:0;height:18%;z-index:0;
-  background:linear-gradient(180deg,rgba(6,20,50,0.6) 0%,rgba(3,10,28,0.95) 100%);
-}
-#lake::after{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 4px 60px at 25% 30%, rgba(245,200,60,0.35), transparent),
-    radial-gradient(ellipse 4px 60px at 42% 20%, rgba(125,216,255,0.25), transparent),
-    radial-gradient(ellipse 4px 60px at 58% 35%, rgba(245,180,40,0.3), transparent),
-    radial-gradient(ellipse 4px 60px at 75% 25%, rgba(125,216,255,0.2), transparent),
-    radial-gradient(ellipse 4px 40px at 60% 50%, rgba(245,200,60,0.2), transparent);
-  animation:ref 5s ease-in-out infinite alternate;
-}
+#lake{position:fixed;bottom:0;left:0;right:0;height:18%;z-index:0;background:linear-gradient(180deg,rgba(6,20,50,0.6) 0%,rgba(3,10,28,0.95) 100%);}
+#lake::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 4px 60px at 25% 30%, rgba(245,200,60,0.35), transparent),radial-gradient(ellipse 4px 60px at 42% 20%, rgba(125,216,255,0.25), transparent),radial-gradient(ellipse 4px 60px at 58% 35%, rgba(245,180,40,0.3), transparent),radial-gradient(ellipse 4px 60px at 75% 25%, rgba(125,216,255,0.2), transparent);animation:ref 5s ease-in-out infinite alternate;}
 @keyframes ref{0%{opacity:.5;transform:scaleX(1)}100%{opacity:1;transform:scaleX(1.01)}}
+#moon{position:fixed;top:5%;right:8%;width:60px;height:60px;border-radius:50%;z-index:2;background:radial-gradient(circle at 35% 35%,#fffde7,#f5c842);box-shadow:0 0 35px rgba(245,200,60,0.7),0 0 90px rgba(245,180,40,0.25);}
 
-/* Moon */
-#moon{
-  position:fixed;top:5%;right:8%;width:60px;height:60px;border-radius:50%;z-index:2;
-  background:radial-gradient(circle at 35% 35%,#fffde7,#f5c842);
-  box-shadow:0 0 35px rgba(245,200,60,0.7),0 0 90px rgba(245,180,40,0.25);
-}
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(6,5,0,0.97);backdrop-filter:blur(20px);}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 32px;text-align:center;max-width:360px;width:90%;box-shadow:0 0 60px rgba(245,200,60,0.1);}
+.login-logo{font-size:56px;margin-bottom:16px;}
+.login-title{font-family:var(--fh);font-size:22px;font-weight:900;color:var(--gold);letter-spacing:3px;margin-bottom:6px;}
+.login-sub{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:8px;}
+.login-tagline{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
+.login-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:15px 20px;border-radius:12px;border:1px solid rgba(200,160,60,0.4);background:rgba(245,200,60,0.08);color:var(--text);font-family:var(--fb);font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;}
+.login-btn:hover{background:rgba(245,200,60,0.18);border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,200,60,0.15);}
+.login-btn img{width:22px;height:22px;}
+.login-err{margin-top:12px;font-family:var(--fm);font-size:11px;color:var(--red);display:none;padding:8px;background:rgba(248,113,113,0.1);border-radius:6px;}
+.login-note{margin-top:16px;font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:1px;opacity:0.6;}
+
+/* USER BAR */
+.userbar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:14px;backdrop-filter:blur(16px);}
+.user-info{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;}
+.user-name{font-family:var(--fb);font-size:14px;font-weight:700;color:var(--text);}
+.user-badge{font-family:var(--fm);font-size:9px;color:var(--gold);letter-spacing:1px;margin-top:1px;}
+.logout-btn{padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--fm);font-size:9px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
 
 .wrap{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:14px 14px 60px;}
-
-/* ── HEADER ── */
 .hdr{text-align:center;padding:20px 0 14px;}
 .hdr h1{font-family:var(--fh);font-size:clamp(26px,7vw,56px);font-weight:900;letter-spacing:3px;line-height:1.1;}
-.hdr .m{color:var(--gold);}
-.hdr .j{color:var(--blue);}
+.hdr .m{color:var(--gold);}.hdr .j{color:var(--blue);}
 .hdr-sub{font-family:var(--fm);font-size:11px;letter-spacing:4px;color:var(--muted);margin-top:6px;}
-
-/* ── QUOTE CARD ── */
-.qcard{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:16px 20px;margin-bottom:14px;text-align:center;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  box-shadow:0 4px 24px rgba(0,0,0,0.3);
-}
-.qicon{font-size:22px;margin-bottom:7px;}
-.qtext{font-size:15px;font-style:italic;color:var(--text);line-height:1.55;margin-bottom:6px;font-weight:500;}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:14px;text-align:center;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,0,0,0.3);}
+.qicon{font-size:22px;margin-bottom:7px;}.qtext{font-size:15px;font-style:italic;color:var(--text);line-height:1.55;margin-bottom:6px;font-weight:500;}
 .qauth{font-family:var(--fm);font-size:10px;letter-spacing:2px;color:var(--blue);}
 .qdate{font-family:var(--fm);font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:1px;}
-
-/* ── COUNTDOWN ── */
-.cdcard{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  margin-bottom:14px;overflow:hidden;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  box-shadow:0 4px 24px rgba(0,0,0,0.3);
-}
+.cdcard{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,0,0,0.3);}
 .cdhalves{display:grid;grid-template-columns:1fr 1fr;}
 @media(max-width:460px){.cdhalves{grid-template-columns:1fr;}}
 .cdhalf{padding:16px 12px;text-align:center;}
 .cdhalf.mn{border-right:1px solid var(--border);}
 @media(max-width:460px){.cdhalf.mn{border-right:none;border-bottom:1px solid var(--border);}}
 .cdlbl{font-family:var(--fm);font-size:9px;letter-spacing:3px;margin-bottom:10px;}
-.cdhalf.mn .cdlbl{color:var(--orange);}
-.cdhalf.av .cdlbl{color:var(--blue);}
+.cdhalf.mn .cdlbl{color:var(--orange);}.cdhalf.av .cdlbl{color:var(--blue);}
 .cdboxes{display:flex;justify-content:center;gap:7px;}
 .cdbox{background:var(--card2);border-radius:9px;padding:9px 11px;min-width:52px;text-align:center;}
 .cdhalf.mn .cdbox{border:1px solid rgba(251,146,60,0.35);}
@@ -113,14 +70,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .dps:hover{border-color:var(--orange);color:var(--orange);}
 .dps.on{border-color:var(--orange);color:#000;background:var(--orange);font-weight:700;}
 .dps.past{border-color:rgba(120,150,220,0.08);color:rgba(120,150,220,0.2);text-decoration:line-through;cursor:default;}
-
-/* ── TABS ── */
 .tabs{display:flex;margin-bottom:14px;border-radius:11px;overflow:hidden;border:1px solid var(--border);backdrop-filter:blur(16px);}
 .tbtn{flex:1;padding:13px 8px;background:var(--card);border:none;color:var(--muted);font-family:var(--fh);font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s;}
 .tbtn.on{background:rgba(245,200,60,0.08);color:var(--gold);border-bottom:2px solid var(--gold);}
 .sec{display:none;}.sec.on{display:block;}
-
-/* ── SYLLABUS ── */
 .sylcard{background:var(--card);border:1px solid rgba(200,160,50,0.25);border-radius:13px;padding:16px;margin-bottom:14px;backdrop-filter:blur(16px);box-shadow:0 4px 30px rgba(0,0,0,0.5);}
 .syltop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .sylttl{color:var(--orange);font-family:var(--fh);font-size:13px;}
@@ -144,8 +97,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .chk.on{background:var(--green);border-color:var(--green);}
 .chk.on::after{content:'✓';color:#000;font-size:10px;font-weight:700;}
 .chnm{font-size:15px;}.chnm.done{color:var(--muted);text-decoration:line-through;}
-
-/* ── ARENA ── */
 .acard{background:var(--card);border-radius:13px;padding:16px;margin-bottom:14px;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,0,0,0.25);}
 .acard.gb{border:1.5px solid rgba(74,222,128,0.4);}
 .acard.ob{border:1.5px solid rgba(251,146,60,0.4);}
@@ -159,14 +110,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .tb2.rs{border-color:var(--muted);color:var(--muted);}
 .cfg{display:flex;gap:8px;flex-wrap:wrap;padding:13px;background:var(--card2);border-radius:9px;border:1px solid var(--border);margin-bottom:13px;align-items:flex-end;}
 .cfgg{display:flex;flex-direction:column;gap:4px;flex:1;min-width:80px;}
-.cfgg.w{flex:2;min-width:130px;}
-.cfgg.ww{flex:3;min-width:150px;}
+.cfgg.w{flex:2;min-width:130px;}.cfgg.ww{flex:3;min-width:150px;}
 .cfglbl{font-size:11px;color:var(--muted);letter-spacing:1px;font-family:var(--fm);}
 .cfgsel,.cfgin{background:rgba(10,16,36,0.8);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:7px;font-family:var(--fb);font-size:15px;font-weight:600;width:100%;}
 .cfgsel:focus,.cfgin:focus{outline:none;border-color:var(--blue);}
 .genbtn{padding:11px 18px;background:linear-gradient(135deg,var(--gold),#d97706);border:none;border-radius:8px;color:#000;font-family:var(--fh);font-size:9px;font-weight:700;cursor:pointer;letter-spacing:1px;white-space:nowrap;transition:all .2s;}
 .genbtn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,200,60,0.4);}
-
 .stats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px;}
 .stc{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:13px;font-family:var(--fm);}
 .stc b{color:var(--blue);}
@@ -174,8 +123,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .qtbl th{padding:9px 7px;text-align:left;font-family:var(--fm);font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);letter-spacing:1px;}
 .qtbl td{padding:11px 7px;border-bottom:1px solid rgba(120,150,220,0.1);vertical-align:top;}
 .qninp{width:46px;background:var(--card2);border:1px solid var(--border);color:var(--blue);font-family:var(--fh);font-size:15px;font-weight:700;text-align:center;border-radius:7px;padding:5px 3px;outline:none;}
-.chlbl{font-size:14px;font-weight:700;}
-.sublbl{font-size:11px;color:var(--muted);font-family:var(--fm);margin-top:1px;}
+.chlbl{font-size:14px;font-weight:700;}.sublbl{font-size:11px;color:var(--muted);font-family:var(--fm);margin-top:1px;}
 .tbadge{display:inline-block;margin-top:4px;padding:3px 9px;border-radius:4px;font-size:10px;font-family:var(--fm);letter-spacing:1px;}
 .tbm{background:rgba(96,165,250,0.1);color:var(--blue);border:1px solid rgba(96,165,250,0.3);}
 .tbn{background:rgba(251,146,60,0.1);color:var(--orange);border:1px solid rgba(251,146,60,0.3);}
@@ -209,16 +157,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .ansrow.no{background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);}
 .ansrow.sk{background:rgba(136,153,187,0.07);border:1px solid rgba(136,153,187,0.2);}
 .aqn{font-family:var(--fh);font-size:11px;color:var(--blue);min-width:28px;}
-
-/* ── AI CHAT ── */
 .aibar{display:flex;border-bottom:1px solid var(--border);}
 .aistab{flex:1;padding:13px 6px;background:var(--card);border:none;color:var(--muted);font-family:var(--fb);font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;border-right:1px solid var(--border);}
 .aistab:last-child{border-right:none;}
 .aistab.on{background:rgba(245,200,60,0.1);color:var(--gold);}
 .chatwin{height:400px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;background:rgba(5,10,22,0.7);}
-.cmsg{display:flex;}
-.cmsg.u{justify-content:flex-end;}
-.cmsg.b{justify-content:flex-start;}
+.cmsg{display:flex;}.cmsg.u{justify-content:flex-end;}.cmsg.b{justify-content:flex-start;}
 .cbub{max-width:82%;padding:11px 15px;border-radius:13px;font-size:15px;line-height:1.55;word-break:break-word;white-space:pre-wrap;}
 .cbub.u{background:linear-gradient(135deg,var(--blue),#2563eb);color:#fff;font-weight:600;border-radius:13px 13px 3px 13px;}
 .cbub.b{background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:13px 13px 13px 3px;}
@@ -228,10 +172,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 #chatTxt:focus{border-color:var(--blue);}
 #chatSendBtn{padding:11px 17px;background:linear-gradient(135deg,var(--blue),#2563eb);border:none;border-radius:9px;color:#fff;font-family:var(--fh);font-size:10px;font-weight:700;cursor:pointer;min-height:46px;white-space:nowrap;transition:all .2s;}
 #chatSendBtn:disabled{opacity:0.5;cursor:not-allowed;}
-
-::-webkit-scrollbar{width:3px;}
-
-/* ── MOCK TRACKER ── */
 .mocklog-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;}
 .mocklog-title{font-family:var(--fh);font-size:11px;color:var(--gold);letter-spacing:2px;margin-bottom:10px;}
 .mocklog-row{display:flex;gap:8px;flex-wrap:wrap;}
@@ -246,430 +186,467 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .sumlbl{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:3px;font-family:var(--fm);}
 .mock-item{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .mock-date{font-family:var(--fm);font-size:11px;color:var(--muted);min-width:70px;}
-.mock-score{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--gold);min-width:60px;}
-.mock-acc{font-size:13px;color:var(--blue);font-family:var(--fm);}
-.mock-qs{font-size:12px;color:var(--muted);font-family:var(--fm);}
 .motiv-bar{border-radius:10px;padding:14px 16px;text-align:center;margin-top:6px;font-size:15px;font-weight:600;line-height:1.5;display:none;}
 .motiv-bar.on{display:block;}
 .streak-fire{font-size:28px;margin-bottom:4px;}
+::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(120,150,220,0.3);border-radius:2px;}
 </style>
 </head>
 <body>
-
-<!-- Background elements -->
 <div id="iitbg"></div>
-<!-- IIT BOMBAY BUILDING SVG - Fixed full width at bottom -->
-<svg id="iitsvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400"
-  style="position:fixed;bottom:0;left:0;width:100%;height:52%;z-index:1;pointer-events:none;"
-  preserveAspectRatio="xMidYMax slice">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" style="position:fixed;bottom:0;left:0;width:100%;height:52%;z-index:1;pointer-events:none;" preserveAspectRatio="xMidYMax slice">
   <defs>
-    <linearGradient id="bldg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a1206"/>
-      <stop offset="100%" stop-color="#080600"/>
-    </linearGradient>
-    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#120f04"/>
-      <stop offset="100%" stop-color="#060400"/>
-    </linearGradient>
-    <!-- Golden glow for lights -->
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+    <linearGradient id="bldg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1206"/><stop offset="100%" stop-color="#080600"/></linearGradient>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#120f04"/><stop offset="100%" stop-color="#060400"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
-
-  <!-- ══ LEFT SIDE BUILDINGS ══ -->
-  <rect x="0" y="260" width="55" height="140" fill="url(#bldg)"/>
-  <rect x="8" y="230" width="38" height="170" fill="url(#bldg)"/>
-  <rect x="55" y="250" width="48" height="150" fill="url(#bldg)"/>
-  <rect x="65" y="220" width="28" height="180" fill="url(#bldg)"/>
-  <rect x="103" y="265" width="40" height="135" fill="url(#bldg)"/>
-  <rect x="143" y="240" width="35" height="160" fill="url(#bldg)"/>
-  <rect x="178" y="255" width="42" height="145" fill="url(#bldg)"/>
-  <rect x="220" y="245" width="30" height="155" fill="url(#bldg)"/>
-  <rect x="250" y="270" width="50" height="130" fill="url(#bldg)"/>
-
-  <!-- ══ IIT BOMBAY MAIN BUILDING (CENTER) ══ -->
-  <!-- Base wide body -->
-  <rect x="290" y="210" width="420" height="190" fill="url(#bldg)"/>
-  <!-- Main block -->
-  <rect x="320" y="170" width="360" height="230" fill="url(#bldg)"/>
-  <!-- Upper tier -->
-  <rect x="355" y="140" width="290" height="260" fill="url(#bldg)"/>
-  <!-- Core tower -->
-  <rect x="390" y="115" width="220" height="285" fill="url(#bldg)"/>
-  <!-- Inner tower -->
+  <rect x="0" y="260" width="55" height="140" fill="url(#bldg)"/><rect x="8" y="230" width="38" height="170" fill="url(#bldg)"/>
+  <rect x="55" y="250" width="48" height="150" fill="url(#bldg)"/><rect x="65" y="220" width="28" height="180" fill="url(#bldg)"/>
+  <rect x="103" y="265" width="40" height="135" fill="url(#bldg)"/><rect x="143" y="240" width="35" height="160" fill="url(#bldg)"/>
+  <rect x="178" y="255" width="42" height="145" fill="url(#bldg)"/><rect x="220" y="245" width="30" height="155" fill="url(#bldg)"/>
+  <rect x="290" y="210" width="420" height="190" fill="url(#bldg)"/><rect x="320" y="170" width="360" height="230" fill="url(#bldg)"/>
+  <rect x="355" y="140" width="290" height="260" fill="url(#bldg)"/><rect x="390" y="115" width="220" height="285" fill="url(#bldg)"/>
   <rect x="420" y="95" width="160" height="305" fill="url(#bldg)"/>
-
-  <!-- DOME BASE -->
   <rect x="460" y="82" width="80" height="20" fill="url(#sky2)"/>
-  <!-- DOME -->
   <ellipse cx="500" cy="68" rx="52" ry="38" fill="url(#sky2)"/>
-  <!-- Dome top ball -->
-  <circle cx="500" cy="32" r="6" fill="#1a1206"/>
-  <!-- Flag pole -->
-  <rect x="498" y="5" width="4" height="30" fill="#1a1000"/>
-  <!-- Flag -->
+  <circle cx="500" cy="32" r="6" fill="#1a1206"/><rect x="498" y="5" width="4" height="30" fill="#1a1000"/>
   <polygon points="502,6 520,12 502,18" fill="#f5c84230"/>
-
-  <!-- ══ ARCHES (darker cutouts) ══ -->
-  <rect x="370" y="240" width="28" height="160" fill="#040300"/>
-  <rect x="406" y="240" width="28" height="160" fill="#040300"/>
-  <rect x="444" y="240" width="28" height="160" fill="#040300"/>
-  <rect x="500" y="240" width="28" height="160" fill="#040300"/>
-  <rect x="538" y="240" width="28" height="160" fill="#040300"/>
-  <rect x="576" y="240" width="28" height="160" fill="#040300"/>
-
-  <!-- Arch tops (rounded) -->
-  <ellipse cx="384" cy="240" rx="14" ry="10" fill="#040300"/>
-  <ellipse cx="420" cy="240" rx="14" ry="10" fill="#040300"/>
-  <ellipse cx="458" cy="240" rx="14" ry="10" fill="#040300"/>
-  <ellipse cx="514" cy="240" rx="14" ry="10" fill="#040300"/>
-  <ellipse cx="552" cy="240" rx="14" ry="10" fill="#040300"/>
-  <ellipse cx="590" cy="240" rx="14" ry="10" fill="#040300"/>
-
-  <!-- ══ WINDOWS with golden glow ══ -->
-  <!-- Left building windows -->
-  <rect x="15" y="240" width="5" height="5" fill="#f5c842" opacity="0.7" filter="url(#glow)"/>
-  <rect x="28" y="240" width="5" height="5" fill="#7dd8ff" opacity="0.6" filter="url(#glow)"/>
-  <rect x="15" y="252" width="5" height="5" fill="#f5c842" opacity="0.5" filter="url(#glow)"/>
-  <rect x="70" y="228" width="5" height="5" fill="#f5c842" opacity="0.7" filter="url(#glow)"/>
-  <rect x="80" y="235" width="5" height="5" fill="#7dd8ff" opacity="0.6" filter="url(#glow)"/>
-  <rect x="148" y="248" width="5" height="5" fill="#f5c842" opacity="0.8" filter="url(#glow)"/>
-  <rect x="158" y="255" width="5" height="5" fill="#f5c842" opacity="0.5" filter="url(#glow)"/>
-  <rect x="185" y="262" width="5" height="5" fill="#7dd8ff" opacity="0.6" filter="url(#glow)"/>
-
-  <!-- Main building windows golden -->
+  <rect x="370" y="240" width="28" height="160" fill="#040300"/><rect x="406" y="240" width="28" height="160" fill="#040300"/>
+  <rect x="444" y="240" width="28" height="160" fill="#040300"/><rect x="500" y="240" width="28" height="160" fill="#040300"/>
+  <rect x="538" y="240" width="28" height="160" fill="#040300"/><rect x="576" y="240" width="28" height="160" fill="#040300"/>
+  <ellipse cx="384" cy="240" rx="14" ry="10" fill="#040300"/><ellipse cx="420" cy="240" rx="14" ry="10" fill="#040300"/>
+  <ellipse cx="458" cy="240" rx="14" ry="10" fill="#040300"/><ellipse cx="514" cy="240" rx="14" ry="10" fill="#040300"/>
+  <ellipse cx="552" cy="240" rx="14" ry="10" fill="#040300"/><ellipse cx="590" cy="240" rx="14" ry="10" fill="#040300"/>
   <rect x="365" y="150" width="7" height="7" fill="#f5c842" opacity="0.9" filter="url(#glow)"/>
-  <rect x="380" y="150" width="7" height="7" fill="#f5c842" opacity="0.7" filter="url(#glow)"/>
   <rect x="610" y="150" width="7" height="7" fill="#f5c842" opacity="0.9" filter="url(#glow)"/>
-  <rect x="625" y="150" width="7" height="7" fill="#f5c842" opacity="0.7" filter="url(#glow)"/>
-  <rect x="365" y="167" width="7" height="7" fill="#7dd8ff" opacity="0.6" filter="url(#glow)"/>
-  <rect x="625" y="167" width="7" height="7" fill="#7dd8ff" opacity="0.6" filter="url(#glow)"/>
-  <rect x="395" y="120" width="6" height="6" fill="#f5c842" opacity="0.8" filter="url(#glow)"/>
-  <rect x="408" y="120" width="6" height="6" fill="#f5c842" opacity="0.6" filter="url(#glow)"/>
-  <rect x="580" y="120" width="6" height="6" fill="#f5c842" opacity="0.8" filter="url(#glow)"/>
-  <rect x="593" y="120" width="6" height="6" fill="#f5c842" opacity="0.6" filter="url(#glow)"/>
   <rect x="430" y="100" width="6" height="6" fill="#7dd8ff" opacity="0.7" filter="url(#glow)"/>
-  <rect x="445" y="100" width="6" height="6" fill="#f5c842" opacity="0.8" filter="url(#glow)"/>
   <rect x="548" y="100" width="6" height="6" fill="#f5c842" opacity="0.8" filter="url(#glow)"/>
-  <rect x="563" y="100" width="6" height="6" fill="#7dd8ff" opacity="0.7" filter="url(#glow)"/>
-
-  <!-- Dome light (red beacon) -->
   <circle cx="500" cy="30" r="4" fill="#ff4444" opacity="0.9" filter="url(#glow)"/>
-
-  <!-- ══ RIGHT SIDE BUILDINGS ══ -->
-  <rect x="710" y="250" width="42" height="150" fill="url(#bldg)"/>
-  <rect x="720" y="225" width="30" height="175" fill="url(#bldg)"/>
-  <rect x="752" y="258" width="38" height="142" fill="url(#bldg)"/>
-  <rect x="790" y="240" width="33" height="160" fill="url(#bldg)"/>
-  <rect x="823" y="255" width="45" height="145" fill="url(#bldg)"/>
-  <rect x="868" y="245" width="35" height="155" fill="url(#bldg)"/>
-  <rect x="903" y="260" width="48" height="140" fill="url(#bldg)"/>
+  <rect x="710" y="250" width="42" height="150" fill="url(#bldg)"/><rect x="752" y="258" width="38" height="142" fill="url(#bldg)"/>
+  <rect x="790" y="240" width="33" height="160" fill="url(#bldg)"/><rect x="823" y="255" width="45" height="145" fill="url(#bldg)"/>
+  <rect x="868" y="245" width="35" height="155" fill="url(#bldg)"/><rect x="903" y="260" width="48" height="140" fill="url(#bldg)"/>
   <rect x="951" y="250" width="49" height="150" fill="url(#bldg)"/>
-
-  <!-- Right building windows -->
-  <rect x="725" y="232" width="5" height="5" fill="#f5c842" opacity="0.7" filter="url(#glow)"/>
-  <rect x="795" y="248" width="5" height="5" fill="#7dd8ff" opacity="0.6" filter="url(#glow)"/>
-  <rect x="830" y="262" width="5" height="5" fill="#f5c842" opacity="0.8" filter="url(#glow)"/>
-  <rect x="870" y="252" width="5" height="5" fill="#f5c842" opacity="0.6" filter="url(#glow)"/>
-  <rect x="955" y="258" width="5" height="5" fill="#7dd8ff" opacity="0.7" filter="url(#glow)"/>
-
-  <!-- ══ GROUND LINE ══ -->
   <rect x="0" y="395" width="1000" height="10" fill="#040300"/>
-
-  <!-- ══ LAKE REFLECTION (mirror glow) ══ -->
-  <rect x="0" y="370" width="1000" height="35" fill="url(#bldg)" opacity="0.8"/>
 </svg>
 <div id="moon"></div>
 <div id="lake"></div>
 
-<div class="wrap">
-
-<!-- HEADER -->
-<div class="hdr">
-  <h1><span class="m">MISSION:</span> <span class="j">JEE 99ile</span></h1>
-  <div class="hdr-sub">◈ TARGET: IIT BOMBAY / DELHI ◈</div>
-</div>
-
-<!-- QUOTE -->
-<div class="qcard">
-  <div class="qicon">🎯</div>
-  <div class="qtext" id="qtext">Sapne woh nahi jo neend mein aate hain, sapne woh hain jo neend udaa dete hain.</div>
-  <div class="qauth" id="qauth">— Dr. APJ Abdul Kalam —</div>
-  <div class="qdate" id="qdate"></div>
-</div>
-
-<!-- COUNTDOWN -->
-<div class="cdcard">
-  <div class="cdhalves">
-    <div class="cdhalf mn">
-      <div class="cdlbl">◈ JEE MAIN 2026 ◈</div>
-      <div class="cdboxes">
-        <div class="cdbox"><div class="cdn" id="md">00</div><div class="cdu">DAYS</div></div>
-        <div class="cdbox"><div class="cdn" id="mh">00</div><div class="cdu">HRS</div></div>
-        <div class="cdbox"><div class="cdn" id="mm">00</div><div class="cdu">MIN</div></div>
-        <div class="cdbox"><div class="cdn" id="ms">00</div><div class="cdu">SEC</div></div>
-      </div>
-      <div class="dpwrap">
-        <div class="dplbl">▸ EXAM DATE CHUNO</div>
-        <div class="dpslots" id="dpSlots"></div>
-      </div>
-    </div>
-    <div class="cdhalf av">
-      <div class="cdlbl">◈ JEE ADVANCED 2026 ◈</div>
-      <div class="cdboxes">
-        <div class="cdbox"><div class="cdn" id="ad">00</div><div class="cdu">DAYS</div></div>
-        <div class="cdbox"><div class="cdn" id="ah">00</div><div class="cdu">HRS</div></div>
-        <div class="cdbox"><div class="cdn" id="am">00</div><div class="cdu">MIN</div></div>
-        <div class="cdbox"><div class="cdn" id="as">00</div><div class="cdu">SEC</div></div>
-      </div>
-      <div class="avdate">📅 18 May 2026 · 9 AM IST</div>
-    </div>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🎯</div>
+    <div class="login-title">MISSION: JEE</div>
+    <div class="login-sub">◈ 99 PERCENTILE TRACKER ◈</div>
+    <div class="login-tagline">Apna data secure rakho.<br>Sirf tumhara data tumhe dikhega.</div>
+    <button class="login-btn" onclick="googleLogin()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
+      Google se Login Karo
+    </button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-note">◈ POWERED BY FIREBASE AUTH ◈</div>
   </div>
 </div>
 
-<!-- TABS -->
-<div class="tabs">
-  <button class="tbtn on" onclick="showTab('syl',this)">📚 SYLLABUS</button>
-  <button class="tbtn" onclick="showTab('arena',this)">⚔️ ARENA</button>
-  <button class="tbtn" onclick="showTab('stats',this)">📊 STATS</button>
-  <button class="tbtn" onclick="showTab('ai',this)">🤖 AI CHAT</button>
-</div>
-
-<!-- SYLLABUS -->
-<div class="sec on" id="sec-syl">
-  <div class="sylcard">
-    <div class="syltop">
-      <div class="sylttl">◈ SYLLABUS PROGRESS</div>
-      <div class="sylpct" id="sylPct">0%</div>
-    </div>
-    <div class="pgout"><div class="pgin" id="sylBar" style="width:0%"></div></div>
-    <div class="pgcnt" id="sylCnt">0 / 0 chapters</div>
-    <div id="sylBody"></div>
-  </div>
-</div>
-
-<!-- ARENA -->
-<div class="sec" id="sec-arena">
-  <div class="acard gb" id="step1">
-    <div class="attl g">⚔ PRACTICE ARENA</div>
-    <div class="tmrwrap">
-      <div class="tmrdisp" id="tDisp">00:00</div>
-      <div class="tmrbtns">
-        <button class="tb2 go" id="tBtn" onclick="togTimer()">START</button>
-        <button class="tb2 rs" onclick="rstTimer()">RESET</button>
+<!-- MAIN APP -->
+<div class="wrap" id="mainApp" style="display:none">
+  <!-- User Bar -->
+  <div class="userbar">
+    <div class="user-info">
+      <img class="user-avatar" id="userAvatar" src="" alt="">
+      <div>
+        <div class="user-name" id="userName">Loading...</div>
+        <div class="user-badge">◈ JEE ASPIRANT ◈</div>
       </div>
     </div>
-    <div class="cfg">
-      <div class="cfgg w"><label class="cfglbl">SUBJECT</label>
-        <select class="cfgsel" id="cSub" onchange="loadChaps()">
-          <option value="all">All Subjects</option>
-          <option value="physics">Physics</option>
-          <option value="chemistry">Chemistry</option>
-          <option value="maths">Mathematics</option>
-        </select>
-      </div>
-      <div class="cfgg ww"><label class="cfglbl">CHAPTER</label>
-        <select class="cfgsel" id="cChap"><option value="all">All Chapters</option></select>
-      </div>
-      <div class="cfgg"><label class="cfglbl">QUESTIONS</label><input type="number" class="cfgin" id="cTotal" value="12" min="1" max="40"></div>
-      <div class="cfgg"><label class="cfglbl">TIME (min)</label><input type="number" class="cfgin" id="cTime" value="30" min="5" max="180"></div>
-      <button class="genbtn" onclick="genQ()">⚡ GENERATE</button>
-    </div>
-
-    <div class="stats" id="statsBar" style="display:none">
-      <div class="stc">Total:<b id="sTot">0</b></div>
-      <div class="stc">Done:<b id="sAtt">0</b></div>
-      <div class="stc">Left:<b id="sLft">0</b></div>
-      <div class="stc">MCQ:<b id="sMcq">0</b></div>
-      <div class="stc">NUM:<b id="sNum">0</b></div>
-    </div>
-    <table class="qtbl">
-      <thead><tr><th style="width:50px">Q#</th><th style="width:160px">CHAPTER</th><th>YOUR ANSWER</th></tr></thead>
-      <tbody id="qBody"></tbody>
-    </table>
-    <button class="btnsub" onclick="submitAns()">🔒 SUBMIT ANSWERS</button>
+    <button class="logout-btn" onclick="logOut()">⎋ LOGOUT</button>
   </div>
 
-  <div class="acard ob" id="step2" style="display:none">
-    <div class="attl o">📋 CORRECT ANSWERS DAALO</div>
-    <p style="text-align:center;font-size:12px;color:var(--muted);font-family:var(--fm);margin-bottom:14px;letter-spacing:1px">◈ Answer key dekh ke sahi answer mark karo ◈</p>
-    <table class="qtbl">
-      <thead><tr><th style="width:50px">Q#</th><th style="width:140px">CHAPTER</th><th style="width:120px">TUMHARA</th><th>SAHI ANSWER</th></tr></thead>
-      <tbody id="corrBody"></tbody>
-    </table>
-    <button class="btnres" onclick="showResult()">📊 RESULT DEKHO</button>
+  <div class="hdr">
+    <h1><span class="m">MISSION:</span> <span class="j">JEE 99ile</span></h1>
+    <div class="hdr-sub">◈ TARGET: IIT BOMBAY / DELHI ◈</div>
   </div>
 
-  <div class="rescard" id="resCard">
-    <div class="resttl">◈ RESULT ANALYSIS ◈</div>
-    <div class="resgrid">
-      <div class="resbox"><div class="resval vg" id="rScore">0</div><div class="reslbl">SCORE</div></div>
-      <div class="resbox"><div class="resval vg" id="rCorr">0</div><div class="reslbl">CORRECT</div></div>
-      <div class="resbox"><div class="resval vr" id="rWrong">0</div><div class="reslbl">WRONG</div></div>
-      <div class="resbox"><div class="resval vc" id="rSkip">0</div><div class="reslbl">SKIPPED</div></div>
-      <div class="resbox"><div class="resval vc" id="rAcc">0%</div><div class="reslbl">ACCURACY</div></div>
-    </div>
-    <div class="anslist" id="ansList"></div>
+  <div class="qcard">
+    <div class="qicon">🎯</div>
+    <div class="qtext" id="qtext"></div>
+    <div class="qauth" id="qauth"></div>
+    <div class="qdate" id="qdate"></div>
   </div>
-</div>
 
-<!-- STATS -->
-<div class="sec" id="sec-stats">
-  <div class="acard gb" id="statsSection">
-    <div class="attl g">📊 MOCK TEST TRACKER</div>
-
-    <!-- Log new mock -->
-    <div class="mocklog-box">
-      <div class="mocklog-title">➕ NAYI MOCK LOG KARO</div>
-      <div class="mocklog-row">
-        <div class="mocklog-field">
-          <label class="cfglbl">DATE</label>
-          <input type="date" class="cfgin" id="mockDate">
+  <div class="cdcard">
+    <div class="cdhalves">
+      <div class="cdhalf mn">
+        <div class="cdlbl">◈ JEE MAIN 2026 ◈</div>
+        <div class="cdboxes">
+          <div class="cdbox"><div class="cdn" id="md">00</div><div class="cdu">DAYS</div></div>
+          <div class="cdbox"><div class="cdn" id="mh">00</div><div class="cdu">HRS</div></div>
+          <div class="cdbox"><div class="cdn" id="mm">00</div><div class="cdu">MIN</div></div>
+          <div class="cdbox"><div class="cdn" id="ms">00</div><div class="cdu">SEC</div></div>
         </div>
-        <div class="mocklog-field">
-          <label class="cfglbl">ATTEMPTED</label>
-          <input type="number" class="cfgin" id="mockQs" placeholder="e.g. 75">
-        </div>
-        <div class="mocklog-field">
-          <label class="cfglbl">CORRECT</label>
-          <input type="number" class="cfgin" id="mockCorr" placeholder="e.g. 55">
-        </div>
-        <div class="mocklog-field">
-          <label class="cfglbl">WRONG</label>
-          <input type="number" class="cfgin" id="mockWrong" placeholder="e.g. 20">
+        <div class="dpwrap">
+          <div class="dplbl">▸ EXAM DATE CHUNO</div>
+          <div class="dpslots" id="dpSlots"></div>
         </div>
       </div>
-      <button class="genbtn" style="width:100%;margin-top:10px;font-size:11px" onclick="saveMock()">💾 SAVE MOCK</button>
+      <div class="cdhalf av">
+        <div class="cdlbl">◈ JEE ADVANCED 2026 ◈</div>
+        <div class="cdboxes">
+          <div class="cdbox"><div class="cdn" id="ad">00</div><div class="cdu">DAYS</div></div>
+          <div class="cdbox"><div class="cdn" id="ah">00</div><div class="cdu">HRS</div></div>
+          <div class="cdbox"><div class="cdn" id="am">00</div><div class="cdu">MIN</div></div>
+          <div class="cdbox"><div class="cdn" id="as">00</div><div class="cdu">SEC</div></div>
+        </div>
+        <div class="avdate">📅 18 May 2026 · 9 AM IST</div>
+      </div>
     </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tbtn on" onclick="showTab('syl',this)">📚 SYLLABUS</button>
+    <button class="tbtn" onclick="showTab('arena',this)">⚔️ ARENA</button>
+    <button class="tbtn" onclick="showTab('stats',this)">📊 STATS</button>
+    <button class="tbtn" onclick="showTab('ai',this)">🤖 AI CHAT</button>
+  </div>
+
+  <div class="sec on" id="sec-syl">
+    <div class="sylcard">
+      <div class="syltop"><div class="sylttl">◈ SYLLABUS PROGRESS</div><div class="sylpct" id="sylPct">0%</div></div>
+      <div class="pgout"><div class="pgin" id="sylBar" style="width:0%"></div></div>
+      <div class="pgcnt" id="sylCnt">0 / 0 chapters</div>
+      <div id="sylBody"></div>
     </div>
+  </div>
 
-    <!-- Sheets status -->
-    <div id="sheetsStatus" style="font-family:var(--fm);font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;padding:8px;background:var(--card2);border-radius:8px;border:1px solid var(--border);">
-      ⚙️ Google Sheets URL set karo neeche diye steps se
+  <div class="sec" id="sec-arena">
+    <div class="acard gb" id="step1">
+      <div class="attl g">⚔ PRACTICE ARENA</div>
+      <div class="tmrwrap">
+        <div class="tmrdisp" id="tDisp">00:00</div>
+        <div class="tmrbtns">
+          <button class="tb2 go" id="tBtn" onclick="togTimer()">START</button>
+          <button class="tb2 rs" onclick="rstTimer()">RESET</button>
+        </div>
+      </div>
+      <div class="cfg">
+        <div class="cfgg w"><label class="cfglbl">SUBJECT</label>
+          <select class="cfgsel" id="cSub" onchange="loadChaps()">
+            <option value="all">All Subjects</option>
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="maths">Mathematics</option>
+          </select>
+        </div>
+        <div class="cfgg ww"><label class="cfglbl">CHAPTER</label>
+          <select class="cfgsel" id="cChap"><option value="all">All Chapters</option></select>
+        </div>
+        <div class="cfgg"><label class="cfglbl">QUESTIONS</label><input type="number" class="cfgin" id="cTotal" value="12" min="1" max="40"></div>
+        <div class="cfgg"><label class="cfglbl">TIME (min)</label><input type="number" class="cfgin" id="cTime" value="30" min="5" max="180"></div>
+        <button class="genbtn" onclick="genQ()">⚡ GENERATE</button>
+      </div>
+      <div class="stats" id="statsBar" style="display:none">
+        <div class="stc">Total:<b id="sTot">0</b></div><div class="stc">Done:<b id="sAtt">0</b></div>
+        <div class="stc">Left:<b id="sLft">0</b></div><div class="stc">MCQ:<b id="sMcq">0</b></div>
+        <div class="stc">NUM:<b id="sNum">0</b></div>
+      </div>
+      <table class="qtbl">
+        <thead><tr><th style="width:50px">Q#</th><th style="width:160px">CHAPTER</th><th>YOUR ANSWER</th></tr></thead>
+        <tbody id="qBody"></tbody>
+      </table>
+      <button class="btnsub" onclick="submitAns()">🔒 SUBMIT ANSWERS</button>
     </div>
-
-    <!-- Period selector -->
-    <div class="period-tabs">
-      <button class="ptab on" id="pt-day" onclick="setPeriod('day',this)">TODAY</button>
-      <button class="ptab" id="pt-week" onclick="setPeriod('week',this)">THIS WEEK</button>
-      <button class="ptab" id="pt-month" onclick="setPeriod('month',this)">THIS MONTH</button>
-      <button class="ptab" id="pt-all" onclick="setPeriod('all',this)">ALL TIME</button>
+    <div class="acard ob" id="step2" style="display:none">
+      <div class="attl o">📋 CORRECT ANSWERS DAALO</div>
+      <p style="text-align:center;font-size:12px;color:var(--muted);font-family:var(--fm);margin-bottom:14px;letter-spacing:1px">◈ Answer key dekh ke sahi answer mark karo ◈</p>
+      <table class="qtbl">
+        <thead><tr><th style="width:50px">Q#</th><th style="width:140px">CHAPTER</th><th style="width:120px">TUMHARA</th><th>SAHI ANSWER</th></tr></thead>
+        <tbody id="corrBody"></tbody>
+      </table>
+      <button class="btnres" onclick="showResult()">📊 RESULT DEKHO</button>
     </div>
+    <div class="rescard" id="resCard">
+      <div class="resttl">◈ RESULT ANALYSIS ◈</div>
+      <div class="resgrid">
+        <div class="resbox"><div class="resval vg" id="rScore">0</div><div class="reslbl">SCORE</div></div>
+        <div class="resbox"><div class="resval vg" id="rCorr">0</div><div class="reslbl">CORRECT</div></div>
+        <div class="resbox"><div class="resval vr" id="rWrong">0</div><div class="reslbl">WRONG</div></div>
+        <div class="resbox"><div class="resval vc" id="rSkip">0</div><div class="reslbl">SKIPPED</div></div>
+        <div class="resbox"><div class="resval vc" id="rAcc">0%</div><div class="reslbl">ACCURACY</div></div>
+      </div>
+      <div class="anslist" id="ansList"></div>
+    </div>
+  </div>
 
-    <!-- Summary cards -->
-    <div class="sumgrid" id="sumGrid"></div>
+  <div class="sec" id="sec-stats">
+    <div class="acard gb">
+      <div class="attl g">📊 MOCK TEST TRACKER</div>
+      <div class="mocklog-box">
+        <div class="mocklog-title">➕ NAYI MOCK LOG KARO</div>
+        <div class="mocklog-row">
+          <div class="mocklog-field"><label class="cfglbl">DATE</label><input type="date" class="cfgin" id="mockDate"></div>
+          <div class="mocklog-field"><label class="cfglbl">ATTEMPTED</label><input type="number" class="cfgin" id="mockQs" placeholder="e.g. 75"></div>
+          <div class="mocklog-field"><label class="cfglbl">CORRECT</label><input type="number" class="cfgin" id="mockCorr" placeholder="e.g. 55"></div>
+          <div class="mocklog-field"><label class="cfglbl">WRONG</label><input type="number" class="cfgin" id="mockWrong" placeholder="e.g. 20"></div>
+        </div>
+        <button class="genbtn" style="width:100%;margin-top:10px;font-size:11px" onclick="saveMock()">💾 SAVE MOCK</button>
+      </div>
+      <div id="sheetsStatus" style="font-family:var(--fm);font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;padding:8px;background:var(--card2);border-radius:8px;border:1px solid var(--border);"></div>
+      <div class="period-tabs">
+        <button class="ptab on" onclick="setPeriod('day',this)">TODAY</button>
+        <button class="ptab" onclick="setPeriod('week',this)">THIS WEEK</button>
+        <button class="ptab" onclick="setPeriod('month',this)">THIS MONTH</button>
+        <button class="ptab" onclick="setPeriod('all',this)">ALL TIME</button>
+      </div>
+      <div class="sumgrid" id="sumGrid"></div>
+      <div id="mockList"></div>
+      <div class="motiv-bar" id="motivBar"></div>
+    </div>
+  </div>
 
-    <!-- Mock list -->
-    <div id="mockList"></div>
-
-    <!-- Motivation bar -->
-    <div class="motiv-bar" id="motivBar"></div>
+  <div class="sec" id="sec-ai">
+    <div class="acard gb" style="padding:0;overflow:hidden;">
+      <div class="aibar">
+        <button class="aistab on" id="astab-gemini" onclick="switchAI('gemini')">✦ Gemini</button>
+        <button class="aistab" id="astab-grok" onclick="switchAI('grok')">𝕏 Grok</button>
+        <button class="aistab" id="astab-chatgpt" onclick="switchAI('chatgpt')">⬡ ChatGPT</button>
+      </div>
+      <div style="padding:7px 14px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <span id="aiLabel" style="font-family:var(--fm);font-size:9px;color:var(--gold);letter-spacing:2px;">◈ GEMINI 2.0 FLASH</span>
+        <button onclick="clearChat()" style="background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--fm);font-size:9px;padding:3px 10px;border-radius:4px;cursor:pointer;">CLEAR</button>
+      </div>
+      <div class="chatwin" id="chatWin"></div>
+      <div class="chatinp">
+        <textarea id="chatTxt" placeholder="JEE ka sawaal likho... (Enter=Send, Shift+Enter=New line)" onkeydown="chatKey(event)" oninput="chatResize(this)"></textarea>
+        <button id="chatSendBtn" onclick="chatSend()">SEND ▶</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- AI CHAT -->
-<div class="sec" id="sec-ai">
-  <div class="acard gb" style="padding:0;overflow:hidden;">
-    <div class="aibar">
-      <button class="aistab on" id="astab-gemini" onclick="switchAI('gemini')">✦ Gemini</button>
-      <button class="aistab" id="astab-grok" onclick="switchAI('grok')">𝕏 Grok</button>
-      <button class="aistab" id="astab-chatgpt" onclick="switchAI('chatgpt')">⬡ ChatGPT</button>
-    </div>
-    <div style="padding:7px 14px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-      <span id="aiLabel" style="font-family:var(--fm);font-size:9px;color:var(--gold);letter-spacing:2px;">◈ GEMINI 2.0 FLASH</span>
-      <button onclick="clearChat()" style="background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--fm);font-size:9px;padding:3px 10px;border-radius:4px;cursor:pointer;">CLEAR</button>
-    </div>
-    <div class="chatwin" id="chatWin"></div>
-    <div class="chatinp">
-      <textarea id="chatTxt" placeholder="JEE ka sawaal likho... (Enter=Send, Shift+Enter=New line)" onkeydown="chatKey(event)" oninput="chatResize(this)"></textarea>
-      <button id="chatSendBtn" onclick="chatSend()">SEND ▶</button>
-    </div>
-  </div>
-</div>
+<!-- ═══════════════════════════════════════════════
+     FIREBASE MODULE — Auth only (no Firestore needed,
+     we use localStorage keyed by UID — simple & reliable)
+═══════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-</div><!-- /wrap -->
+const app = initializeApp({
+  apiKey: "AIzaSyDWIKEUfsdplqu7f6YQKPZ19SUbDTFeFeQ",
+  authDomain: "jee-tracker-b9bd4.firebaseapp.com",
+  projectId: "jee-tracker-b9bd4",
+  storageBucket: "jee-tracker-b9bd4.firebasestorage.app",
+  messagingSenderId: "53875825948",
+  appId: "1:53875825948:web:a199bb3ae362f918aceed9"
+});
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// ── Google Login ──────────────────────────────
+window.googleLogin = async function() {
+  const errEl = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+  try {
+    await signInWithPopup(auth, provider);
+  } catch(e) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Login failed: ' + e.message;
+  }
+};
+
+// ── Logout ────────────────────────────────────
+window.logOut = async function() {
+  await signOut(auth);
+};
+
+// ── Auth State Listener ───────────────────────
+onAuthStateChanged(auth, function(user) {
+  if (user) {
+    // ✅ User logged in — set global user object
+    window._currentUser = user;
+
+    // Show app, hide login
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    document.getElementById('userAvatar').src = user.photoURL || '';
+    document.getElementById('userName').textContent = user.displayName || 'JEE Aspirant';
+
+    // ✅ Load THIS user's data (UID is the key)
+    window.initUserData(user.uid);
+
+  } else {
+    // ❌ Logged out — clear everything
+    window._currentUser = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+
+    // Reset in-memory data so no leakage between users
+    window.mocks = [];
+    window.done = {};
+  }
+});
+</script>
 
 <script>
-// ═══════════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════════
-var SYL={
+// ═══════════════════════════════════════════════════════════
+//  SYLLABUS DATA
+// ═══════════════════════════════════════════════════════════
+var SYL = {
   physics:{name:"Physics",color:"#60a5fa",chapters:["Units & Dimensions","Kinematics 1D","Kinematics 2D & Projectile","Laws of Motion","Work, Energy & Power","Circular Motion","Rotational Motion","Gravitation","Properties of Matter","Simple Harmonic Motion","Wave Motion & Sound","Heat & Thermodynamics","Kinetic Theory of Gases","Ray Optics","Wave Optics","Electrostatics","Current Electricity","Magnetism","Electromagnetic Induction","Alternating Current","EM Waves","Modern Physics","Semiconductor Devices","Communication Systems"]},
   chemistry:{name:"Chemistry",color:"#fb923c",chapters:["Basic Concepts","Atomic Structure","Chemical Bonding","States of Matter","Thermodynamics","Equilibrium","Redox Reactions","Electrochemistry","Chemical Kinetics","Surface Chemistry","Periodic Table","p-Block Elements","d & f Block Elements","Coordination Compounds","Hydrogen","s-Block Elements","Haloalkanes & Haloarenes","Alcohols, Phenols & Ethers","Aldehydes & Ketones","Carboxylic Acids","Amines","Biomolecules","Polymers","Chemistry in Everyday Life","Environmental Chemistry","General Organic Chemistry","Hydrocarbons","IUPAC Nomenclature","Reaction Mechanisms","Isomerism","Metallurgy","Solid State","Solutions"]},
   maths:{name:"Mathematics",color:"#4ade80",chapters:["Sets, Relations & Functions","Complex Numbers","Quadratic Equations","Progressions & Series","Binomial Theorem","Permutations & Combinations","Matrices","Determinants","Straight Lines","Circles","Parabola","Ellipse","Hyperbola","3D Geometry","Vectors","Limits & Continuity","Differentiability","Differentiation","Application of Derivatives","Indefinite Integration","Definite Integration","Area Under Curves","Differential Equations","Probability","Statistics","Trigonometry","Inverse Trigonometry","Mathematical Reasoning","Linear Programming","Height & Distance"]}
 };
-var SCOL={physics:"#60a5fa",chemistry:"#fb923c",maths:"#4ade80"};
+var SCOL = {physics:"#60a5fa", chemistry:"#fb923c", maths:"#4ade80"};
+var SHEETS_URL = 'https://soft-morning-1d03.manojd9414.workers.dev';
 
-// ═══════════════════════════════════════════
-// STARS
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  PER-USER DATA — keyed by UID in localStorage
+//  Structure:
+//    jee_data_<UID> = { mocks: [...], done: {...} }
+//
+//  ✅ FIX: Every user gets their own separate storage key.
+//         No data mixing possible.
+// ═══════════════════════════════════════════════════════════
+var mocks = [];
+var done  = {};  // syllabus checkboxes
+
+function getUID() {
+  return window._currentUser ? window._currentUser.uid : null;
+}
+
+// ── Load user's data from localStorage ─────────
+window.initUserData = function(uid) {
+  try {
+    var raw = localStorage.getItem('jee_data_' + uid);
+    var data = raw ? JSON.parse(raw) : {mocks:[], done:{}};
+    mocks = data.mocks || [];
+    done  = data.done  || {};
+  } catch(e) {
+    mocks = [];
+    done  = {};
+  }
+
+  // Rebuild UI with this user's data
+  buildSyl();
+  renderStats();
+  showSheetsStatus('local');
+
+  // Also try to sync with remote Sheets (optional)
+  syncWithSheets(uid);
+};
+
+// ── Persist to localStorage (UID-keyed) ────────
+function saveLocal() {
+  var uid = getUID();
+  if (!uid) return;
+  localStorage.setItem('jee_data_' + uid, JSON.stringify({mocks: mocks, done: done}));
+}
+
+// ── Remote Sync (Sheets Worker) ────────────────
+//  GET: fetch only records where uid matches
+//  POST: always attach uid to every record
+function syncWithSheets(uid) {
+  showSheetsStatus('loading');
+  // Fetch with uid as query param so worker can filter server-side
+  fetch(SHEETS_URL + '?uid=' + encodeURIComponent(uid))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.success && data.mocks) {
+        // ✅ Double-filter: even if worker sends extra, we filter client-side too
+        var remoteMocks = data.mocks.filter(function(m){ return m.uid === uid; });
+
+        // Merge: keep local records not on remote, add remote records not local
+        var localIds = mocks.map(function(m){ return m.id; });
+        remoteMocks.forEach(function(rm){
+          if (localIds.indexOf(rm.id) === -1) mocks.push(rm);
+        });
+        mocks.sort(function(a,b){ return b.id - a.id; });
+        saveLocal();
+        showSheetsStatus('synced');
+      } else {
+        showSheetsStatus('local');
+      }
+      renderStats();
+    })
+    .catch(function(){
+      showSheetsStatus('local');
+      renderStats();
+    });
+}
+
+function showSheetsStatus(s) {
+  var el = document.getElementById('sheetsStatus');
+  if (!el) return;
+  var msgs = {
+    loading : '⏳ Remote data sync ho raha hai...',
+    synced  : '✅ Sirf tumhara data — sync complete!',
+    local   : '💾 Local mode — tumhara data safe hai',
+    saved   : '✅ Mock save ho gaya!',
+    save_err: '⚠️ Remote save failed — local mein save hua'
+  };
+  var cols = {
+    loading:'var(--muted)', synced:'var(--green)',
+    local:'var(--blue)',    saved:'var(--green)', save_err:'var(--orange)'
+  };
+  el.textContent = msgs[s] || '';
+  el.style.color = cols[s] || 'var(--muted)';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STARS + QUOTES + COUNTDOWN (unchanged UI logic)
+// ═══════════════════════════════════════════════════════════
 (function(){
-  for(var i=0;i<100;i++){
-    var s=document.createElement('div');
-    s.className='st';
-    var sz=Math.random()*2+0.5;
-    s.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*65+'%;left:'+Math.random()*100+'%;animation:tw '+(2+Math.random()*4)+'s '+(Math.random()*-4)+'s ease-in-out infinite;';
+  for (var i = 0; i < 100; i++) {
+    var s = document.createElement('div');
+    s.className = 'st';
+    var sz = Math.random()*2+0.5;
+    s.style.cssText = 'width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*65+'%;left:'+Math.random()*100+'%;animation:tw '+(2+Math.random()*4)+'s '+(Math.random()*-4)+'s ease-in-out infinite;';
     document.body.appendChild(s);
   }
 })();
 
-// ═══════════════════════════════════════════
-// QUOTES
-// ═══════════════════════════════════════════
-var QUOTES=[
+var QUOTES = [
   {q:"Sapne woh nahi jo neend mein aate hain, sapne woh hain jo neend udaa dete hain.",a:"Dr. APJ Abdul Kalam"},
   {q:"IIT Bombay ka gate khulta hai unke liye jo tab bhi padhte hain jab mann nahi karta.",a:"IIT Bombay Senior"},
-  {q:"Mushkilein aati hain toh samajh lo ki tu sahi raaste par hai.",a:"JEE Topper 2023"},
-  {q:"Powai ki raat mein jo padhta hai, woh ek din Powai mein rehta hai.",a:"IIT Bombay Tradition"},
-  {q:"Ek ghanta focused padhai, 5 ghante distracted padhai se behtar hai.",a:"Study Science"},
   {q:"99 percentile nahi, 100% dedication chahiye. Percentile toh khud aa jayega.",a:"JEE Mentor"},
-  {q:"Har mock test ek chance hai better banne ka. Score mat dekh, mistake dekh.",a:"JEE Topper Strategy"},
-  {q:"Physics ke laws duniya chalate hain. Aur tu unhe samajhta hai — yeh badi baat hai.",a:"IIT Physics Dept"},
-  {q:"Aaj ka revision kal ki revolution hai.",a:"JEE Strategy"},
+  {q:"Har mock test ek chance hai better banne ka. Score mat dekh, mistake dekh.",a:"JEE Topper"},
   {q:"Powai lake ke kinare ek din chai piyega — as an IITian. Pakka.",a:"Your Future Self"},
-  {q:"Log tujhe seriously tab lenge jab tu khud ko seriously lega.",a:"Anonymous IITian"},
-  {q:"Har raat ke baad subah hoti hai. Thak gaye ho toh so jao, haar mat mano.",a:"Prof. IIT Bombay"},
-  {q:"IIT Bombay — where dreams meet dedication. Tera sapna, teri mehnat.",a:"IIT Bombay Motto"},
-  {q:"Distraction ek minute ka hota hai, regret lifetime ka. Choose wisely.",a:"IIT Bombay Gate"},
-  {q:"Concentrate all your thoughts upon the work at hand.",a:"Alexander Graham Bell"}
+  {q:"Distraction ek minute ka hota hai, regret lifetime ka.",a:"IIT Bombay Gate"},
+  {q:"Aaj ka revision kal ki revolution hai.",a:"JEE Strategy"},
+  {q:"Mushkilein aati hain toh samajh lo ki tu sahi raaste par hai.",a:"JEE Topper 2023"}
 ];
 (function(){
-  var d=new Date();
-  var dy=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
-  var q=QUOTES[dy%QUOTES.length];
-  var days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  document.getElementById('qtext').textContent='"'+q.q+'"';
-  document.getElementById('qauth').textContent='— '+q.a+' —';
-  document.getElementById('qdate').textContent='◈ '+days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear()+' ◈';
+  var d = new Date();
+  var dy = Math.floor((d - new Date(d.getFullYear(),0,0))/86400000);
+  var q = QUOTES[dy % QUOTES.length];
+  var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  document.getElementById('qtext').textContent = '"'+q.q+'"';
+  document.getElementById('qauth').textContent = '— '+q.a+' —';
+  document.getElementById('qdate').textContent = '◈ '+days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear()+' ◈';
 })();
 
-// ═══════════════════════════════════════════
-// DATE SLOTS
-// ═══════════════════════════════════════════
-var MD=[{l:"2 Apr",d:2},{l:"3 Apr",d:3},{l:"4 Apr",d:4},{l:"5 Apr",d:5},{l:"6 Apr",d:6},{l:"7 Apr",d:7},{l:"8 Apr",d:8}];
-var selDay=2;
-function mTS(day){return new Date(2026,3,day,9,0,0).getTime();}
+var MD = [{l:"2 Apr",d:2},{l:"3 Apr",d:3},{l:"4 Apr",d:4},{l:"5 Apr",d:5},{l:"6 Apr",d:6},{l:"7 Apr",d:7},{l:"8 Apr",d:8}];
+var selDay = 2;
+function mTS(day){ return new Date(2026,3,day,9,0,0).getTime(); }
 function renderSlots(){
-  var c=document.getElementById('dpSlots'),now=Date.now();c.innerHTML='';
+  var c = document.getElementById('dpSlots'), now = Date.now();
+  c.innerHTML = '';
   MD.forEach(function(d){
-    var past=mTS(d.d)<now,btn=document.createElement('div');
-    btn.className='dps'+(past?' past':'')+(d.d===selDay&&!past?' on':'');
-    btn.textContent=d.l;
-    if(!past)btn.onclick=(function(x){return function(){selDay=x;renderSlots();};})(d.d);
+    var past = mTS(d.d) < now;
+    var btn = document.createElement('div');
+    btn.className = 'dps'+(past?' past':'')+(d.d===selDay&&!past?' on':'');
+    btn.textContent = d.l;
+    if (!past) btn.onclick = (function(x){ return function(){ selDay=x; renderSlots(); }; })(d.d);
     c.appendChild(btn);
   });
 }
 renderSlots();
 
-// ═══════════════════════════════════════════
-// COUNTDOWN
-// ═══════════════════════════════════════════
-function p2(n){return String(n).padStart(2,'0');}
+function p2(n){ return String(n).padStart(2,'0'); }
 function fill(diff,a,b,c,d){
   if(diff<0)diff=0;
   document.getElementById(a).textContent=p2(Math.floor(diff/86400000));
@@ -678,15 +655,12 @@ function fill(diff,a,b,c,d){
   document.getElementById(d).textContent=p2(Math.floor(diff%60000/1000));
 }
 function tick(){
-  var now=Date.now();
+  var now = Date.now();
   fill(mTS(selDay)-now,'md','mh','mm','ms');
   fill(new Date(2026,4,18,9,0,0).getTime()-now,'ad','ah','am','as');
 }
-setInterval(tick,1000);tick();
+setInterval(tick,1000); tick();
 
-// ═══════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════
 function showTab(name,btn){
   document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
   document.querySelectorAll('.tbtn').forEach(function(b){b.classList.remove('on');});
@@ -694,139 +668,129 @@ function showTab(name,btn){
   btn.classList.add('on');
 }
 
-// ═══════════════════════════════════════════
-// SYLLABUS
-// ═══════════════════════════════════════════
-var done={};
+// ═══════════════════════════════════════════════════════════
+//  SYLLABUS — uses `done` object (now per-user via initUserData)
+// ═══════════════════════════════════════════════════════════
 function buildSyl(){
-  var body=document.getElementById('sylBody');body.innerHTML='';
+  var body = document.getElementById('sylBody');
+  body.innerHTML = '';
   Object.keys(SYL).forEach(function(sk){
-    var sub=SYL[sk],sec=document.createElement('div');sec.className='subsec';
-    var dn=sub.chapters.filter(function(_,i){return!!done[sk+i];}).length;
-    var hd=document.createElement('div');hd.className='subhd';
-    hd.innerHTML='<div class="subdot" style="background:'+sub.color+'"></div>'
-      +'<div class="subnm" style="color:'+sub.color+'">'+sub.name.toUpperCase()+'</div>'
-      +'<div class="subpg" id="sp'+sk+'">'+dn+'/'+sub.chapters.length+'</div>'
-      +'<div class="subarr">▶</div>';
-    var lst=document.createElement('div');lst.className='chlist';
+    var sub = SYL[sk], sec = document.createElement('div');
+    sec.className = 'subsec';
+    var dn = sub.chapters.filter(function(_,i){ return !!done[sk+i]; }).length;
+    var hd = document.createElement('div');
+    hd.className = 'subhd';
+    hd.innerHTML = '<div class="subdot" style="background:'+sub.color+'"></div><div class="subnm" style="color:'+sub.color+'">'+sub.name.toUpperCase()+'</div><div class="subpg" id="sp'+sk+'">'+dn+'/'+sub.chapters.length+'</div><div class="subarr">▶</div>';
+    var lst = document.createElement('div');
+    lst.className = 'chlist';
     sub.chapters.forEach(function(ch,i){
-      var key=sk+i,item=document.createElement('div');item.className='chitem';
-      item.innerHTML='<div class="chk'+(done[key]?' on':'')+'" id="ck'+key+'"></div>'
-        +'<div class="chnm'+(done[key]?' done':'')+'" id="cn'+key+'">'+ch+'</div>';
-      item.onclick=(function(s2,ix){return function(){togCh(s2,ix);};})(sk,i);
+      var key = sk+i, item = document.createElement('div');
+      item.className = 'chitem';
+      item.innerHTML = '<div class="chk'+(done[key]?' on':'')+'" id="ck'+key+'"></div><div class="chnm'+(done[key]?' done':'')+'" id="cn'+key+'">'+ch+'</div>';
+      item.onclick = (function(s2,ix){ return function(){ togCh(s2,ix); }; })(sk,i);
       lst.appendChild(item);
     });
-    hd.onclick=function(){hd.classList.toggle('open');lst.classList.toggle('open');};
-    sec.appendChild(hd);sec.appendChild(lst);body.appendChild(sec);
+    hd.onclick = function(){ hd.classList.toggle('open'); lst.classList.toggle('open'); };
+    sec.appendChild(hd); sec.appendChild(lst); body.appendChild(sec);
   });
   updProg();
 }
+
 function togCh(sk,i){
-  var key=sk+i;done[key]=!done[key];
-  var ck=document.getElementById('ck'+key),cn=document.getElementById('cn'+key);
-  if(done[key]){ck.classList.add('on');cn.classList.add('done');}
-  else{ck.classList.remove('on');cn.classList.remove('done');}
-  document.getElementById('sp'+sk).textContent=SYL[sk].chapters.filter(function(_,j){return!!done[sk+j];}).length+'/'+SYL[sk].chapters.length;
+  var key = sk+i;
+  done[key] = !done[key];
+  var ck = document.getElementById('ck'+key), cn = document.getElementById('cn'+key);
+  if(done[key]){ ck.classList.add('on'); cn.classList.add('done'); }
+  else { ck.classList.remove('on'); cn.classList.remove('done'); }
+  document.getElementById('sp'+sk).textContent =
+    SYL[sk].chapters.filter(function(_,j){ return !!done[sk+j]; }).length+'/'+SYL[sk].chapters.length;
   updProg();
+  saveLocal(); // ✅ Save immediately after every toggle
 }
+
 function updProg(){
   var tot=0,dn=0;
-  Object.keys(SYL).forEach(function(sk){SYL[sk].chapters.forEach(function(_,i){tot++;if(done[sk+i])dn++;});});
-  var pct=tot?Math.round(dn/tot*100):0;
-  document.getElementById('sylPct').textContent=pct+'%';
-  document.getElementById('sylBar').style.width=pct+'%';
-  document.getElementById('sylCnt').textContent=dn+' / '+tot+' chapters';
+  Object.keys(SYL).forEach(function(sk){ SYL[sk].chapters.forEach(function(_,i){ tot++; if(done[sk+i])dn++; }); });
+  var pct = tot ? Math.round(dn/tot*100) : 0;
+  document.getElementById('sylPct').textContent = pct+'%';
+  document.getElementById('sylBar').style.width = pct+'%';
+  document.getElementById('sylCnt').textContent = dn+' / '+tot+' chapters';
 }
-buildSyl();
 
-// ═══════════════════════════════════════════
-// TIMER
-// ═══════════════════════════════════════════
-var tSec=0,tOn=false,tIv=null;
+// ═══════════════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════════════
+var tSec=0, tOn=false, tIv=null;
 function togTimer(){
-  tOn=!tOn;var b=document.getElementById('tBtn');
-  if(tOn){b.textContent='PAUSE';b.style.color='var(--red)';b.style.borderColor='var(--red)';tIv=setInterval(function(){tSec++;showT();},1000);}
-  else{b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';clearInterval(tIv);}
+  tOn = !tOn;
+  var b = document.getElementById('tBtn');
+  if(tOn){
+    b.textContent='PAUSE'; b.style.color='var(--red)'; b.style.borderColor='var(--red)';
+    tIv = setInterval(function(){ tSec++; showT(); },1000);
+  } else {
+    b.textContent='START'; b.style.color='var(--green)'; b.style.borderColor='var(--green)';
+    clearInterval(tIv);
+  }
 }
-function rstTimer(){tOn=false;tSec=0;clearInterval(tIv);showT();var b=document.getElementById('tBtn');b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';}
-function showT(){document.getElementById('tDisp').textContent=p2(Math.floor(tSec/60))+':'+p2(tSec%60);}
+function rstTimer(){
+  tOn=false; tSec=0; clearInterval(tIv); showT();
+  var b=document.getElementById('tBtn');
+  b.textContent='START'; b.style.color='var(--green)'; b.style.borderColor='var(--green)';
+}
+function showT(){ document.getElementById('tDisp').textContent=p2(Math.floor(tSec/60))+':'+p2(tSec%60); }
 
-// ═══════════════════════════════════════════
-// CHAPTERS DROPDOWN
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  ARENA — Practice Q generator
+// ═══════════════════════════════════════════════════════════
 function loadChaps(){
-  var sub=document.getElementById('cSub').value,sel=document.getElementById('cChap');
+  var sub=document.getElementById('cSub').value, sel=document.getElementById('cChap');
   sel.innerHTML='<option value="all">All Chapters</option>';
   var subs=sub==='all'?['physics','chemistry','maths']:[sub];
   subs.forEach(function(sk){
-    var og=document.createElement('optgroup');og.label=SYL[sk].name;
-    SYL[sk].chapters.forEach(function(ch){var op=document.createElement('option');op.value=sk+'|'+ch;op.textContent=ch;og.appendChild(op);});
+    var og=document.createElement('optgroup'); og.label=SYL[sk].name;
+    SYL[sk].chapters.forEach(function(ch){
+      var op=document.createElement('option'); op.value=sk+'|'+ch; op.textContent=ch; og.appendChild(op);
+    });
     sel.appendChild(og);
   });
 }
 loadChaps();
 
-// ═══════════════════════════════════════════
-// GENERATE QUESTIONS
-// ═══════════════════════════════════════════
-var qs=[],uAns={},corrAns={};
-function rnd(a){return a[Math.floor(Math.random()*a.length)];}
-function autoFillQNum(fromId, val){
-  var startNum = parseInt(val);
-  if(isNaN(startNum)) return;
-  // Fill all subsequent questions with incrementing numbers
-  for(var i=0; i<qs.length; i++){
-    if(qs[i].id > fromId){
-      var el = document.getElementById('qn'+qs[i].id);
-      if(el){
-        startNum++;
-        el.value = startNum;
-      }
-    }
-  }
-}
-
+var qs=[], uAns={}, corrAns={};
+function rnd(a){ return a[Math.floor(Math.random()*a.length)]; }
 function genQ(){
-  var sub=document.getElementById('cSub').value;
-  var chapV=document.getElementById('cChap').value;
+  var sub=document.getElementById('cSub').value, chapV=document.getElementById('cChap').value;
   var total=parseInt(document.getElementById('cTotal').value)||12;
   var nM=Math.round(total*0.6), nN=total-nM;
-  qs=[];uAns={};corrAns={};
+  qs=[]; uAns={}; corrAns={};
   var pool=[];
-  if(chapV==='all'){var subs=sub==='all'?['physics','chemistry','maths']:[sub];subs.forEach(function(sk){SYL[sk].chapters.forEach(function(ch){pool.push({sk:sk,ch:ch});});});}
-  else{var pts=chapV.split('|');pool.push({sk:pts[0],ch:pts[1]});}
+  if(chapV==='all'){
+    var subs=sub==='all'?['physics','chemistry','maths']:[sub];
+    subs.forEach(function(sk){ SYL[sk].chapters.forEach(function(ch){ pool.push({sk:sk,ch:ch}); }); });
+  } else { var pts=chapV.split('|'); pool.push({sk:pts[0],ch:pts[1]}); }
   var id=1;
-  for(var i=0;i<nM;i++){var c=rnd(pool);qs.push({id:id++,type:'MCQ',sk:c.sk,ch:c.ch});}
-  for(var i=0;i<nN;i++){var c=rnd(pool);qs.push({id:id++,type:'NUM',sk:c.sk,ch:c.ch});}
+  for(var i=0;i<nM;i++){ var c=rnd(pool); qs.push({id:id++,type:'MCQ',sk:c.sk,ch:c.ch}); }
+  for(var i=0;i<nN;i++){ var c=rnd(pool); qs.push({id:id++,type:'NUM',sk:c.sk,ch:c.ch}); }
   renderQ();
   document.getElementById('step2').style.display='none';
   document.getElementById('resCard').classList.remove('on');
   document.getElementById('statsBar').style.display='flex';
-  updStats();rstTimer();if(!tOn)togTimer();
+  updStats(); rstTimer(); if(!tOn)togTimer();
 }
 function renderQ(){
-  var tb=document.getElementById('qBody');tb.innerHTML='';
+  var tb=document.getElementById('qBody'); tb.innerHTML='';
   qs.forEach(function(q){
     var tr=document.createElement('tr');
-    var chCell='<div class="chlbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div>'
-      +'<div class="sublbl">'+SYL[q.sk].name+'</div>'
-      +'<div class="tbadge '+(q.type==='MCQ'?'tbm':'tbn')+'">'+q.type+'</div>';
-    var ansCell='<div class="opts">'
-      +'<div class="opt" id="u'+q.id+'A" onclick="uMCQ('+q.id+',\'A\')">A</div>'
-      +'<div class="opt" id="u'+q.id+'B" onclick="uMCQ('+q.id+',\'B\')">B</div>'
-      +'<div class="opt" id="u'+q.id+'C" onclick="uMCQ('+q.id+',\'C\')">C</div>'
-      +'<div class="opt" id="u'+q.id+'D" onclick="uMCQ('+q.id+',\'D\')">D</div>'
-      +'</div>'
-      +'<div class="ordiv"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
-      +'<input type="number" class="numin" id="un'+q.id+'" placeholder="Number..." step="any" oninput="uNum('+q.id+',this.value)">';
-    tr.innerHTML='<td><input type="number" value="'+q.id+'" class="qninp" id="qn'+q.id+'" min="1" oninput="autoFillQNum('+q.id+',this.value)"></td><td>'+chCell+'</td><td>'+ansCell+'</td>';
+    var chCell='<div class="chlbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div><div class="sublbl">'+SYL[q.sk].name+'</div><div class="tbadge '+(q.type==='MCQ'?'tbm':'tbn')+'">'+q.type+'</div>';
+    var ansCell='<div class="opts"><div class="opt" id="u'+q.id+'A" onclick="uMCQ('+q.id+',\'A\')">A</div><div class="opt" id="u'+q.id+'B" onclick="uMCQ('+q.id+',\'B\')">B</div><div class="opt" id="u'+q.id+'C" onclick="uMCQ('+q.id+',\'C\')">C</div><div class="opt" id="u'+q.id+'D" onclick="uMCQ('+q.id+',\'D\')">D</div></div><div class="ordiv"><div class="ln"></div><span>YA</span><div class="ln"></div></div><input type="number" class="numin" id="un'+q.id+'" placeholder="Number..." step="any" oninput="uNum('+q.id+',this.value)">';
+    tr.innerHTML='<td><input type="number" value="'+q.id+'" class="qninp" id="qn'+q.id+'" min="1"></td><td>'+chCell+'</td><td>'+ansCell+'</td>';
     tb.appendChild(tr);
   });
 }
 function uMCQ(id,o){
   uAns[id]={t:'MCQ',v:o};
-  ['A','B','C','D'].forEach(function(x){document.getElementById('u'+id+x).classList.toggle('sel',x===o);});
-  var ni=document.getElementById('un'+id);if(ni)ni.value='';
+  ['A','B','C','D'].forEach(function(x){ document.getElementById('u'+id+x).classList.toggle('sel',x===o); });
+  var ni=document.getElementById('un'+id); if(ni)ni.value='';
   updStats();
 }
 function uNum(id,v){
@@ -842,35 +806,18 @@ function updStats(){
   document.getElementById('sMcq').textContent=qs.filter(function(q){return q.type==='MCQ';}).length;
   document.getElementById('sNum').textContent=qs.filter(function(q){return q.type==='NUM';}).length;
 }
-
-// ═══════════════════════════════════════════
-// SUBMIT ANSWERS
-// ═══════════════════════════════════════════
 function submitAns(){
   if(!qs.length){alert('Pehle Generate karo!');return;}
   if(tOn)togTimer();
   corrAns={};
-  // Save user-typed Q numbers
   qs.forEach(function(q){var el=document.getElementById('qn'+q.id);q.dispId=el?el.value:q.id;});
-  var tb=document.getElementById('corrBody');tb.innerHTML='';
+  var tb=document.getElementById('corrBody'); tb.innerHTML='';
   qs.forEach(function(q){
     var ua=uAns[q.id];
     var uaHTML=!ua?'<span class="uadisp uas">— skipped —</span>':ua.t==='MCQ'?'<span class="uadisp uam">Option '+ua.v+'</span>':'<span class="uadisp uan">'+ua.v+'</span>';
-    var corrCell='<div style="margin-bottom:6px"><div style="font-size:10px;color:var(--muted);font-family:var(--fm);margin-bottom:5px">MCQ — SAHI OPTION:</div>'
-      +'<div class="opts">'
-      +'<div class="opt" id="c'+q.id+'A" onclick="cMCQ('+q.id+',\'A\')">A</div>'
-      +'<div class="opt" id="c'+q.id+'B" onclick="cMCQ('+q.id+',\'B\')">B</div>'
-      +'<div class="opt" id="c'+q.id+'C" onclick="cMCQ('+q.id+',\'C\')">C</div>'
-      +'<div class="opt" id="c'+q.id+'D" onclick="cMCQ('+q.id+',\'D\')">D</div>'
-      +'</div></div>'
-      +'<div class="ordiv"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
-      +'<div><div style="font-size:10px;color:var(--muted);font-family:var(--fm);margin-bottom:5px">NUMERICAL:</div>'
-      +'<input type="number" class="numin" id="cn'+q.id+'" placeholder="Correct ans..." step="any" oninput="cNum('+q.id+',this.value)"></div>';
+    var corrCell='<div style="margin-bottom:6px"><div style="font-size:10px;color:var(--muted);font-family:var(--fm);margin-bottom:5px">MCQ — SAHI OPTION:</div><div class="opts"><div class="opt" id="c'+q.id+'A" onclick="cMCQ('+q.id+',\'A\')">A</div><div class="opt" id="c'+q.id+'B" onclick="cMCQ('+q.id+',\'B\')">B</div><div class="opt" id="c'+q.id+'C" onclick="cMCQ('+q.id+',\'C\')">C</div><div class="opt" id="c'+q.id+'D" onclick="cMCQ('+q.id+',\'D\')">D</div></div></div><div class="ordiv"><div class="ln"></div><span>YA</span><div class="ln"></div></div><div><div style="font-size:10px;color:var(--muted);font-family:var(--fm);margin-bottom:5px">NUMERICAL:</div><input type="number" class="numin" id="cn'+q.id+'" placeholder="Correct ans..." step="any" oninput="cNum('+q.id+',this.value)"></div>';
     var tr=document.createElement('tr');
-    var dispNum = q.dispId || q.id;
-    tr.innerHTML='<td><div style="font-family:var(--fh);font-size:14px;color:var(--gold);font-weight:700">'+dispNum+'</div></td>'
-      +'<td><div class="chlbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div><div class="sublbl">'+SYL[q.sk].name+'</div></td>'
-      +'<td>'+uaHTML+'</td><td>'+corrCell+'</td>';
+    tr.innerHTML='<td><div style="font-family:var(--fh);font-size:14px;color:var(--gold);font-weight:700">'+(q.dispId||q.id)+'</div></td><td><div class="chlbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div><div class="sublbl">'+SYL[q.sk].name+'</div></td><td>'+uaHTML+'</td><td>'+corrCell+'</td>';
     tb.appendChild(tr);
   });
   document.getElementById('step2').style.display='block';
@@ -880,16 +827,12 @@ function submitAns(){
 function cMCQ(id,o){
   corrAns[id]={t:'MCQ',v:o};
   ['A','B','C','D'].forEach(function(x){document.getElementById('c'+id+x).classList.toggle('csel',x===o);});
-  var ni=document.getElementById('cn'+id);if(ni)ni.value='';
+  var ni=document.getElementById('cn'+id); if(ni)ni.value='';
 }
 function cNum(id,v){
   if(v!==''){corrAns[id]={t:'NUM',v:v};['A','B','C','D'].forEach(function(x){var e=document.getElementById('c'+id+x);if(e)e.classList.remove('csel');});}
   else delete corrAns[id];
 }
-
-// ═══════════════════════════════════════════
-// RESULT
-// ═══════════════════════════════════════════
 function showResult(){
   var corr=0,wrong=0,skip=0,score=0,html=[];
   qs.forEach(function(q){
@@ -898,20 +841,11 @@ function showResult(){
     if(!ua||!ca){skip++;if(ua)uaL=ua.t==='MCQ'?'Option '+ua.v:ua.v;}
     else{
       uaL=ua.t==='MCQ'?'Option '+ua.v:ua.v;
-      if(ca.t==='MCQ'){
-        // MCQ: correct answer is MCQ type
-        if(ua.t==='MCQ'&&ua.v===ca.v){corr++;score+=4;status='ok';}
-        else{wrong++;score-=1;status='no';}  // MCQ wrong = -1
-      } else {
-        // NUM: correct answer is numerical — no negative marking
-        var uv=parseFloat(ua.v), cv=parseFloat(ca.v);
-        if(!isNaN(uv)&&!isNaN(cv)&&Math.abs(uv-cv)<=0.01){corr++;score+=4;status='ok';}
-        else{wrong++;score+=0;status='no';}  // NUM wrong = 0 marks, no negative
-      }
+      if(ca.t==='MCQ'){if(ua.t==='MCQ'&&ua.v===ca.v){corr++;score+=4;status='ok';}else{wrong++;score-=1;status='no';}}
+      else{var uv=parseFloat(ua.v),cv=parseFloat(ca.v);if(!isNaN(uv)&&!isNaN(cv)&&Math.abs(uv-cv)<=0.01){corr++;score+=4;status='ok';}else{wrong++;status='no';}}
     }
     var ic=status==='ok'?'✅':status==='no'?'❌':'⏭️';
-        var rNum = q.dispId || q.id;
-    html.push('<div class="ansrow '+status+'"><span class="aqn">Q'+rNum+'</span><span style="flex:1;font-size:12px;color:var(--muted)">'+q.ch+'</span><span style="font-size:13px;font-weight:600;min-width:80px">'+uaL+'</span><span style="color:var(--green);font-size:12px;font-family:var(--fm);min-width:80px">✓ '+caL+'</span><span style="font-size:16px">'+ic+'</span></div>');
+    html.push('<div class="ansrow '+status+'"><span class="aqn">Q'+(q.dispId||q.id)+'</span><span style="flex:1;font-size:12px;color:var(--muted)">'+q.ch+'</span><span style="font-size:13px;font-weight:600;min-width:80px">'+uaL+'</span><span style="color:var(--green);font-size:12px;font-family:var(--fm);min-width:80px">✓ '+caL+'</span><span style="font-size:16px">'+ic+'</span></div>');
   });
   document.getElementById('rScore').textContent=score;
   document.getElementById('rCorr').textContent=corr;
@@ -919,57 +853,163 @@ function showResult(){
   document.getElementById('rSkip').textContent=skip;
   document.getElementById('rAcc').textContent=(qs.length?Math.round(corr/qs.length*100):0)+'%';
   document.getElementById('ansList').innerHTML=html.join('');
-  var rc=document.getElementById('resCard');rc.classList.add('on');rc.scrollIntoView({behavior:'smooth',block:'start'});
+  var rc=document.getElementById('resCard'); rc.classList.add('on');
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
+  // ✅ Auto-save result as mock (with UID)
+  var d=new Date();
+  saveMockData({id:Date.now(),date:d.toISOString().split('T')[0],score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
 }
 
-// ═══════════════════════════════════════════
-// AI CHAT
-// ═══════════════════════════════════════════
-var WORKER_URL="https://jeegemini.manojd9414.workers.dev";
-var SYS={role:"system",content:"Tu ek expert JEE teacher hai. Physics, Chemistry aur Maths ke questions step-by-step explain kar. Hinglish mein baat kar."};
-var aiCur="gemini",aiHist={gemini:[SYS],grok:[SYS],chatgpt:[SYS]},aiLoad=false;
-var AI_LABELS={gemini:"◈ GEMINI 2.0 FLASH",grok:"◈ GROK 3",chatgpt:"◈ GPT-4o"};
+// ═══════════════════════════════════════════════════════════
+//  MOCK TRACKER — Save/Load
+// ═══════════════════════════════════════════════════════════
+(function(){
+  var inp=document.getElementById('mockDate');
+  if(inp){ var d=new Date(); inp.value=d.toISOString().split('T')[0]; }
+})();
 
+// ✅ saveMockData: always attaches UID, saves local + remote
+function saveMockData(mock) {
+  var uid = getUID();
+  if (!uid) return;
+
+  // ✅ Attach UID to every record
+  mock.uid = uid;
+  mock.userName = window._currentUser.displayName || '';
+
+  // Save to in-memory array
+  mocks.unshift(mock);
+
+  // ✅ Save to UID-keyed localStorage
+  saveLocal();
+  renderStats();
+
+  // Try remote save (optional)
+  fetch(SHEETS_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({mock: mock})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){ showSheetsStatus(d.success ? 'saved' : 'save_err'); })
+  .catch(function(){ showSheetsStatus('save_err'); });
+}
+
+function saveMock(){
+  var date = document.getElementById('mockDate').value;
+  var mockQsVal = parseInt(document.getElementById('mockQs').value)||0;
+  var corr = parseInt(document.getElementById('mockCorr').value)||0;
+  if(!date||(!mockQsVal&&!corr)){alert('Date aur kam se kam ek field bharo!');return;}
+  var wrong = parseInt(document.getElementById('mockWrong').value)||0;
+  var mock = {id:Date.now(), date:date, score:corr*4-wrong, qs:mockQsVal, corr:corr, wrong:wrong};
+  document.getElementById('mockQs').value='';
+  document.getElementById('mockCorr').value='';
+  document.getElementById('mockWrong').value='';
+  saveMockData(mock);
+}
+
+var curPeriod = 'day';
+function setPeriod(p,btn){
+  curPeriod=p;
+  document.querySelectorAll('.ptab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderStats();
+}
+
+function filterMocks(p){
+  var now=new Date();
+  return mocks.filter(function(m){
+    var md=new Date(m.date);
+    if(p==='day') return md.toDateString()===now.toDateString();
+    if(p==='week'){var w=new Date(now);w.setDate(w.getDate()-7);return md>=w;}
+    if(p==='month') return md.getMonth()===now.getMonth()&&md.getFullYear()===now.getFullYear();
+    return true;
+  });
+}
+
+function calcStreak(){
+  if(mocks.length===0)return 0;
+  var dates=[...new Set(mocks.map(function(m){return m.date;}))].sort().reverse();
+  var streak=0,today=new Date();today.setHours(0,0,0,0);
+  for(var i=0;i<dates.length;i++){var d=new Date(dates[i]);d.setHours(0,0,0,0);if(Math.round((today-d)/86400000)===i)streak++;else break;}
+  return streak;
+}
+
+function renderStats(){
+  var filtered=filterMocks(curPeriod);
+  var total=filtered.length;
+  var totalQs=filtered.reduce(function(a,m){return a+m.qs;},0);
+  var totalCorr=filtered.reduce(function(a,m){return a+m.corr;},0);
+  var totalWrong=filtered.reduce(function(a,m){return a+(m.wrong||0);},0);
+  var streak=calcStreak();
+  var sg=document.getElementById('sumGrid'); if(!sg)return;
+  sg.innerHTML='<div class="sumbox"><div class="sumval" style="color:var(--gold)">'+total+'</div><div class="sumlbl">MOCKS</div></div><div class="sumbox"><div class="sumval" style="color:var(--blue)">'+totalQs+'</div><div class="sumlbl">ATTEMPTED</div></div><div class="sumbox"><div class="sumval" style="color:var(--green)">'+totalCorr+'</div><div class="sumlbl">CORRECT ✓</div></div><div class="sumbox"><div class="sumval" style="color:var(--red)">'+totalWrong+'</div><div class="sumlbl">WRONG ✗</div></div>';
+  var ml=document.getElementById('mockList');
+  if(filtered.length===0){
+    ml.innerHTML='<div style="text-align:center;color:var(--muted);font-family:var(--fm);font-size:12px;padding:20px">Is period mein koi mock nahi hai</div>';
+  } else {
+    ml.innerHTML=filtered.map(function(m){
+      return '<div class="mock-item"><div class="mock-date">'+m.date+(m.auto?' <span style="font-size:9px;color:var(--blue)">AUTO</span>':'')+'</div><div style="flex:1;display:flex;gap:14px;align-items:center"><div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">ATTEMPTED</div><div style="font-family:var(--fh);font-size:18px;color:var(--blue)">'+m.qs+'</div></div><div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">CORRECT</div><div style="font-family:var(--fh);font-size:18px;color:var(--green)">'+m.corr+'</div></div><div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">WRONG</div><div style="font-family:var(--fh);font-size:18px;color:var(--red)">'+(m.wrong||0)+'</div></div></div></div>';
+    }).join('');
+  }
+  var msgs=mocks.length===0?["🚀 Pehla mock lagao aaj!"]:
+    [streak>=7?"🔥 "+streak+" din ka streak! Machine ban gaya!":streak>=3?"⚡ "+streak+" din consistent!":"","🌟 "+mocks.length+" mocks done!"];
+  var mb=document.getElementById('motivBar');
+  mb.style.background='rgba(74,222,128,0.08)';
+  mb.style.border='1px solid rgba(74,222,128,0.25)';
+  mb.style.color='var(--text)';
+  mb.innerHTML='<div class="streak-fire">'+(streak>=3?'🔥':'⭐')+'</div>'+msgs.filter(Boolean).join(' • ');
+  mb.classList.add('on');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  AI CHAT
+// ═══════════════════════════════════════════════════════════
+var WORKER_URL = "https://jeegemini.manojd9414.workers.dev";
+var SYS = {role:"system",content:"Tu ek expert JEE teacher hai. Physics, Chemistry aur Maths ke questions step-by-step explain kar. Hinglish mein baat kar."};
+var aiCur="gemini", aiHist={gemini:[SYS],grok:[SYS],chatgpt:[SYS]}, aiLoad=false;
+var AI_LABELS={gemini:"◈ GEMINI 2.0 FLASH",grok:"◈ GROK 3",chatgpt:"◈ GPT-4o"};
 function switchAI(name){
   aiCur=name;
   document.querySelectorAll('.aistab').forEach(function(b){b.classList.remove('on');});
   document.getElementById('astab-'+name).classList.add('on');
   document.getElementById('aiLabel').textContent=AI_LABELS[name];
   renderChat();
-
 }
 function renderChat(){
-  var win=document.getElementById('chatWin');win.innerHTML='';
+  var win=document.getElementById('chatWin'); win.innerHTML='';
   var hist=aiHist[aiCur];
   if(hist.length<=1){addBub('b','👋 JEE ka koi bhi sawaal pucho — Physics, Chemistry ya Maths!');return;}
   hist.forEach(function(m){if(m.role!=='system')addBub(m.role==='user'?'u':'b',m.content);});
 }
 function addBub(side,text){
   var win=document.getElementById('chatWin');
-  var wrap=document.createElement('div');wrap.className='cmsg '+side;
-  var bub=document.createElement('div');bub.className='cbub '+side;bub.textContent=text;
-  wrap.appendChild(bub);win.appendChild(wrap);win.scrollTop=win.scrollHeight;return bub;
+  var wrap=document.createElement('div'); wrap.className='cmsg '+side;
+  var bub=document.createElement('div'); bub.className='cbub '+side; bub.textContent=text;
+  wrap.appendChild(bub); win.appendChild(wrap); win.scrollTop=win.scrollHeight; return bub;
 }
 function addTyping(){
   var win=document.getElementById('chatWin');
-  var wrap=document.createElement('div');wrap.className='cmsg b';wrap.id='typBub';
-  var bub=document.createElement('div');bub.className='cbub b ty';bub.textContent='typing . . .';
-  wrap.appendChild(bub);win.appendChild(wrap);win.scrollTop=win.scrollHeight;
+  var wrap=document.createElement('div'); wrap.className='cmsg b'; wrap.id='typBub';
+  var bub=document.createElement('div'); bub.className='cbub b ty'; bub.textContent='typing . . .';
+  wrap.appendChild(bub); win.appendChild(wrap); win.scrollTop=win.scrollHeight;
 }
 function rmTyping(){var e=document.getElementById('typBub');if(e)e.remove();}
 function chatSend(){
   if(aiLoad)return;
-  var txt=document.getElementById('chatTxt').value.trim();if(!txt)return;
+  var txt=document.getElementById('chatTxt').value.trim();
+  if(!txt)return;
   document.getElementById('chatTxt').value='';
   document.getElementById('chatTxt').style.height='46px';
-  addBub('u',txt);aiHist[aiCur].push({role:'user',content:txt});
-  aiLoad=true;document.getElementById('chatSendBtn').disabled=true;
-  document.getElementById('chatSendBtn').textContent='...';addTyping();
-  var contents=aiHist[aiCur].filter(function(m){return m.role!=='system';}).map(function(m){
-    return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};
-  });
+  addBub('u',txt);
+  aiHist[aiCur].push({role:'user',content:txt});
+  aiLoad=true;
+  document.getElementById('chatSendBtn').disabled=true;
+  document.getElementById('chatSendBtn').textContent='...';
+  addTyping();
+  var contents=aiHist[aiCur].filter(function(m){return m.role!=='system';}).map(function(m){return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};});
   fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:contents,generationConfig:{temperature:0.7,maxOutputTokens:2048}})})
-    .then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('HTTP '+r.status+': '+t.substring(0,100));});return r.json();})
+    .then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('HTTP '+r.status);});return r.json();})
     .then(function(data){var reply=data.candidates[0].content.parts[0].text;aiHist[aiCur].push({role:'assistant',content:reply});rmTyping();addBub('b',reply);})
     .catch(function(err){rmTyping();addBub('b','❌ Error: '+err.message);})
     .finally(function(){aiLoad=false;document.getElementById('chatSendBtn').disabled=false;document.getElementById('chatSendBtn').textContent='SEND ▶';});
@@ -978,245 +1018,6 @@ function clearChat(){aiHist[aiCur]=[SYS];renderChat();}
 function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();}}
 function chatResize(el){el.style.height='46px';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 renderChat();
-
-// ═══════════════════════════════════════════
-// MOCK TEST TRACKER
-// ═══════════════════════════════════════════
-// ═══════════════════════════════════════════
-// GOOGLE SHEETS CONFIG
-// Apna URL yahan paste karo (Step 4 mein milega)
-// ═══════════════════════════════════════════
-var SHEETS_URL = 'https://soft-morning-1d03.manojd9414.workers.dev';
-var mocks = [];
-var sheetsConnected = false;
-
-function loadFromSheets(){
-  if(!SHEETS_URL){
-    // Fallback to localStorage if URL not set
-    mocks = JSON.parse(localStorage.getItem('jee_mocks')||'[]');
-    renderStats();
-    return;
-  }
-  showSheetsStatus('loading');
-  fetch(SHEETS_URL + '?action=getAll')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      if(data.success){
-        mocks = data.mocks;
-        sheetsConnected = true;
-        // Also save to localStorage as backup
-        localStorage.setItem('jee_mocks', JSON.stringify(mocks));
-        showSheetsStatus('connected');
-      } else {
-        throw new Error(data.error);
-      }
-      renderStats();
-    })
-    .catch(function(err){
-      // Fallback to localStorage
-      mocks = JSON.parse(localStorage.getItem('jee_mocks')||'[]');
-      showSheetsStatus('error');
-      renderStats();
-    });
-}
-
-function showSheetsStatus(status){
-  var el = document.getElementById('sheetsStatus');
-  if(!el) return;
-  if(status==='loading') { el.textContent='⏳ Google Sheets se load ho raha hai...'; el.style.color='var(--muted)'; }
-  else if(status==='connected') { el.textContent='✅ Google Sheets connected — data safe hai!'; el.style.color='var(--green)'; }
-  else if(status==='error') { el.textContent='⚠️ Sheets connect nahi hua — local data dikh raha hai'; el.style.color='var(--orange)'; }
-  else if(status==='saved') { el.textContent='✅ Google Sheets mein save ho gaya!'; el.style.color='var(--green)'; }
-  else if(status==='save_error') { el.textContent='⚠️ Sheets save failed — local mein save hua'; el.style.color='var(--orange)'; }
-}
-var curPeriod = 'day';
-
-// Set today's date as default
-(function(){
-  var inp = document.getElementById('mockDate');
-  if(inp){
-    var d = new Date();
-    inp.value = d.toISOString().split('T')[0];
-  }
-})();
-// Load data
-loadFromSheets();
-
-function saveMock(){
-  var date  = document.getElementById('mockDate').value;
-  var qs   = parseInt(document.getElementById('mockQs').value)||0;
-  var corr = parseInt(document.getElementById('mockCorr').value)||0;
-  if(!date||(!qs&&!corr)){alert('Date aur kam se kam ek field bharo!');return;}
-  var score = corr*4 - (parseInt(document.getElementById('mockWrong').value)||0);
-  var wrong = parseInt(document.getElementById('mockWrong').value)||0;
-  var mock = {
-    id: Date.now(),
-    date: date,
-    score: score,
-    qs: qs||0,
-    corr: corr||0,
-    wrong: wrong
-  };
-  mocks.unshift(mock);
-  localStorage.setItem('jee_mocks', JSON.stringify(mocks));
-  // Clear inputs
-  document.getElementById('mockQs').value='';
-  document.getElementById('mockCorr').value='';
-  document.getElementById('mockWrong').value='';
-  // Save to Google Sheets if connected
-  if(SHEETS_URL){
-    fetch(SHEETS_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({action:'save', mock:mock})
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){ showSheetsStatus(d.success?'saved':'save_error'); })
-    .catch(function(){ showSheetsStatus('save_error'); });
-  }
-  renderStats();
-}
-
-// Also auto-save when showResult is called from arena
-var _origShowResult = showResult;
-showResult = function(){
-  _origShowResult();
-  // Auto-log this arena session
-  var score = parseInt(document.getElementById('rScore').textContent)||0;
-  var corr  = parseInt(document.getElementById('rCorr').textContent)||0;
-  var tot   = qs.length;
-  var d = new Date();
-  var wrong2 = parseInt(document.getElementById('rWrong').textContent)||0;
-  var mock = {
-    id: Date.now(),
-    date: d.toISOString().split('T')[0],
-    score: score,
-    qs: tot,
-    corr: corr,
-    wrong: wrong2,
-    auto: true
-  };
-  mocks.unshift(mock);
-  localStorage.setItem('jee_mocks', JSON.stringify(mocks));
-  if(SHEETS_URL){
-    fetch(SHEETS_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({action:'save', mock:mock})
-    }).catch(function(){});
-  }
-  renderStats();
-};
-
-function setPeriod(p, btn){
-  curPeriod = p;
-  document.querySelectorAll('.ptab').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-  renderStats();
-}
-
-function filterMocks(p){
-  var now = new Date();
-  return mocks.filter(function(m){
-    var md = new Date(m.date);
-    if(p==='day'){
-      return md.toDateString()===now.toDateString();
-    } else if(p==='week'){
-      var weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate()-7);
-      return md>=weekAgo;
-    } else if(p==='month'){
-      return md.getMonth()===now.getMonth() && md.getFullYear()===now.getFullYear();
-    }
-    return true; // all
-  });
-}
-
-function getMotivation(filtered, allMocks){
-  var total = allMocks.length;
-  var streak = calcStreak();
-  var msgs = [];
-  if(total===0) return {text:"Pehla mock lagao aaj! 🚀 IIT ki taraf pehla kadam!", color:"rgba(245,200,60,0.12)", border:"rgba(245,200,60,0.3)"};
-  if(streak>=7) msgs.push("🔥 "+streak+" din ka streak! Tu machine ban gaya hai bhai!");
-  else if(streak>=3) msgs.push("⚡ "+streak+" din se consistent! Keep going!");
-  if(total>=50) msgs.push("💯 "+total+" mocks! Tu IIT ka asli aspirant hai!");
-  else if(total>=20) msgs.push("🎯 "+total+" mocks ho gaye! Halfway to IIT!");
-  else if(total>=10) msgs.push("📈 "+total+" mocks — momentum ban raha hai!");
-  else msgs.push("🌟 "+total+" mock done! Har mock ek step closer to IIT!");
-  if(filtered.length>0){
-    var avgScore = Math.round(filtered.reduce(function(a,m){return a+m.score;},0)/filtered.length);
-    var avgAcc = filtered.filter(function(m){return m.qs>0;}).length>0 ?
-      Math.round(filtered.filter(function(m){return m.qs>0;}).reduce(function(a,m){return a+(m.corr/m.qs*100);},0)/filtered.filter(function(m){return m.qs>0;}).length) : 0;
-    if(avgScore>200) msgs.push("🏆 Avg score "+avgScore+"! IIT Bombay zone mein hai tu!");
-    else if(avgScore>150) msgs.push("📊 Avg score "+avgScore+" — aur thoda push kar!");
-    else msgs.push("💪 Avg score "+avgScore+" — improvement zone mein hai, rukna mat!");
-  }
-  return {text: msgs.join("  •  "), color:"rgba(74,222,128,0.08)", border:"rgba(74,222,128,0.25)"};
-}
-
-function calcStreak(){
-  if(mocks.length===0) return 0;
-  var dates = [...new Set(mocks.map(function(m){return m.date;}))].sort().reverse();
-  var streak=0, today=new Date();
-  today.setHours(0,0,0,0);
-  for(var i=0;i<dates.length;i++){
-    var d=new Date(dates[i]); d.setHours(0,0,0,0);
-    var diff=Math.round((today-d)/86400000);
-    if(diff===i) streak++;
-    else break;
-  }
-  return streak;
-}
-
-
-
-function renderStats(){
-  var filtered = filterMocks(curPeriod);
-  var total = filtered.length;
-  var totalQs = filtered.reduce(function(a,m){return a+m.qs;},0);
-  var totalCorr = filtered.reduce(function(a,m){return a+m.corr;},0);
-  var avgScore = total>0 ? Math.round(filtered.reduce(function(a,m){return a+m.score;},0)/total) : 0;
-  var avgAcc = totalQs>0 ? Math.round(totalCorr/totalQs*100) : 0;
-  var streak = calcStreak();
-
-  // Summary cards
-  var sg = document.getElementById('sumGrid');
-  if(!sg) return;
-  var totalWrong = filtered.reduce(function(a,m){return a+(m.wrong||0);},0);
-  sg.innerHTML =
-    '<div class="sumbox"><div class="sumval" style="color:var(--gold)">'+total+'</div><div class="sumlbl">MOCKS</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--blue)">'+totalQs+'</div><div class="sumlbl">ATTEMPTED</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--green)">'+totalCorr+'</div><div class="sumlbl">CORRECT ✓</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--red)">'+totalWrong+'</div><div class="sumlbl">WRONG ✗</div></div>';
-
-  // Mock list
-  var ml = document.getElementById('mockList');
-  if(filtered.length===0){
-    ml.innerHTML='<div style="text-align:center;color:var(--muted);font-family:var(--fm);font-size:12px;padding:20px">Is period mein koi mock nahi hai</div>';
-  } else {
-    ml.innerHTML = filtered.map(function(m){
-      var acc = m.qs>0 ? Math.round(m.corr/m.qs*100) : '-';
-      var scoreCol = m.score>200?'var(--green)':m.score>150?'var(--gold)':'var(--orange)';
-      return '<div class="mock-item">'+
-        '<div class="mock-date">'+m.date+(m.auto?' <span style="font-size:9px;color:var(--blue)">AUTO</span>':'')+'</div>'+
-        '<div style="flex:1;display:flex;gap:14px;align-items:center">'+
-          '<div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">ATTEMPTED</div><div style="font-family:var(--fh);font-size:18px;color:var(--blue)">'+m.qs+'</div></div>'+
-          '<div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">CORRECT</div><div style="font-family:var(--fh);font-size:18px;color:var(--green)">'+m.corr+'</div></div>'+
-          '<div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">WRONG</div><div style="font-family:var(--fh);font-size:18px;color:var(--red)">'+(m.wrong||0)+'</div></div>'+
-        '</div>'+
-      '</div>';
-    }).join('');
-  }
-
-  // Motivation
-  var mot = getMotivation(filtered, mocks);
-  var mb = document.getElementById('motivBar');
-  mb.style.background = mot.color;
-  mb.style.border = '1px solid '+mot.border;
-  mb.style.color = 'var(--text)';
-  mb.innerHTML = '<div class="streak-fire">'+( streak>=3?'🔥':'⭐')+'</div>'+mot.text;
-  mb.classList.add('on');
-}
-
 </script>
 </body>
 </html>
