@@ -756,3 +756,319 @@ function showResult(){
 </script>
 </body>
 </html>
+<!-- ============================================================
+     AI CHAT TAB — Sirf yeh code apni file mein add karo
+     
+     STEP 1: Tab button mein yeh add karo (tabs div ke andar):
+     <button class="tbtn" onclick="showTab('ai',this)">🤖 AI CHAT</button>
+     
+     STEP 2: Yeh poora block apni file mein arena div ke baad paste karo
+     
+     STEP 3: Apni API keys neeche fill karo
+     ============================================================ -->
+
+<!-- ══ AI CHAT SECTION ══════════════════════════════════════ -->
+<div class="sec" id="sec-ai">
+
+  <div class="a-card green-border" style="padding:0;overflow:hidden;">
+
+    <!-- AI Selector Bar -->
+    <div style="display:flex;border-bottom:1px solid var(--border);">
+      <button class="ai-tab on" id="aitab-gemini"  onclick="switchAI('gemini')">
+        <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" width="16" height="16" onerror="this.style.display='none'">
+        Gemini
+      </button>
+      <button class="ai-tab" id="aitab-grok"    onclick="switchAI('grok')">
+        <span style="font-size:14px">𝕏</span> Grok
+      </button>
+      <button class="ai-tab" id="aitab-chatgpt" onclick="switchAI('chatgpt')">
+        <span style="font-size:14px">⬡</span> ChatGPT
+      </button>
+    </div>
+
+    <!-- Active AI Label -->
+    <div style="padding:8px 14px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div id="ai-active-label" style="font-family:var(--fm);font-size:10px;color:var(--cyan);letter-spacing:2px;">◈ GEMINI 2.0 FLASH</div>
+      <button onclick="clearChat()" style="background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--fm);font-size:9px;padding:3px 10px;border-radius:4px;cursor:pointer;">CLEAR</button>
+    </div>
+
+    <!-- Chat Window -->
+    <div id="chatWindow" style="
+      height:420px;overflow-y:auto;padding:14px;
+      display:flex;flex-direction:column;gap:10px;
+      background:var(--bg);
+    ">
+      <div class="ai-msg bot" id="welcomeMsg">
+        <div class="msg-bubble bot-bubble">
+          👋 JEE preparation mein help chahiye? Koi bhi Physics, Chemistry ya Maths ka question pucho!
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div style="padding:12px;background:var(--card2);border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;">
+      <textarea id="chatInput"
+        placeholder="Question likho... (Enter = send, Shift+Enter = new line)"
+        style="
+          flex:1;background:var(--card);border:1px solid var(--border);
+          color:var(--text);padding:10px 12px;border-radius:8px;
+          font-family:var(--fb);font-size:14px;resize:none;
+          min-height:44px;max-height:120px;line-height:1.4;
+        "
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button onclick="sendMsg()" id="sendBtn" style="
+        padding:10px 16px;background:linear-gradient(135deg,var(--cyan),#009ecc);
+        border:none;border-radius:8px;color:#000;font-family:var(--fh);
+        font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;
+        min-height:44px;transition:all 0.2s;
+      ">SEND ▶</button>
+    </div>
+
+  </div>
+</div>
+<!-- ══ END AI CHAT SECTION ══════════════════════════════════ -->
+
+
+<!-- ══ AI CHAT STYLES — <style> tag ke andar paste karo ══════ -->
+<style>
+.ai-tab{
+  flex:1;padding:11px 8px;background:var(--card);border:none;
+  color:var(--muted);font-family:var(--fb);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;
+  justify-content:center;gap:6px;border-right:1px solid var(--border);
+}
+.ai-tab:last-child{border-right:none;}
+.ai-tab.on{background:rgba(0,229,255,0.08);color:var(--cyan);}
+.ai-tab:hover{background:rgba(255,255,255,0.03);}
+
+.ai-msg{display:flex;margin-bottom:2px;}
+.ai-msg.user{justify-content:flex-end;}
+.ai-msg.bot{justify-content:flex-start;}
+
+.msg-bubble{
+  max-width:80%;padding:10px 14px;border-radius:12px;
+  font-size:14px;line-height:1.55;word-break:break-word;
+  white-space:pre-wrap;
+}
+.user-bubble{
+  background:linear-gradient(135deg,var(--cyan),#009ecc);
+  color:#000;border-radius:12px 12px 2px 12px;font-weight:600;
+}
+.bot-bubble{
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text);border-radius:12px 12px 12px 2px;
+}
+.bot-bubble code{
+  background:var(--card2);padding:1px 5px;border-radius:3px;
+  font-family:var(--fm);font-size:12px;color:var(--cyan);
+}
+.typing-bubble{
+  background:var(--card);border:1px solid var(--border);
+  color:var(--muted);border-radius:12px 12px 12px 2px;
+  padding:10px 14px;font-family:var(--fm);font-size:12px;
+  letter-spacing:2px;
+}
+</style>
+
+
+<!-- ══ AI CHAT JAVASCRIPT — <script> tag ke andar paste karo ══ -->
+<script>
+/* ════════════════════════════════════════════════════════════
+   🔑 APNI API KEYS YAHAN DAALO
+   ════════════════════════════════════════════════════════════ */
+var AI_KEYS = {
+  gemini:  "YOUR_GEMINI_API_KEY_HERE",   // aistudio.google.com
+  grok:    "YOUR_GROK_API_KEY_HERE",     // console.x.ai
+  chatgpt: "YOUR_OPENAI_API_KEY_HERE"    // platform.openai.com
+};
+
+/* ════════════════════════════════════════════════════════════
+   AI CONFIG
+   ════════════════════════════════════════════════════════════ */
+var AI_CONFIG = {
+  gemini: {
+    label: "◈ GEMINI 2.0 FLASH",
+    model: "gemini-2.0-flash",
+    url: function(key){
+      return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+key;
+    },
+    buildBody: function(msgs){
+      // Gemini format
+      var contents = msgs.filter(function(m){return m.role!=="system";}).map(function(m){
+        return { role: m.role==="assistant"?"model":"user", parts:[{text:m.content}] };
+      });
+      return JSON.stringify({
+        contents: contents,
+        generationConfig:{ temperature:0.7, maxOutputTokens:2048 }
+      });
+    },
+    parseResp: function(data){
+      return data.candidates[0].content.parts[0].text;
+    }
+  },
+  grok: {
+    label: "◈ GROK 3",
+    model: "grok-3",
+    url: function(){ return "https://api.x.ai/v1/chat/completions"; },
+    buildBody: function(msgs){
+      return JSON.stringify({ model:"grok-3", messages:msgs, max_tokens:2048, temperature:0.7 });
+    },
+    parseResp: function(data){ return data.choices[0].message.content; },
+    headers: function(key){ return { "Content-Type":"application/json", "Authorization":"Bearer "+key }; }
+  },
+  chatgpt: {
+    label: "◈ GPT-4o",
+    model: "gpt-4o",
+    url: function(){ return "https://api.openai.com/v1/chat/completions"; },
+    buildBody: function(msgs){
+      return JSON.stringify({ model:"gpt-4o", messages:msgs, max_tokens:2048, temperature:0.7 });
+    },
+    parseResp: function(data){ return data.choices[0].message.content; },
+    headers: function(key){ return { "Content-Type":"application/json", "Authorization":"Bearer "+key }; }
+  }
+};
+
+/* ════════════════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════════════════ */
+var curAI = "gemini";
+var chatHistory = {
+  gemini:  [{role:"system", content:"Tu ek expert JEE teacher hai. Physics, Chemistry aur Maths ke questions clearly explain kar. Formulas aur steps deta jaa. Hinglish mein baat kar."}],
+  grok:    [{role:"system", content:"Tu ek expert JEE teacher hai. Physics, Chemistry aur Maths ke questions clearly explain kar. Formulas aur steps deta jaa. Hinglish mein baat kar."}],
+  chatgpt: [{role:"system", content:"Tu ek expert JEE teacher hai. Physics, Chemistry aur Maths ke questions clearly explain kar. Formulas aur steps deta jaa. Hinglish mein baat kar."}]
+};
+var isLoading = false;
+
+/* ════════════════════════════════════════════════════════════
+   SWITCH AI
+   ════════════════════════════════════════════════════════════ */
+function switchAI(name){
+  curAI = name;
+  document.querySelectorAll(".ai-tab").forEach(function(b){ b.classList.remove("on"); });
+  document.getElementById("aitab-"+name).classList.add("on");
+  document.getElementById("ai-active-label").textContent = AI_CONFIG[name].label;
+
+  // Reload that AI's chat history in window
+  var win = document.getElementById("chatWindow");
+  win.innerHTML = "";
+  if(chatHistory[name].length <= 1){
+    addBubble("bot","👋 "+name.charAt(0).toUpperCase()+name.slice(1)+" se baat karo! JEE ka koi bhi sawaal pucho.");
+  } else {
+    chatHistory[name].forEach(function(m){
+      if(m.role==="system") return;
+      addBubble(m.role==="user"?"user":"bot", m.content);
+    });
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   ADD BUBBLE TO UI
+   ════════════════════════════════════════════════════════════ */
+function addBubble(role, text){
+  var win = document.getElementById("chatWindow");
+  var wrap = document.createElement("div");
+  wrap.className = "ai-msg "+(role==="user"?"user":"bot");
+  var bubble = document.createElement("div");
+  bubble.className = (role==="user"?"user-bubble":"bot-bubble")+" msg-bubble";
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+  win.appendChild(wrap);
+  win.scrollTop = win.scrollHeight;
+  return bubble;
+}
+
+function addTyping(){
+  var win = document.getElementById("chatWindow");
+  var wrap = document.createElement("div");
+  wrap.className = "ai-msg bot";
+  wrap.id = "typingIndicator";
+  var bubble = document.createElement("div");
+  bubble.className = "typing-bubble";
+  bubble.textContent = "typing...";
+  wrap.appendChild(bubble);
+  win.appendChild(wrap);
+  win.scrollTop = win.scrollHeight;
+}
+
+function removeTyping(){
+  var el = document.getElementById("typingIndicator");
+  if(el) el.remove();
+}
+
+/* ════════════════════════════════════════════════════════════
+   SEND MESSAGE
+   ════════════════════════════════════════════════════════════ */
+function sendMsg(){
+  if(isLoading) return;
+  var inp = document.getElementById("chatInput");
+  var text = inp.value.trim();
+  if(!text) return;
+
+  var key = AI_KEYS[curAI];
+  if(!key || key.indexOf("YOUR_")===0){
+    addBubble("bot","⚠️ API key nahi daali! Code mein AI_KEYS object mein apni "+curAI.toUpperCase()+" API key daalo.");
+    return;
+  }
+
+  // Add user message
+  inp.value = "";
+  inp.style.height = "44px";
+  addBubble("user", text);
+  chatHistory[curAI].push({role:"user", content:text});
+
+  // Show typing
+  isLoading = true;
+  document.getElementById("sendBtn").textContent = "...";
+  addTyping();
+
+  // Call API
+  var cfg = AI_CONFIG[curAI];
+  var headers = {"Content-Type":"application/json"};
+  if(cfg.headers) headers = cfg.headers(key);
+
+  fetch(cfg.url(key), {
+    method: "POST",
+    headers: headers,
+    body: cfg.buildBody(chatHistory[curAI])
+  })
+  .then(function(res){
+    if(!res.ok) throw new Error("HTTP "+res.status+" — API key check karo ya limit ho gayi");
+    return res.json();
+  })
+  .then(function(data){
+    var reply = cfg.parseResp(data);
+    chatHistory[curAI].push({role:"assistant", content:reply});
+    removeTyping();
+    addBubble("bot", reply);
+  })
+  .catch(function(err){
+    removeTyping();
+    addBubble("bot","❌ Error: "+err.message);
+  })
+  .finally(function(){
+    isLoading = false;
+    document.getElementById("sendBtn").textContent = "SEND ▶";
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   HELPERS
+   ════════════════════════════════════════════════════════════ */
+function handleKey(e){
+  if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); sendMsg(); }
+}
+function autoResize(el){
+  el.style.height="44px";
+  el.style.height=Math.min(el.scrollHeight,120)+"px";
+}
+function clearChat(){
+  var sys = chatHistory[curAI][0];
+  chatHistory[curAI] = [sys];
+  var win = document.getElementById("chatWindow");
+  win.innerHTML="";
+  addBubble("bot","Chat clear ho gaya! Naya sawaal pucho 🙂");
+}
+</script>
+
