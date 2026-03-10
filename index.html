@@ -240,7 +240,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .ptab{flex:1;padding:9px 6px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--muted);font-family:var(--fh);font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .2s;min-width:60px;}
 .ptab.on{background:rgba(245,200,60,0.12);border-color:var(--gold);color:var(--gold);}
 .sumgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
-@media(min-width:500px){.sumgrid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:400px){.sumgrid{grid-template-columns:repeat(4,1fr);}}
 .sumbox{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;}
 .sumval{font-family:var(--fh);font-size:24px;font-weight:700;}
 .sumlbl{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:3px;font-family:var(--fm);}
@@ -249,7 +249,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
 .mock-score{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--gold);min-width:60px;}
 .mock-acc{font-size:13px;color:var(--blue);font-family:var(--fm);}
 .mock-qs{font-size:12px;color:var(--muted);font-family:var(--fm);}
-.mock-del{margin-left:auto;background:transparent;border:1px solid rgba(248,113,113,0.3);color:var(--red);border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;}
 .motiv-bar{border-radius:10px;padding:14px 16px;text-align:center;margin-top:6px;font-size:15px;font-weight:600;line-height:1.5;display:none;}
 .motiv-bar.on{display:block;}
 .streak-fire{font-size:28px;margin-bottom:4px;}
@@ -532,19 +531,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
           <input type="date" class="cfgin" id="mockDate">
         </div>
         <div class="mocklog-field">
-          <label class="cfglbl">SCORE</label>
-          <input type="number" class="cfgin" id="mockScore" placeholder="e.g. 210">
-        </div>
-        <div class="mocklog-field">
-          <label class="cfglbl">TOTAL Qs</label>
+          <label class="cfglbl">ATTEMPTED</label>
           <input type="number" class="cfgin" id="mockQs" placeholder="e.g. 75">
         </div>
         <div class="mocklog-field">
           <label class="cfglbl">CORRECT</label>
           <input type="number" class="cfgin" id="mockCorr" placeholder="e.g. 55">
         </div>
+        <div class="mocklog-field">
+          <label class="cfglbl">WRONG</label>
+          <input type="number" class="cfgin" id="mockWrong" placeholder="e.g. 20">
+        </div>
       </div>
       <button class="genbtn" style="width:100%;margin-top:10px;font-size:11px" onclick="saveMock()">💾 SAVE MOCK</button>
+    </div>
     </div>
 
     <!-- Period selector -->
@@ -931,6 +931,7 @@ function switchAI(name){
   document.getElementById('astab-'+name).classList.add('on');
   document.getElementById('aiLabel').textContent=AI_LABELS[name];
   renderChat();
+
 }
 function renderChat(){
   var win=document.getElementById('chatWin');win.innerHTML='';
@@ -990,16 +991,18 @@ var curPeriod = 'day';
 
 function saveMock(){
   var date  = document.getElementById('mockDate').value;
-  var score = parseInt(document.getElementById('mockScore').value);
-  var qs    = parseInt(document.getElementById('mockQs').value);
-  var corr  = parseInt(document.getElementById('mockCorr').value);
-  if(!date||isNaN(score)){alert('Date aur Score zaroor bharo!');return;}
+  var qs   = parseInt(document.getElementById('mockQs').value)||0;
+  var corr = parseInt(document.getElementById('mockCorr').value)||0;
+  if(!date||(!qs&&!corr)){alert('Date aur kam se kam ek field bharo!');return;}
+  var score = corr*4 - (parseInt(document.getElementById('mockWrong').value)||0);
+  var wrong = parseInt(document.getElementById('mockWrong').value)||0;
   var mock = {
     id: Date.now(),
     date: date,
     score: score,
     qs: qs||0,
-    corr: corr||0
+    corr: corr||0,
+    wrong: wrong
   };
   mocks.unshift(mock);
   localStorage.setItem('jee_mocks', JSON.stringify(mocks));
@@ -1007,6 +1010,7 @@ function saveMock(){
   document.getElementById('mockScore').value='';
   document.getElementById('mockQs').value='';
   document.getElementById('mockCorr').value='';
+  document.getElementById('mockWrong').value='';
   renderStats();
 }
 
@@ -1019,12 +1023,14 @@ showResult = function(){
   var corr  = parseInt(document.getElementById('rCorr').textContent)||0;
   var tot   = qs.length;
   var d = new Date();
+  var wrong2 = parseInt(document.getElementById('rWrong').textContent)||0;
   var mock = {
     id: Date.now(),
     date: d.toISOString().split('T')[0],
     score: score,
     qs: tot,
     corr: corr,
+    wrong: wrong2,
     auto: true
   };
   mocks.unshift(mock);
@@ -1091,11 +1097,7 @@ function calcStreak(){
   return streak;
 }
 
-function deleteMock(id){
-  mocks = mocks.filter(function(m){return m.id!==id;});
-  localStorage.setItem('jee_mocks', JSON.stringify(mocks));
-  renderStats();
-}
+
 
 function renderStats(){
   var filtered = filterMocks(curPeriod);
@@ -1109,15 +1111,12 @@ function renderStats(){
   // Summary cards
   var sg = document.getElementById('sumGrid');
   if(!sg) return;
+  var totalWrong = filtered.reduce(function(a,m){return a+(m.wrong||0);},0);
   sg.innerHTML =
     '<div class="sumbox"><div class="sumval" style="color:var(--gold)">'+total+'</div><div class="sumlbl">MOCKS</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--blue)">'+avgScore+'</div><div class="sumlbl">AVG SCORE</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--green)">'+avgAcc+'%</div><div class="sumlbl">AVG ACC</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--orange)">'+streak+'🔥</div><div class="sumlbl">DAY STREAK</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--text)">'+totalQs+'</div><div class="sumlbl">TOTAL Qs</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--green)">'+totalCorr+'</div><div class="sumlbl">CORRECT</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--gold)">'+mocks.length+'</div><div class="sumlbl">ALL TIME</div></div>'+
-    '<div class="sumbox"><div class="sumval" style="color:var(--blue)">'+(mocks.length>0?Math.round(mocks.reduce(function(a,m){return a+m.score;},0)/mocks.length):0)+'</div><div class="sumlbl">ALL AVG</div></div>';
+    '<div class="sumbox"><div class="sumval" style="color:var(--blue)">'+totalQs+'</div><div class="sumlbl">ATTEMPTED</div></div>'+
+    '<div class="sumbox"><div class="sumval" style="color:var(--green)">'+totalCorr+'</div><div class="sumlbl">CORRECT ✓</div></div>'+
+    '<div class="sumbox"><div class="sumval" style="color:var(--red)">'+totalWrong+'</div><div class="sumlbl">WRONG ✗</div></div>';
 
   // Mock list
   var ml = document.getElementById('mockList');
@@ -1129,12 +1128,11 @@ function renderStats(){
       var scoreCol = m.score>200?'var(--green)':m.score>150?'var(--gold)':'var(--orange)';
       return '<div class="mock-item">'+
         '<div class="mock-date">'+m.date+(m.auto?' <span style="font-size:9px;color:var(--blue)">AUTO</span>':'')+'</div>'+
-        '<div class="mock-score" style="color:'+scoreCol+'">'+m.score+'</div>'+
-        '<div style="flex:1">'+
-          '<div class="mock-acc">✓ '+m.corr+'/'+m.qs+' correct</div>'+
-          '<div class="mock-qs">Accuracy: '+acc+'%</div>'+
+        '<div style="flex:1;display:flex;gap:14px;align-items:center">'+
+          '<div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">ATTEMPTED</div><div style="font-family:var(--fh);font-size:18px;color:var(--blue)">'+m.qs+'</div></div>'+
+          '<div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">CORRECT</div><div style="font-family:var(--fh);font-size:18px;color:var(--green)">'+m.corr+'</div></div>'+
+          '<div><div style="font-family:var(--fm);font-size:11px;color:var(--muted)">WRONG</div><div style="font-family:var(--fh);font-size:18px;color:var(--red)">'+(m.wrong||0)+'</div></div>'+
         '</div>'+
-        '<button class="mock-del" onclick="deleteMock('+m.id+')">🗑</button>'+
       '</div>';
     }).join('');
   }
