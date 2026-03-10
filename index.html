@@ -547,6 +547,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100
     </div>
     </div>
 
+    <!-- Sheets status -->
+    <div id="sheetsStatus" style="font-family:var(--fm);font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;padding:8px;background:var(--card2);border-radius:8px;border:1px solid var(--border);">
+      ⚙️ Google Sheets URL set karo neeche diye steps se
+    </div>
+
     <!-- Period selector -->
     <div class="period-tabs">
       <button class="ptab on" id="pt-day" onclick="setPeriod('day',this)">TODAY</button>
@@ -977,7 +982,53 @@ renderChat();
 // ═══════════════════════════════════════════
 // MOCK TEST TRACKER
 // ═══════════════════════════════════════════
-var mocks = JSON.parse(localStorage.getItem('jee_mocks')||'[]');
+// ═══════════════════════════════════════════
+// GOOGLE SHEETS CONFIG
+// Apna URL yahan paste karo (Step 4 mein milega)
+// ═══════════════════════════════════════════
+var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyFWywpMQpQs_nqjnWmYLvaGhoHSbNRsMaOdY8mvUP-LU5V_yoZmiA1KIm0GBOS_KNSOw/exec';
+var mocks = [];
+var sheetsConnected = false;
+
+function loadFromSheets(){
+  if(!SHEETS_URL){
+    // Fallback to localStorage if URL not set
+    mocks = JSON.parse(localStorage.getItem('jee_mocks')||'[]');
+    renderStats();
+    return;
+  }
+  showSheetsStatus('loading');
+  fetch(SHEETS_URL + '?action=getAll')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.success){
+        mocks = data.mocks;
+        sheetsConnected = true;
+        // Also save to localStorage as backup
+        localStorage.setItem('jee_mocks', JSON.stringify(mocks));
+        showSheetsStatus('connected');
+      } else {
+        throw new Error(data.error);
+      }
+      renderStats();
+    })
+    .catch(function(err){
+      // Fallback to localStorage
+      mocks = JSON.parse(localStorage.getItem('jee_mocks')||'[]');
+      showSheetsStatus('error');
+      renderStats();
+    });
+}
+
+function showSheetsStatus(status){
+  var el = document.getElementById('sheetsStatus');
+  if(!el) return;
+  if(status==='loading') { el.textContent='⏳ Google Sheets se load ho raha hai...'; el.style.color='var(--muted)'; }
+  else if(status==='connected') { el.textContent='✅ Google Sheets connected — data safe hai!'; el.style.color='var(--green)'; }
+  else if(status==='error') { el.textContent='⚠️ Sheets connect nahi hua — local data dikh raha hai'; el.style.color='var(--orange)'; }
+  else if(status==='saved') { el.textContent='✅ Google Sheets mein save ho gaya!'; el.style.color='var(--green)'; }
+  else if(status==='save_error') { el.textContent='⚠️ Sheets save failed — local mein save hua'; el.style.color='var(--orange)'; }
+}
 var curPeriod = 'day';
 
 // Set today's date as default
@@ -988,6 +1039,8 @@ var curPeriod = 'day';
     inp.value = d.toISOString().split('T')[0];
   }
 })();
+// Load data
+loadFromSheets();
 
 function saveMock(){
   var date  = document.getElementById('mockDate').value;
@@ -1006,11 +1059,21 @@ function saveMock(){
   };
   mocks.unshift(mock);
   localStorage.setItem('jee_mocks', JSON.stringify(mocks));
-  // Clear inputs except date
-  document.getElementById('mockScore').value='';
+  // Clear inputs
   document.getElementById('mockQs').value='';
   document.getElementById('mockCorr').value='';
   document.getElementById('mockWrong').value='';
+  // Save to Google Sheets if connected
+  if(SHEETS_URL){
+    fetch(SHEETS_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'save', mock:mock})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ showSheetsStatus(d.success?'saved':'save_error'); })
+    .catch(function(){ showSheetsStatus('save_error'); });
+  }
   renderStats();
 }
 
@@ -1035,6 +1098,13 @@ showResult = function(){
   };
   mocks.unshift(mock);
   localStorage.setItem('jee_mocks', JSON.stringify(mocks));
+  if(SHEETS_URL){
+    fetch(SHEETS_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'save', mock:mock})
+    }).catch(function(){});
+  }
   renderStats();
 };
 
@@ -1146,7 +1216,6 @@ function renderStats(){
   mb.innerHTML = '<div class="streak-fire">'+( streak>=3?'🔥':'⭐')+'</div>'+mot.text;
   mb.classList.add('on');
 }
-renderStats();
 
 </script>
 </body>
