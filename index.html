@@ -69,7 +69,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .ch-item:hover{background:rgba(255,255,255,0.03);}
 .ch-chk{width:16px;height:16px;border:2px solid var(--muted);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
 .ch-chk.on{background:var(--green);border-color:var(--green);box-shadow:0 0 5px rgba(57,255,20,0.4);}
-.ch-chk.on::after{content:'\u2713';color:#000;font-size:9px;font-weight:700;}
+.ch-chk.on::after{content:'✓';color:#000;font-size:9px;font-weight:700;}
 .ch-name{font-size:13px;}.ch-name.done{color:var(--muted);text-decoration:line-through;}
 
 /* ARENA */
@@ -102,7 +102,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .q-table td{padding:10px 6px;border-bottom:1px solid rgba(30,45,64,0.5);vertical-align:top;}
 .q-num{font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);font-weight:700;}
 
-/* MCQ OPTIONS \u2014 big clear buttons */
+/* MCQ OPTIONS — big clear buttons */
 .mcq-opts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
 .mcq-opt{
   display:flex;align-items:center;justify-content:center;
@@ -137,7 +137,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .corr-title{text-align:center;font-family:'Orbitron',monospace;font-size:14px;color:var(--orange);letter-spacing:2px;margin-bottom:6px;}
 .corr-sub{text-align:center;font-size:10px;color:var(--muted);font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-bottom:14px;}
 
-/* MCQ OPTIONS for correct answer \u2014 same style, orange highlight */
+/* MCQ OPTIONS for correct answer — same style, orange highlight */
 .mcq-opt.corr-sel{border-color:var(--green);color:#000;background:var(--green);box-shadow:0 0 10px rgba(57,255,20,0.4);}
 
 /* RESULT */
@@ -169,13 +169,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <!-- HEADER -->
 <div class="header">
   <h1><span class="m">MISSION:</span> <span class="j">JEE 99ile</span></h1>
-  <div class="tagline">\u25c8 TARGET: IIT BOMBAY / DELHI \u25c8</div>
+  <div class="tagline">◈ TARGET: IIT BOMBAY / DELHI ◈</div>
 </div>
 
 <!-- DUAL COUNTDOWN -->
 <div class="cd-grid">
   <div class="cd-card cd-main">
-    <div class="cd-title">\u25c8 JEE MAIN 2026 \u2014 SESSION 2 \u25c8</div>
+    <div class="cd-title">◈ JEE MAIN 2026 — SESSION 2 ◈</div>
     <div class="cd-boxes">
       <div class="cd-box"><div class="cd-num" id="md">--</div><div class="cd-unit">DAYS</div></div>
       <div class="cd-box"><div class="cd-num" id="mh">--</div><div class="cd-unit">HRS</div></div>
@@ -183,9 +183,156 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="cd-box"><div class="cd-num" id="ms">--</div><div class="cd-unit">SEC</div></div>
     </div>
     <div class="date-picker">
-      <div class="dp-label">\u25b8 APNI EXAM DATE CHUNO (2\u20138 APR)</div>
+      <div class="dp-label">▸ APNI EXAM DATE CHUNO (2–8 APR)</div>
       <div class="dp-slots" id="dpSlots"></div>
     </div>
   </div>
   <div class="cd-card cd-adv">
-    <div class="cd-title">\u25c8 J
+    <div class="cd-title">◈ JEE ADVANCED 2026 ◈</div>
+    <div class="cd-boxes">
+      <div class="cd-box"><div class="cd-num" id="ad">--</div><div class="cd-unit">DAYS</div></div>
+      <div class="cd-box"><div class="cd-num" id="ah">--</div><div class="cd-unit">HRS</div></div>
+      <div class="cd-box"><div class="cd-num" id="am">--</div><div class="cd-unit">MIN</div></div>
+      <div class="cd-box"><div class="cd-num" id="as">--</div><div class="cd-unit">SEC</div></div>
+    </div>
+    <div class="adv-date">📅 18 May 2026 · 9:00 AM IST</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('syllabus',this)">📚 SYLLABUS</button>
+  <button class="tab-btn" onclick="showTab('arena',this)">⚔️ ARENA</button>
+</div>
+
+<!-- ═══ SYLLABUS TAB ═══ -->
+<div class="section active" id="tab-syllabus">
+  <div class="syl-card">
+    <div class="syl-head">
+      <div class="syl-title">◈ SYLLABUS PROGRESS</div>
+      <div class="syl-pct" id="sylPct">0%</div>
+    </div>
+    <div class="prog-outer"><div class="prog-inner" id="sylBar" style="width:0%"></div></div>
+    <div class="prog-count" id="sylCnt">0/0 chapters</div>
+    <div id="sylBody"></div>
+  </div>
+</div>
+
+<!-- ═══ ARENA TAB ═══ -->
+<div class="section" id="tab-arena">
+
+  <!-- STEP 1: GENERATE -->
+  <div class="arena-card">
+    <div class="arena-title">⚔ PRACTICE ARENA</div>
+
+    <div class="timer-wrap">
+      <div class="timer-disp" id="tDisp">00:00</div>
+      <div class="timer-btns">
+        <button class="t-btn t-start" id="tBtn" onclick="toggleTimer()">START</button>
+        <button class="t-btn t-reset" onclick="resetTimer()">RESET</button>
+      </div>
+    </div>
+
+    <div class="cfg">
+      <div class="cfg-g" style="min-width:120px;flex:2">
+        <label class="cfg-lbl">SUBJECT</label>
+        <select class="cfg-sel" id="cSub" onchange="updateChapters()">
+          <option value="all">All Subjects</option>
+          <option value="physics">Physics</option>
+          <option value="chemistry">Chemistry</option>
+          <option value="maths">Mathematics</option>
+        </select>
+      </div>
+      <div class="cfg-g" style="min-width:150px;flex:3">
+        <label class="cfg-lbl">CHAPTER</label>
+        <select class="cfg-sel" id="cChap">
+          <option value="all">All Chapters</option>
+        </select>
+      </div>
+      <div class="cfg-g"><label class="cfg-lbl">MCQ Qs</label><input type="number" class="cfg-inp" id="cMcq" value="7" min="0" max="20"></div>
+      <div class="cfg-g"><label class="cfg-lbl">NUM Qs</label><input type="number" class="cfg-inp" id="cNum" value="5" min="0" max="20"></div>
+      <div class="cfg-g"><label class="cfg-lbl">TIME (min)</label><input type="number" class="cfg-inp" id="cTime" value="30" min="5" max="180"></div>
+      <button class="gen-btn" onclick="generateQ()">⚡ GENERATE</button>
+    </div>
+
+    <div class="stats-bar" id="statsBar" style="display:none">
+      <div class="stat-chip">Attempted: <span id="sAtt">0</span></div>
+      <div class="stat-chip">Left: <span id="sRem">0</span></div>
+      <div class="stat-chip">MCQ: <span id="sMcq">0</span></div>
+      <div class="stat-chip">NUM: <span id="sNum">0</span></div>
+    </div>
+
+    <table class="q-table" id="qTableWrap">
+      <thead>
+        <tr>
+          <th style="width:38px">Q#</th>
+          <th style="width:150px">CHAPTER</th>
+          <th>YOUR ANSWER</th>
+        </tr>
+      </thead>
+      <tbody id="qBody"></tbody>
+    </table>
+
+    <div class="lock-wrap"><button class="lock-btn" onclick="submitAnswers()">🔒 SUBMIT ANSWERS</button></div>
+  </div>
+
+  <!-- STEP 2: ENTER CORRECT ANSWERS -->
+  <div class="corr-card" id="corrCard">
+    <div class="corr-title">📋 CORRECT ANSWERS DAALO</div>
+    <div class="corr-sub">◈ Answer key dekh ke har question ka sahi answer mark karo ◈</div>
+    <table class="q-table">
+      <thead>
+        <tr>
+          <th style="width:38px">Q#</th>
+          <th style="width:150px">CHAPTER</th>
+          <th style="width:120px">TUMHARA ANS</th>
+          <th>SAHI ANSWER (TICK KARO)</th>
+        </tr>
+      </thead>
+      <tbody id="corrBody"></tbody>
+    </table>
+    <div class="lock-wrap" style="margin-top:16px">
+      <button class="green-btn" onclick="generateResult()">📊 RESULT DEKHO</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card" id="resCard">
+    <div class="res-title">◈ RESULT ANALYSIS ◈</div>
+    <div class="res-grid">
+      <div class="res-box"><div class="res-val v-green" id="rScore">0</div><div class="res-lbl">SCORE</div></div>
+      <div class="res-box"><div class="res-val v-green" id="rCorr">0</div><div class="res-lbl">CORRECT</div></div>
+      <div class="res-box"><div class="res-val v-red" id="rWrong">0</div><div class="res-lbl">WRONG</div></div>
+      <div class="res-box"><div class="res-val v-cyan" id="rSkip">0</div><div class="res-lbl">SKIPPED</div></div>
+      <div class="res-box"><div class="res-val v-cyan" id="rAcc">0%</div><div class="res-lbl">ACCURACY</div></div>
+    </div>
+    <div class="ans-reveal" id="ansReveal"></div>
+  </div>
+
+</div><!-- /tab-arena -->
+</div><!-- /app -->
+
+<script>
+/* ════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════ */
+var SYL={
+  physics:{name:"Physics",color:"#00e5ff",chapters:[
+    "Units & Dimensions","Kinematics 1D","Kinematics 2D & Projectile","Laws of Motion",
+    "Work, Energy & Power","Circular Motion","Rotational Motion","Gravitation",
+    "Properties of Matter","Simple Harmonic Motion","Wave Motion & Sound",
+    "Heat & Thermodynamics","Kinetic Theory of Gases","Ray Optics","Wave Optics",
+    "Electrostatics","Current Electricity","Magnetism","Electromagnetic Induction",
+    "Alternating Current","EM Waves","Modern Physics","Semiconductor Devices","Communication Systems"
+  ]},
+  chemistry:{name:"Chemistry",color:"#ff6b35",chapters:[
+    "Basic Concepts of Chemistry","Atomic Structure","Chemical Bonding","States of Matter",
+    "Thermodynamics","Equilibrium","Redox Reactions","Electrochemistry","Chemical Kinetics",
+    "Surface Chemistry","Periodic Table & Properties","p-Block Elements","d & f Block Elements",
+    "Coordination Compounds","Hydrogen","s-Block Elements","Haloalkanes & Haloarenes",
+    "Alcohols, Phenols & Ethers","Aldehydes & Ketones","Carboxylic Acids","Amines",
+    "Biomolecules","Polymers","Chemistry in Everyday Life","Environmental Chemistry",
+    "General Organic Chemistry","Hydrocarbons","IUPAC Nomenclature","Reaction Mechanisms",
+    "Isomerism","Metallurgy","Solid State","Solutions"
+  ]},
+  maths:{name:"Mathematics",color:"
