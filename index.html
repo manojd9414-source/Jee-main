@@ -264,7 +264,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     <div class="login-logo">🎯</div>
     <div class="login-title">JEE 99ile Tracker</div>
     <div class="login-sub">Apna data secure rakho.<br>Subject-wise progress track karo.</div>
-    <button class="g-btn" id="loginBtn">
+    <button class="g-btn" id="loginBtn" onclick="window._doLogin&&window._doLogin()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
       Google se Login Karo
     </button>
@@ -574,7 +574,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import {
   getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, serverTimestamp
@@ -593,6 +593,18 @@ const db   = getFirestore(app);
 const gProvider = new GoogleAuthProvider();
 
 window._fbReady = true;
+window._doLogin = async function(){
+  showLoginErr('');
+  var btn=document.getElementById('loginBtn');
+  btn.textContent='⏳ Loading...';
+  btn.disabled=true;
+  try{ await signInWithRedirect(auth, gProvider); }
+  catch(e){
+    showLoginErr('Login failed: '+e.message);
+    btn.innerHTML='<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px"> Google se Login Karo';
+    btn.disabled=false;
+  }
+};
 window._doLogout = function(){ signOut(auth); };
 function showLoginErr(msg){
   var el=document.getElementById('loginErr');
@@ -667,6 +679,15 @@ window.FS = {
     }catch(e){ console.warn('loadMocks',e); return[]; }
   }
 };
+
+// ── Handle redirect result (mobile login) ──
+getRedirectResult(auth).then(function(result){
+  if(result&&result.user){
+    console.log("Redirect login success:", result.user.displayName);
+  }
+}).catch(function(e){
+  if(e.code!=="auth/no-current-user") console.warn("Redirect error:",e.message);
+});
 
 // ── Auth state ──
 onAuthStateChanged(auth, async function(user){
