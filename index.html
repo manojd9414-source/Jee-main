@@ -267,6 +267,15 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
       Google se Login Karo
     </button>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:12px;color:var(--text3);font-weight:600;">YA</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+    <button class="g-btn" style="margin-top:14px;border-color:#e5e7eb;color:var(--text2);" onclick="guestLogin()">
+      👀 Bina Login Dekho (Guest)
+    </button>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.5;">Guest mode mein data sirf is device pe save hoga</div>
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
@@ -282,7 +291,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
   <div class="tb-right">
     <div class="streak-badge" id="streakBadge">⭐ 0</div>
-    <button onclick="confirmLogout()" style="background:transparent;border:1px solid var(--border);color:var(--text2);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif;">🚪 Logout</button>
+    <button id="logoutBtn" onclick="confirmLogout()" style="background:transparent;border:1px solid var(--border);color:var(--text2);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif;">🚪 Logout</button>
+    <button id="loginFromGuestBtn" onclick="loginFromGuest()" style="display:none;background:var(--blue);border:none;color:#fff;font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Inter',sans-serif;">🔑 Login Karo</button>
   </div>
 </div>
 
@@ -657,6 +667,30 @@ window.doLogin = async function(){
 
 getRedirectResult(auth).catch(function(){});
 
+// ── GUEST MODE ──
+window.guestLogin = function(){
+  window._uid = null;
+  window._currentUser = null;
+  window._isGuest = true;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('bottomNav').style.display='flex';
+  document.getElementById('userAvatar').src='https://ui-avatars.com/api/?name=Guest&background=9ca3af&color=fff&size=40';
+  document.getElementById('userName').textContent='Guest User 👀';
+  document.getElementById('logoutBtn').style.display='none';
+  document.getElementById('loginFromGuestBtn').style.display='inline-block';
+  window.initApp();
+};
+
+window.loginFromGuest = function(){
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('topbar').style.display='none';
+  document.getElementById('bottomNav').style.display='none';
+  window._isGuest = false;
+};
+
 window.FS = {
   async saveSyl(d){ var uid=window._uid; if(!uid)return; var clean={}; Object.keys(d).forEach(function(k){if(d[k])clean[k]=true;}); try{await setDoc(doc(db,'users',uid,'data','syllabus'),{done:clean,updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
   async loadSyl(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','syllabus')); return s.exists()?(s.data().done||{}):{};} catch(e){return{};} },
@@ -664,7 +698,7 @@ window.FS = {
   async loadStudy(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','studytime')); return s.exists()?s.data():{};} catch(e){return{};} },
   async saveGoalFS(g){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','settings'),{dailyGoalHrs:g},{merge:true});}catch(e){} },
   async loadGoalFS(){ var uid=window._uid; if(!uid)return 8; try{var s=await getDoc(doc(db,'users',uid,'data','settings')); return s.exists()?(s.data().dailyGoalHrs||8):8;} catch(e){return 8;} },
-  async saveMockFS(m){ var uid=window._uid; if(!uid)return; try{await addDoc(collection(db,'users',uid,'mocks'),Object.assign({},m,{createdAt:serverTimestamp()})); window.showStatus('saved');} catch(e){window.showStatus('save_err');} },
+  async saveMockFS(m){ var uid=window._uid; if(!uid){window.showStatus('guest');return;} try{await addDoc(collection(db,'users',uid,'mocks'),Object.assign({},m,{createdAt:serverTimestamp()})); window.showStatus('saved');} catch(e){window.showStatus('save_err');} },
   async loadMocksFS(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(collection(db,'users',uid,'mocks')); var list=[]; snap.forEach(function(d){list.push(Object.assign({firestoreId:d.id},d.data()));}); list.sort(function(a,b){return a.date<b.date?1:-1;}); return list;} catch(e){return[];} }
 };
 
@@ -768,6 +802,24 @@ function showNav(name,btn){
 window.initApp = async function(){
   window.showStatus('loading');
   done={}; mocks=[]; studyData={};
+
+  if(window._isGuest){
+    // Guest: load from localStorage only
+    try{
+      var raw=localStorage.getItem('jee_guest');
+      if(raw){var obj=JSON.parse(raw);mocks=obj.mocks||[];done=obj.done||{};studyData=obj.studyData||{};}
+    }catch(e){}
+    dailyGoalHrs=8;
+    try{var g=localStorage.getItem('jee_guest_goal');if(g)dailyGoalHrs=parseInt(g)||8;}catch(e){}
+    var gi=document.getElementById('goalInp'); if(gi) gi.value=dailyGoalHrs;
+    var mi=document.getElementById('mockDate'); if(mi) mi.value=today();
+    window.showStatus('guest');
+    buildSyl(); renderStats(); renderStudyUI(); updateStreakBadge();
+    planDateKey=today(); initPlannerToday();
+    loadChaps();
+    return;
+  }
+
   try{ done=await window.FS.loadSyl(); }catch(e){}
   try{ mocks=await window.FS.loadMocksFS(); }catch(e){}
   try{ studyData=await window.FS.loadStudy(); }catch(e){}
@@ -781,7 +833,7 @@ window.initApp = async function(){
 };
 
 function saveLocal(){
-  var uid=window._uid; if(!uid)return;
+  var uid=window._isGuest?'guest':(window._uid||null); if(!uid)return;
   try{localStorage.setItem('jee_'+uid,JSON.stringify({mocks:mocks,done:done,studyData:studyData}));}catch(e){}
 }
 
@@ -836,7 +888,8 @@ function renderStudyUI(){
 function saveGoal(){
   var gi=document.getElementById('goalInp');
   dailyGoalHrs=parseInt(gi.value)||8;
-  window.FS.saveGoalFS(dailyGoalHrs);
+  if(window._isGuest){try{localStorage.setItem('jee_guest_goal',dailyGoalHrs);}catch(e){};}
+  else{window.FS.saveGoalFS(dailyGoalHrs);}
   renderStudyUI();
 }
 function renderWeekGraph(){
@@ -920,7 +973,7 @@ function updProg(){
 
 // ═══ CHAPTER PLANNER ═══
 function initPlannerToday(){
-  var uid=window._uid; if(!uid)return;
+  var uid=window._isGuest?'guest':(window._uid||null); if(!uid)return;
   try{
     var raw=localStorage.getItem('jee_plan_'+uid+'_'+planDateKey);
     if(raw){var obj=JSON.parse(raw);planSelected=obj.selected||{physics:[],chemistry:[],maths:[]};planDone=obj.done||{physics:{},chemistry:{},maths:{}};}
@@ -929,7 +982,7 @@ function initPlannerToday(){
   switchPlanSub(planSub);
 }
 function savePlanLocal(){
-  var uid=window._uid; if(!uid)return;
+  var uid=window._isGuest?'guest':(window._uid||null); if(!uid)return;
   try{localStorage.setItem('jee_plan_'+uid+'_'+planDateKey,JSON.stringify({selected:planSelected,done:planDone}));}catch(e){}
 }
 function switchPlanSub(sub){
@@ -1268,8 +1321,8 @@ function updateStreakBadge(){
 }
 window.showStatus = function(s){
   var el=document.getElementById('sheetsStatus');if(!el)return;
-  var msgs={loading:'\u23F3 Loading from cloud...',synced:'\u2601\uFE0F Cloud sync OK \u2014 data safe hai!',saved:'\u2705 Mock saved to cloud!',save_err:'\u26A0\uFE0F Save failed \u2014 local backup active'};
-  var cols={loading:'var(--orange)',synced:'var(--green)',saved:'var(--green)',save_err:'var(--red)'};
+  var msgs={loading:'\u23F3 Loading from cloud...',synced:'\u2601\uFE0F Cloud sync OK \u2014 data safe hai!',saved:'\u2705 Mock saved to cloud!',save_err:'\u26A0\uFE0F Save failed \u2014 local backup active',guest:'\uD83D\uDC40 Guest Mode \u2014 data sirf is device pe save hoga. Login karo cloud backup ke liye!'};
+  var cols={loading:'var(--orange)',synced:'var(--green)',saved:'var(--green)',save_err:'var(--red)',guest:'var(--purple)'};
   el.textContent=msgs[s]||s;el.style.color=cols[s]||'var(--text2)';
 };
 function renderStats(){
@@ -1394,80 +1447,3 @@ if('serviceWorker' in navigator){
 
 </body>
 </html>
-var scaledScore = Math.round((score / maxScore) * 300);
-  scaledScore = Math.max(0, scaledScore);
-  var percentile;
-  if(scaledScore >= 285)      percentile = 99.99;
-  else if(scaledScore >= 270) percentile = 99.95;
-  else if(scaledScore >= 250) percentile = 99.9;
-  else if(scaledScore >= 230) percentile = 99.7;
-  else if(scaledScore >= 210) percentile = 99.4;
-  else if(scaledScore >= 190) percentile = 98.8;
-  else if(scaledScore >= 170) percentile = 97.5;
-  else if(scaledScore >= 150) percentile = 95.0;
-  else if(scaledScore >= 130) percentile = 91.0;
-  else if(scaledScore >= 110) percentile = 84.0;
-  else if(scaledScore >= 90)  percentile = 74.0;
-  else if(scaledScore >= 70)  percentile = 60.0;
-  else if(scaledScore >= 50)  percentile = 45.0;
-  else if(scaledScore >= 30)  percentile = 28.0;
-  else                        percentile = Math.max(1, scaledScore * 0.4);
-  var rank = Math.round((100 - percentile) / 100 * 1200000);
-  var rankStr;
-  if(rank < 100)        rankStr = '< 100';
-  else if(rank < 500)   rankStr = '< 500';
-  else if(rank < 1000)  rankStr = '< 1,000';
-  else if(rank < 5000)  rankStr = '< 5,000';
-  else if(rank < 10000) rankStr = '< 10,000';
-  else if(rank < 25000) rankStr = '< 25,000';
-  else if(rank < 50000) rankStr = '< 50,000';
-  else if(rank < 100000)rankStr = '< 1,00,000';
-  else if(rank < 200000)rankStr = '< 2,00,000';
-  else                  rankStr = '> 2,00,000';
-  var category, msg;
-  if(percentile >= 99.9){      category='IIT Top 5';  msg='🔥 IIT Bombay/Delhi pakka! Tu beast hai bhai!';}
-  else if(percentile >= 99.5){ category='IIT Zone';   msg='🎯 IIT milega! Bas consistency rakh aur mock dete reh!';}
-  else if(percentile >= 99){   category='IIT Zone';   msg='⚡ IIT possible hai! Accuracy thodi aur badhao!';}
-  else if(percentile >= 98){   category='IIT/NIT+';   msg='📈 IIT ke bahut karib! Weak chapters pe focus karo!';}
-  else if(percentile >= 95){   category='NIT Top';    msg='💪 NIT Top branch pakki! IIT ke liye aur 2-3 mock do!';}
-  else if(percentile >= 90){   category='NIT Zone';   msg='📚 NIT milega! Roz 1 mock lagao improvement hogi!';}
-  else if(percentile >= 80){   category='NIT/IIIT';   msg='🚀 Mehnat badhao — NIT door nahi!';}
-  else{                        category='Keep Going'; msg='💡 Abhi bahut time hai! Concepts clear karo!';}
-  document.getElementById('predPercentile').textContent = percentile.toFixed(2)+'%';
-  document.getElementById('predRank').textContent = rankStr;
-  document.getElementById('predCategory').textContent = category;
-  document.getElementById('predMsg').textContent = msg;
-  var info = document.getElementById('predScaledScore');
-  if(info) info.textContent = 'Scaled score (out of 300): '+scaledScore;
-  rp.style.display = 'block';
-  rp.style.marginTop = '16px';
-}
-
-// ═══ MOCK TRACKER ═══
-function saveMockData(mock){
-  mocks.unshift(mock);
-  saveLocal();
-  renderStats();
-  window.FS.saveMockFS(mock);
-}
-function saveMock(){
-  var date=document.getElementById('mockDate').value;
-  var mockQs=parseInt(document.getElementById('mockQs').value); if(!mockQs||isNaN(mockQs))mockQs=0;
-  var corr=parseInt(document.getElementById('mockCorr').value)||0;
-  var wrong=parseInt(document.getElementById('mockWrong').value)||0;
-  if(!date){alert('Date bharo!');return;}
-  saveMockData({id:Date.now(),date:date,score:corr*4-wrong,qs:mockQs,corr:corr,wrong:wrong});
-  document.getElementById('mockCorr').value='';
-  document.getElementById('mockWrong').value='';
-}
-function setPeriod(p,btn){
-  curPeriod=p;
-  document.querySelectorAll('.per-btn').forEach(function(b){b.classList.remove('on');});
-  btn.classList.add('on');
-  renderStats();
-}
-function filterMocks(p){
-  var now=new Date();
-  return mocks.filter(function(m){
-    var md=new Date(m.date);
-    if(p==='day') return md.toDateString()===now.toDateString();
