@@ -1,17 +1,18 @@
 {
-  "background_color": "#000000",
-  "dir": "ltr",
+  "name": "JEE 99ile Tracker",
+  "short_name": "JEE99ile",
+  "description": "Personal JEE preparation tracker with study timer, syllabus, arena and AI chat",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "name": "StudyApp",
-  "orientation": "any",
-  "scope": "/Jee-main/",
-  "short_name": "StudyApp",
-  "start_url": "/jee-main/",
-  "theme_color": "#487364",
-  "id": "StudyApp-id",
-  "description": "This is my personal PWA for JEE preparation",
+  "background_color": "#f0f2f5",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "id": "jee99ile-tracker",
   "lang": "en",
-  "categories": [
-    "education"
+  "categories": ["education"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
