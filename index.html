@@ -264,73 +264,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     <div class="login-logo">🎯</div>
     <div class="login-title">JEE 99ile Tracker</div>
     <div class="login-sub">Apna data secure rakho.<br>Subject-wise progress track karo.</div>
-
-    <!-- GOOGLE LOGIN -->
     <button class="g-btn" id="loginBtn">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
       Google se Login Karo
     </button>
-
-    <!-- DIVIDER -->
-    <div style="display:flex;align-items:center;gap:10px;margin:14px 0;">
-      <div style="flex:1;height:1px;background:#e5e7eb;"></div>
-      <span style="font-size:12px;color:#9ca3af;font-weight:600;">YA</span>
-      <div style="flex:1;height:1px;background:#e5e7eb;"></div>
-    </div>
-
-    <!-- PHONE LOGIN — Step 1: Enter number -->
-    <div id="phoneStep1">
-      <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <div style="background:#f0f2f5;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 12px;font-size:15px;font-weight:700;color:#4f46e5;white-space:nowrap;">🇮🇳 +91</div>
-        <input type="tel" id="phoneInput" placeholder="Mobile number daalo" maxlength="10"
-          style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid #e5e7eb;font-size:15px;font-weight:600;outline:none;font-family:'Inter',sans-serif;"
-          oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-          onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#e5e7eb'">
-      </div>
-      <button id="sendOtpBtn" onclick="sendOTP()"
-        style="width:100%;padding:13px;border-radius:12px;border:none;background:#4f46e5;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
-        📱 OTP Bhejo
-      </button>
-      <!-- reCAPTCHA container — Firebase needs this -->
-      <div id="recaptcha-container" style="margin-top:10px;display:flex;justify-content:center;"></div>
-    </div>
-
-    <!-- PHONE LOGIN — Step 2: Enter OTP -->
-    <div id="phoneStep2" style="display:none;">
-      <div style="font-size:13px;color:#6b7280;margin-bottom:10px;text-align:center;">
-        OTP bheja gaya <span id="otpSentTo" style="color:#4f46e5;font-weight:700;"></span> pe
-      </div>
-      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:12px;">
-        <input type="tel" class="otp-box" id="otp1" maxlength="1" oninput="otpNext(this,'otp2')" onkeydown="otpBack(event,this,'')">
-        <input type="tel" class="otp-box" id="otp2" maxlength="1" oninput="otpNext(this,'otp3')" onkeydown="otpBack(event,this,'otp1')">
-        <input type="tel" class="otp-box" id="otp3" maxlength="1" oninput="otpNext(this,'otp4')" onkeydown="otpBack(event,this,'otp2')">
-        <input type="tel" class="otp-box" id="otp4" maxlength="1" oninput="otpNext(this,'otp5')" onkeydown="otpBack(event,this,'otp3')">
-        <input type="tel" class="otp-box" id="otp5" maxlength="1" oninput="otpNext(this,'otp6')" onkeydown="otpBack(event,this,'otp4')">
-        <input type="tel" class="otp-box" id="otp6" maxlength="1" oninput="otpNext(this,'')"    onkeydown="otpBack(event,this,'otp5')">
-      </div>
-      <button id="verifyOtpBtn" onclick="verifyOTP()"
-        style="width:100%;padding:13px;border-radius:12px;border:none;background:#16a34a;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">
-        ✅ Verify Karo
-      </button>
-      <button onclick="resetPhoneLogin()"
-        style="width:100%;padding:10px;border-radius:12px;border:1.5px solid #e5e7eb;background:transparent;color:#6b7280;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;font-family:'Inter',sans-serif;">
-        ← Number badlo
-      </button>
-    </div>
-
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
-
-<style>
-.otp-box{
-  width:42px;height:50px;text-align:center;font-size:22px;font-weight:800;
-  border:2px solid #e5e7eb;border-radius:10px;outline:none;
-  color:#4f46e5;font-family:'Inter',sans-serif;
-  transition:border-color .15s;
-}
-.otp-box:focus{border-color:#4f46e5;}
-</style>
 
 <!-- TOP BAR -->
 <div id="topbar" style="display:none">
@@ -634,8 +574,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
-  RecaptchaVerifier, signInWithPhoneNumber
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import {
   getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, serverTimestamp
@@ -654,81 +593,6 @@ const db   = getFirestore(app);
 const gProvider = new GoogleAuthProvider();
 
 window._fbReady = true;
-var confirmationResult = null;
-
-// ── Google Login ──
-document.getElementById('loginBtn').addEventListener('click', async function(){
-  showLoginErr('');
-  try{ await signInWithPopup(auth, gProvider); }
-  catch(e){ showLoginErr('Google login failed: '+e.message); }
-});
-
-// ── Logout ──
-document.getElementById('logoutBtn').addEventListener('click', function(){ signOut(auth); });
-
-// ── Phone: Send OTP ──
-window.sendOTP = async function(){
-  showLoginErr('');
-  var num = document.getElementById('phoneInput').value.trim();
-  if(num.length !== 10){ showLoginErr('10 digit number daalo'); return; }
-  var fullNum = '+91'+num;
-  var btn = document.getElementById('sendOtpBtn');
-  btn.textContent='⏳ Bhej raha hoon...'; btn.disabled=true;
-  try{
-    // Create reCAPTCHA (invisible)
-    if(!window._recaptchaVerifier){
-      window._recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible',
-        callback: function(){ }
-      });
-    }
-    confirmationResult = await signInWithPhoneNumber(auth, fullNum, window._recaptchaVerifier);
-    // Show OTP step
-    document.getElementById('phoneStep1').style.display='none';
-    document.getElementById('phoneStep2').style.display='block';
-    document.getElementById('otpSentTo').textContent=fullNum;
-    document.getElementById('otp1').focus();
-  } catch(e){
-    showLoginErr('OTP send failed: '+e.message);
-    // Reset reCAPTCHA on error
-    window._recaptchaVerifier = null;
-    btn.textContent='📱 OTP Bhejo'; btn.disabled=false;
-  }
-};
-
-// ── Phone: Verify OTP ──
-window.verifyOTP = async function(){
-  showLoginErr('');
-  var otp = '';
-  for(var i=1;i<=6;i++){
-    var v = document.getElementById('otp'+i).value;
-    if(!v){ showLoginErr('Saare 6 digits bharo!'); return; }
-    otp += v;
-  }
-  if(!confirmationResult){ showLoginErr('Pehle OTP bhejo!'); return; }
-  var btn = document.getElementById('verifyOtpBtn');
-  btn.textContent='⏳ Verify ho raha hai...'; btn.disabled=true;
-  try{
-    await confirmationResult.confirm(otp);
-    // onAuthStateChanged will handle the rest
-  } catch(e){
-    showLoginErr('Wrong OTP! Dobara try karo.');
-    btn.textContent='✅ Verify Karo'; btn.disabled=false;
-  }
-};
-
-// ── Reset phone login ──
-window.resetPhoneLogin = function(){
-  document.getElementById('phoneStep1').style.display='block';
-  document.getElementById('phoneStep2').style.display='none';
-  document.getElementById('phoneInput').value='';
-  for(var i=1;i<=6;i++) document.getElementById('otp'+i).value='';
-  var btn=document.getElementById('sendOtpBtn');
-  btn.textContent='📱 OTP Bhejo'; btn.disabled=false;
-  window._recaptchaVerifier=null;
-  showLoginErr('');
-};
-
 function showLoginErr(msg){
   var el=document.getElementById('loginErr');
   if(msg){ el.style.display='block'; el.textContent=msg; }
@@ -838,27 +702,6 @@ onAuthStateChanged(auth, async function(user){
      MAIN APP SCRIPT (no arrow functions, no module)
 ════════════════════════════════════════════════════════════ -->
 <script>
-// ═══ OTP INPUT HELPERS ═══
-function otpNext(el, nextId){
-  el.value = el.value.replace(/[^0-9]/g,'');
-  if(el.value && nextId){
-    var nxt = document.getElementById(nextId);
-    if(nxt) nxt.focus();
-  }
-  // Auto verify when all 6 filled
-  var otp='';
-  for(var i=1;i<=6;i++){
-    var v=document.getElementById('otp'+i);
-    if(!v||!v.value){ otp=''; break; }
-    otp+=v.value;
-  }
-  if(otp.length===6) window.verifyOTP();
-}
-function otpBack(e, el, prevId){
-  if(e.key==='Backspace' && !el.value && prevId){
-    var prev=document.getElementById(prevId); if(prev) prev.focus();
-  }
-}
 // ═══ DATA ═══
 var SYL = {
   physics:{name:"Physics",color:"#4f46e5",cls:"ph",chapters:["Units & Dimensions","Kinematics 1D","Kinematics 2D & Projectile","Laws of Motion","Work, Energy & Power","Circular Motion","Rotational Motion","Gravitation","Properties of Matter","Simple Harmonic Motion","Wave Motion & Sound","Heat & Thermodynamics","Kinetic Theory of Gases","Ray Optics","Wave Optics","Electrostatics","Current Electricity","Magnetism","Electromagnetic Induction","Alternating Current","EM Waves","Modern Physics","Semiconductor Devices","Communication Systems"]},
