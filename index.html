@@ -251,7 +251,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
 .qs-opt-btn{padding:7px 14px;border-radius:8px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
 .qs-opt-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
-.qs-opt-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
@@ -457,14 +456,15 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
           </div>
         </div>
         <div class="cfg-row">
-          <div class="cfg-grp"><label class="cfg-lbl">QUESTIONS</label>
-            <select class="cfg-sel" id="cTotal">
-              <option value="5">5 Questions</option>
-              <option value="10">10 Questions</option>
-              <option value="15" selected>15 Questions</option>
-              <option value="20">20 Questions</option>
-              <option value="25">25 Questions</option>
-            </select>
+          <div class="cfg-grp" style="min-width:100%;flex-basis:100%"><label class="cfg-lbl">QUESTIONS</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+              <button type="button" class="qs-opt-btn" onclick="selArenaQs(5,this)">5</button>
+              <button type="button" class="qs-opt-btn" onclick="selArenaQs(10,this)">10</button>
+              <button type="button" class="qs-opt-btn on" onclick="selArenaQs(15,this)">15</button>
+              <button type="button" class="qs-opt-btn" onclick="selArenaQs(20,this)">20</button>
+              <button type="button" class="qs-opt-btn" onclick="selArenaQs(25,this)">25</button>
+            </div>
+            <input type="hidden" id="cTotal" value="15">
           </div>
           <div class="cfg-grp"><label class="cfg-lbl">TIME (min)</label><input type="number" class="cfg-in" id="cTime" value="30" min="5" max="180"></div>
           <button class="gen-btn" onclick="genQ()">⚡ Go</button>
@@ -502,28 +502,31 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       </div>
       <div id="ansList" style="text-align:left;"></div>
 
-      <!-- RANK PREDICTOR -->
-      <div id="rankPredictor" style="display:none;margin-top:16px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:12px;padding:16px;color:#fff;text-align:center;">
-        <div style="font-size:12px;font-weight:700;letter-spacing:1px;opacity:.8;margin-bottom:8px;">🎯 JEE RANK PREDICTOR</div>
-        <div style="font-size:11px;opacity:.7;margin-bottom:12px;">Is practice session ke basis par estimated rank</div>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;min-width:100px;">
-            <div style="font-size:22px;font-weight:900;" id="predPercentile">0%</div>
-            <div style="font-size:10px;opacity:.8;margin-top:2px;">PERCENTILE</div>
-          </div>
-          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;min-width:100px;">
-            <div style="font-size:22px;font-weight:900;" id="predRank">-</div>
-            <div style="font-size:10px;opacity:.8;margin-top:2px;">EST. RANK</div>
-          </div>
-          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;min-width:100px;">
-            <div style="font-size:22px;font-weight:900;" id="predCategory">-</div>
-            <div style="font-size:10px;opacity:.8;margin-top:2px;">CATEGORY</div>
-          </div>
+    </div>
+  </div>
+
+  <!-- RANK PREDICTOR CARD -->
+  <div id="rankPredictor" class="sec on" style="display:none;padding:0 0 12px 0;">
+    <div style="background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:14px;padding:18px 16px;color:#fff;text-align:center;box-shadow:0 6px 24px rgba(79,70,229,.35);">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;opacity:.75;margin-bottom:4px;">🎯 JEE RANK PREDICTOR</div>
+      <div style="font-size:11px;opacity:.55;margin-bottom:14px;">Is Arena session ke score se estimated</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="background:rgba(255,255,255,.18);border-radius:12px;padding:12px 16px;min-width:85px;">
+          <div style="font-size:22px;font-weight:900;line-height:1;" id="predPercentile">-</div>
+          <div style="font-size:9px;opacity:.75;margin-top:4px;font-weight:700;letter-spacing:.5px;">PERCENTILE</div>
         </div>
-        <div id="predMsg" style="margin-top:12px;font-size:13px;font-weight:600;opacity:.9;line-height:1.5;"></div>
-        <div id="predScaledScore" style="margin-top:8px;font-size:11px;opacity:.7;font-weight:600;"></div>
-        <div style="margin-top:6px;font-size:10px;opacity:.5;">*Practice session ke basis par estimate. Actual JEE mein vary ho sakta hai.</div>
+        <div style="background:rgba(255,255,255,.18);border-radius:12px;padding:12px 16px;min-width:85px;">
+          <div style="font-size:22px;font-weight:900;line-height:1;" id="predRank">-</div>
+          <div style="font-size:9px;opacity:.75;margin-top:4px;font-weight:700;letter-spacing:.5px;">EST. RANK</div>
+        </div>
+        <div style="background:rgba(255,255,255,.18);border-radius:12px;padding:12px 16px;min-width:85px;">
+          <div style="font-size:16px;font-weight:900;line-height:1;" id="predCategory">-</div>
+          <div style="font-size:9px;opacity:.75;margin-top:4px;font-weight:700;letter-spacing:.5px;">CATEGORY</div>
+        </div>
       </div>
+      <div id="predMsg" style="font-size:14px;font-weight:700;line-height:1.55;"></div>
+      <div id="predScaledScore" style="font-size:11px;opacity:.6;margin-top:6px;"></div>
+      <div style="font-size:10px;opacity:.4;margin-top:8px;">*Practice estimate — actual JEE mein vary hoga</div>
     </div>
   </div>
 
@@ -1019,7 +1022,7 @@ function rnd(a){return a[Math.floor(Math.random()*a.length)];}
 function genQ(){
   var sub=document.getElementById('cSub').value;
   var chapV=document.getElementById('cChap').value;
-  var total=parseInt(document.getElementById('cTotal').value)||15;
+  var total=parseInt(document.getElementById('cTotal').value)||15; if(isNaN(total)||total<1)total=15;
   var nM=Math.round(total*0.6),nN=total-nM;
   qs=[];uAns={};corrAns={};
   var pool=[];
@@ -1151,7 +1154,7 @@ function saveMockData(mock){
 }
 function saveMock(){
   var date=document.getElementById('mockDate').value;
-  var mockQs=parseInt(document.getElementById('mockQs').value)||0;
+  var mockQs=parseInt(document.getElementById('mockQs').value); if(!mockQs||isNaN(mockQs))mockQs=0;
   var corr=parseInt(document.getElementById('mockCorr').value)||0;
   var wrong=parseInt(document.getElementById('mockWrong').value)||0;
   if(!date){alert('Date bharo!');return;}
@@ -1159,6 +1162,8 @@ function saveMock(){
   document.getElementById('mockQs').value='';
   document.getElementById('mockCorr').value='';
   document.getElementById('mockWrong').value='';
+  document.getElementById('mockQs').value='75';
+  document.querySelectorAll('.qs-opt-btn').forEach(function(b){b.classList.remove('on');});
 }
 function setPeriod(p,btn){
   curPeriod=p;
@@ -1240,14 +1245,13 @@ function switchAI(name){
 
 function selMockQs(val, btn){
   document.getElementById('mockQs').value = val;
-  document.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
+  // Only reset buttons in mock form area
+  btn.closest('div').querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
   btn.classList.add('on');
 }
-
-
-function selMockQs(val, btn){
-  document.getElementById('mockQs').value = val;
-  document.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
+function selArenaQs(val, btn){
+  document.getElementById('cTotal').value = val;
+  btn.closest('div').querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
   btn.classList.add('on');
 }
 
@@ -1314,7 +1318,7 @@ function showRankPredictor(score, total){
   var info = document.getElementById('predScaledScore');
   if(info) info.textContent = 'Scaled score (out of 300): '+scaledScore;
   
-  rp.style.display = 'block'; rp.style.marginTop='16px';
+  rp.style.display = 'block'; rp.scrollIntoView({behavior:'smooth',block:'start'}); rp.style.marginTop='16px';
 }
 }
 function renderChat(){
