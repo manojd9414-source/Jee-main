@@ -237,6 +237,47 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── CHAPTER PLANNER EXTRA CSS ── */
+.plan-progress-bar{background:var(--border);border-radius:99px;height:8px;overflow:hidden;margin:10px 0 4px;}
+.plan-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),#22c55e);transition:width .5s;}
+#ptab-chemistry.on{background:var(--orange) !important;}
+#ptab-maths.on{background:var(--green) !important;}
+.plan-stab{font-family:'Inter',sans-serif;}
+
+
+/* ── CHAPTER PLANNER ── */
+.plan-stab{flex:1;padding:8px 6px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;}
+.plan-stab.on{color:#fff;border-color:transparent;background:var(--blue);}
+#ptab-physics.on{background:var(--blue);}
+#ptab-chemistry.on{background:var(--orange);}
+#ptab-maths.on{background:var(--green);}
+
+.plan-chap-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;transition:all .15s;user-select:none;}
+.plan-chap-item:hover{background:var(--bluelt);border-color:#c7d2fe;}
+.plan-chap-item.selected{border-color:var(--blue);background:var(--bluelt);}
+.plan-chap-item.selected.ch-sel{border-color:var(--orange);background:var(--orangelt);}
+.plan-chap-item.selected.ma-sel{border-color:var(--green);background:var(--greenlt);}
+.plan-chk-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;transition:all .15s;}
+.plan-chap-item.selected .plan-chk-box{background:var(--blue);border-color:var(--blue);color:#fff;}
+.plan-chap-item.selected.ch-sel .plan-chk-box{background:var(--orange);border-color:var(--orange);}
+.plan-chap-item.selected.ma-sel .plan-chk-box{background:var(--green);border-color:var(--green);}
+.plan-chap-name{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.plan-done-area{margin-top:12px;padding-top:12px;border-top:2px dashed var(--border);}
+.plan-done-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;text-align:center;letter-spacing:.5px;}
+.plan-done-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;margin-bottom:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;transition:all .2s;user-select:none;}
+.plan-done-item.ticked{background:var(--greenlt);border-color:#86efac;}
+.plan-done-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;transition:all .2s;}
+.plan-done-item.ticked .plan-done-chk{background:var(--green);border-color:var(--green);color:#fff;}
+.plan-done-name{font-size:13px;font-weight:600;flex:1;}
+.plan-done-item.ticked .plan-done-name{text-decoration:line-through;color:var(--text3);}
+.plan-done-sub{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;}
+.plan-confirm-btn{display:block;width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;transition:all .2s;}
+.plan-confirm-btn:active{transform:scale(.98);}
+.plan-sel-count{text-align:center;padding:8px;font-size:13px;font-weight:700;border-radius:8px;margin-top:8px;}
+.plan-progress-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:8px;}
+.plan-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),#86efac);transition:width .4s ease;}
+.plan-done-count{text-align:center;font-size:12px;font-weight:600;color:var(--green);margin-top:6px;}
 </style>
 </head>
 <body>
@@ -351,7 +392,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     <div class="timer-hero">
       <div style="font-size:12px;opacity:.7;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Study Timer</div>
       <div class="timer-display" id="studyDisp">00:00:00</div>
-      <div class="timer-sub" id="studySubLabel">Select subject & start</div>
+      <div class="timer-sub" id="studySubLabel">Subject & chapters chuno, phir start karo</div>
       <div class="sub-selector">
         <button class="sub-btn on" id="sbtn-ph" onclick="selSub('physics')">⚡ Physics</button>
         <button class="sub-btn" id="sbtn-ch" onclick="selSub('chemistry')">🧪 Chemistry</button>
@@ -360,6 +401,25 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div class="timer-btns">
         <button class="t-btn start" id="studyStartBtn" onclick="togStudyTimer()">▶ Start</button>
         <button class="t-btn reset" onclick="rstStudyTimer()">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- CHAPTER PLANNER -->
+    <div class="card">
+      <div class="card-title">📖 Aaj Konse Chapters Padhne Hain?</div>
+      <!-- Subject tabs -->
+      <div style="display:flex;gap:6px;margin-bottom:12px;">
+        <button class="plan-stab on" id="ptab-physics" onclick="switchPlanSub('physics')">⚡ Physics</button>
+        <button class="plan-stab" id="ptab-chemistry" onclick="switchPlanSub('chemistry')">🧪 Chemistry</button>
+        <button class="plan-stab" id="ptab-maths" onclick="switchPlanSub('maths')">📐 Maths</button>
+      </div>
+      <!-- Chapter list with checkboxes -->
+      <div id="planChapList" style="max-height:280px;overflow-y:auto;padding-right:2px;"></div>
+      <!-- Selected count badge -->
+      <div id="planSelCount" style="margin-top:10px;text-align:center;"></div>
+      <!-- Done tick area — appears after selection -->
+      <div id="planDoneArea" style="display:none;" class="plan-done-area">
+        <div id="planDoneList"></div>
       </div>
     </div>
 
@@ -667,6 +727,7 @@ window.initUserData=async function(uid){
     showSheetsStatus('local');
   }
   buildSyl();renderStats();renderStudyUI();updateStreakBadge();
+  initPlannerToday();
 };
 
 function saveLocal(){
@@ -816,23 +877,37 @@ function renderWeekGraph(){
 // ═══ SYLLABUS ═══
 function buildSyl(){
   var body=document.getElementById('sylBody');body.innerHTML='';
-  Object.keys(SYL).forEach(function(sk){
+  var subKeys=Object.keys(SYL);
+  subKeys.forEach(function(sk,si){
     var sub=SYL[sk],sec=document.createElement('div');sec.className='sub-section';
-    var dn=sub.chapters.filter((_,i)=>!!done[sk+i]).length;
+    var dn=sub.chapters.filter(function(_,i){return !!done[sk+i];}).length;
     var hd=document.createElement('div');hd.className='sub-head';
+    // Auto-open first subject
+    if(si===0) hd.classList.add('open');
     hd.innerHTML='<div class="sub-dot" style="background:'+sub.color+'"></div>'
+      +'<div style="flex:1;">'
       +'<div class="sub-name" style="color:'+sub.color+'">'+sub.name+'</div>'
+      +'</div>'
       +'<div class="sub-pg" id="sp'+sk+'">'+dn+'/'+sub.chapters.length+'</div>'
-      +'<div class="sub-arr">▶</div>';
+      +'<div class="sub-arr" style="margin-left:4px;">'+(si===0?'▼':'▶')+'</div>';
     var lst=document.createElement('div');lst.className='ch-list';
+    // Auto-open first
+    if(si===0) lst.classList.add('open');
     sub.chapters.forEach(function(ch,i){
-      var key=sk+i,item=document.createElement('div');item.className='ch-item';
+      var key=sk+i;
+      var item=document.createElement('div');item.className='ch-item';
       item.innerHTML='<div class="chk'+(done[key]?' on':'')+'" id="ck'+key+'"></div>'
         +'<div class="ch-name'+(done[key]?' done':'')+'" id="cn'+key+'">'+ch+'</div>';
       item.onclick=(function(s2,ix){return function(){togCh(s2,ix);};})(sk,i);
       lst.appendChild(item);
     });
-    hd.onclick=function(){hd.classList.toggle('open');lst.classList.toggle('open');};
+    hd.onclick=(function(h,l){return function(){
+      var isOpen=l.classList.contains('open');
+      h.classList.toggle('open',!isOpen);
+      l.classList.toggle('open',!isOpen);
+      var arr=h.querySelector('.sub-arr');
+      if(arr) arr.textContent=(!isOpen)?'▼':'▶';
+    };})(hd,lst);
     sec.appendChild(hd);sec.appendChild(lst);body.appendChild(sec);
   });
   updProg();
@@ -853,6 +928,153 @@ function updProg(){
   document.getElementById('sylBar').style.width=pct+'%';
   document.getElementById('sylCnt').textContent=dn+'/'+tot;
   document.getElementById('sylCntSub').textContent=dn+' chapters done out of '+tot;
+}
+
+// ═══ CHAPTER PLANNER ═══
+var planSub='physics';          // currently visible subject tab
+var planSelected={};            // {physics:[idx,...], chemistry:[...], maths:[...]}
+var planDone={};                // {physics:{idx:true,...}, ...}  — ticked as done today
+var planDateKey='';             // today's date key
+
+function initPlannerToday(){
+  planDateKey=getTodayKey();
+  // Try load from localStorage
+  var uid=getUID(); if(!uid)return;
+  var raw=localStorage.getItem('jee_plan_'+uid+'_'+planDateKey);
+  if(raw){
+    var obj=JSON.parse(raw);
+    planSelected=obj.selected||{};
+    planDone=obj.done||{};
+  } else {
+    planSelected={physics:[],chemistry:[],maths:[]};
+    planDone={physics:{},chemistry:{},maths:{}};
+  }
+  switchPlanSub(planSub);
+}
+
+function savePlanLocal(){
+  var uid=getUID();if(!uid)return;
+  localStorage.setItem('jee_plan_'+uid+'_'+planDateKey, JSON.stringify({selected:planSelected,done:planDone}));
+}
+
+function switchPlanSub(sub){
+  planSub=sub;
+  var subColors={physics:'var(--blue)',chemistry:'var(--orange)',maths:'var(--green)'};
+  ['physics','chemistry','maths'].forEach(function(s){
+    var t=document.getElementById('ptab-'+s);
+    if(!t)return;
+    if(s===sub){
+      t.classList.add('on');
+      t.style.background=subColors[s];
+      t.style.color='#fff';
+      t.style.borderColor='transparent';
+    } else {
+      t.classList.remove('on');
+      t.style.background='#fff';
+      t.style.color='var(--text2)';
+      t.style.borderColor='var(--border)';
+    }
+  });
+  renderPlanChapList();
+}
+
+function renderPlanChapList(){
+  var container=document.getElementById('planChapList');
+  if(!container)return;
+  var chapters=SYL[planSub].chapters;
+  var selIdx=planSelected[planSub]||[];
+  var colClass=planSub==='chemistry'?'ch-sel':planSub==='maths'?'ma-sel':'';
+
+  var html='';
+  chapters.forEach(function(ch,i){
+    var isSel=selIdx.indexOf(i)>-1;
+    html+='<div class="plan-chap-item'+(isSel?' selected '+colClass:'')+'" onclick="togglePlanChap('+i+')">'
+      +'<div class="plan-chk-box">'+(isSel?'✓':'')+'</div>'
+      +'<div class="plan-chap-name">'+ch+'</div>'
+      +'</div>';
+  });
+  container.innerHTML=html;
+  renderPlanSelCount();
+}
+
+function togglePlanChap(idx){
+  if(!planSelected[planSub]) planSelected[planSub]=[];
+  var arr=planSelected[planSub];
+  var pos=arr.indexOf(idx);
+  if(pos>-1){
+    arr.splice(pos,1);
+    // also uncheck from done
+    if(planDone[planSub]) delete planDone[planSub][idx];
+  } else {
+    arr.push(idx);
+  }
+  savePlanLocal();
+  renderPlanChapList();
+  renderPlanDoneList();
+}
+
+function renderPlanSelCount(){
+  var total=0;
+  Object.keys(planSelected).forEach(function(s){total+=(planSelected[s]||[]).length;});
+  var el=document.getElementById('planSelCount');
+  if(!el)return;
+  if(total===0){
+    el.innerHTML='<span style="color:var(--text3);">Chapters select karo niche se 👆</span>';
+  } else {
+    el.innerHTML='<span style="background:var(--bluelt);color:var(--blue);padding:6px 14px;border-radius:20px;">✅ '+total+' chapters selected</span>';
+  }
+  renderPlanDoneList();
+}
+
+function renderPlanDoneList(){
+  var doneArea=document.getElementById('planDoneArea');
+  var doneList=document.getElementById('planDoneList');
+  if(!doneArea||!doneList)return;
+
+  // Collect all selected chapters across subjects
+  var allSelected=[];
+  ['physics','chemistry','maths'].forEach(function(s){
+    (planSelected[s]||[]).forEach(function(idx){
+      allSelected.push({sub:s,idx:idx,ch:SYL[s].chapters[idx]});
+    });
+  });
+
+  if(allSelected.length===0){
+    doneArea.style.display='none';
+    return;
+  }
+  doneArea.style.display='block';
+
+  var doneCount=0;
+  var html='<div class="plan-done-title">✏️ Tick karo jab chapter complete ho</div>';
+
+  var subColors={physics:'#eef2ff',chemistry:'#fff7ed',maths:'#dcfce7'};
+  var subTextColors={physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
+  var subEmoji={physics:'⚡',chemistry:'🧪',maths:'📐'};
+
+  allSelected.forEach(function(item){
+    var isDone=(planDone[item.sub]&&planDone[item.sub][item.idx])?true:false;
+    if(isDone)doneCount++;
+    html+='<div class="plan-done-item'+(isDone?' ticked':'')+'" onclick="tickPlanChap(\''+item.sub+'\','+item.idx+')">'
+      +'<div class="plan-done-chk">'+(isDone?'✓':'')+'</div>'
+      +'<div class="plan-done-name">'+item.ch+'</div>'
+      +'<span class="plan-done-sub" style="background:'+subColors[item.sub]+';color:'+subTextColors[item.sub]+';">'+subEmoji[item.sub]+' '+SYL[item.sub].name+'</span>'
+      +'</div>';
+  });
+
+  // Progress bar
+  var pct=allSelected.length>0?Math.round(doneCount/allSelected.length*100):0;
+  html+='<div class="plan-progress-bar"><div class="plan-progress-fill" style="width:'+pct+'%"></div></div>';
+  html+='<div class="plan-done-count">'+doneCount+' / '+allSelected.length+' completed'+(pct===100?' 🎉 Shabash!':'')+'</div>';
+
+  doneList.innerHTML=html;
+}
+
+function tickPlanChap(sub,idx){
+  if(!planDone[sub])planDone[sub]={};
+  planDone[sub][idx]=!planDone[sub][idx];
+  savePlanLocal();
+  renderPlanDoneList();
 }
 
 // ═══ ARENA TIMER ═══
