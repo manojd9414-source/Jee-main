@@ -3,11 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#4f46e5">
 <title>JEE 99ile Tracker</title>
-
 <link rel="manifest" href="manifest.json">
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -262,6 +259,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">🎯</div>
@@ -275,6 +273,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
 </div>
 
+<!-- TOP BAR -->
 <div id="topbar" style="display:none">
   <div class="tb-left">
     <img class="tb-avatar" id="userAvatar" src="" alt="">
@@ -289,14 +288,17 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
 </div>
 
+<!-- MAIN -->
 <div class="wrap" id="mainApp" style="display:none">
 
+  <!-- QUOTE -->
   <div class="quote-card">
     <div class="quote-text" id="qtext"></div>
     <div class="quote-auth" id="qauth"></div>
     <div class="quote-date" id="qdate"></div>
   </div>
 
+  <!-- IIT BANNER -->
   <div style="border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative;height:160px;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
     <div style="width:100%;height:100%;background:linear-gradient(135deg,#1e1b4b,#4f46e5);"></div>
     <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;">
@@ -306,6 +308,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
+  <!-- COUNTDOWN -->
   <div class="card">
     <div class="card-title">⏳ Countdown</div>
     <div class="cd-grid">
@@ -342,8 +345,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
+  <!-- HOME SECTION (just quote + countdown, already above) -->
   <div class="sec on" id="sec-home"></div>
 
+  <!-- TIMER SECTION -->
   <div class="sec" id="sec-timer">
     <div class="timer-hero">
       <div style="font-size:12px;opacity:.7;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Study Timer</div>
@@ -360,6 +365,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       </div>
     </div>
 
+    <!-- CHAPTER PLANNER -->
     <div class="card">
       <div class="card-title">📖 Aaj Konse Chapters?</div>
       <div style="display:flex;gap:6px;margin-bottom:12px;">
@@ -379,6 +385,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       </div>
     </div>
 
+    <!-- DAILY GOAL -->
     <div class="card">
       <div class="card-title">🎯 Daily Goal</div>
       <div class="goal-row">
@@ -392,6 +399,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       </div>
     </div>
 
+    <!-- SUBJECT TIME -->
     <div class="card">
       <div class="card-title">📊 Today's Subject Time</div>
       <div class="sub-time-grid">
@@ -401,12 +409,14 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       </div>
     </div>
 
+    <!-- WEEKLY GRAPH -->
     <div class="card">
       <div class="card-title">📅 Weekly Progress (hrs)</div>
       <div class="week-graph" id="weekGraph"></div>
     </div>
   </div>
 
+  <!-- SYLLABUS SECTION -->
   <div class="sec" id="sec-syl">
     <div class="card">
       <div class="card-title">📚 Syllabus Progress</div>
@@ -435,6 +445,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
+  <!-- ARENA SECTION -->
   <div class="sec" id="sec-arena">
     <div class="card">
       <div class="card-title">⚔️ Practice Arena</div>
@@ -499,6 +510,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
+  <!-- STATS SECTION -->
   <div class="sec" id="sec-stats">
     <div class="card">
       <div class="card-title">📊 Mock Test Tracker</div>
@@ -525,6 +537,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
+  <!-- AI SECTION -->
   <div class="sec" id="sec-ai">
     <div class="card" style="padding:0;overflow:hidden;">
       <div class="ai-tabs">
@@ -546,6 +559,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
 </div>
 
+<!-- BOTTOM NAV -->
 <div id="bottomNav" style="display:none">
   <button class="nav-btn on" onclick="showNav('home',this)"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></button>
   <button class="nav-btn" onclick="showNav('timer',this)"><div class="nav-icon">⏱️</div><div class="nav-label">Timer</div></button>
@@ -555,6 +569,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <button class="nav-btn" onclick="showNav('ai',this)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></button>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     FIREBASE MODULE SCRIPT
+════════════════════════════════════════════════════════════ -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import {
@@ -733,6 +750,9 @@ onAuthStateChanged(auth, async function(user){
 });
 </script>
 
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN APP SCRIPT (no arrow functions, no module)
+════════════════════════════════════════════════════════════ -->
 <script>
 // ═══ DATA ═══
 var SYL = {
@@ -1544,4 +1564,13 @@ function clearChat(){ aiHist[aiCur]=[SYS_MSG]; renderChat(); }
 function chatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();} }
 function chatResize(el){ el.style.height='42px'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
 renderChat();
-</script
+</script>
+</<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Agar file ka naam alag hai toh yahan change karein
+    navigator.serviceWorker.register('/pwabuilder-sw.js');
+  });
+}
+</script>
+</html>
