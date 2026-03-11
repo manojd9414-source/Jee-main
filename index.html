@@ -283,7 +283,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
   <div class="tb-right">
     <div class="streak-badge" id="streakBadge">⭐ 0</div>
-    <button class="logout-btn" id="logoutBtn">Logout</button>
+    <button class="logout-btn" id="logoutBtn" onclick="window._doLogout&&window._doLogout()">Logout</button>
   </div>
 </div>
 
@@ -593,6 +593,7 @@ const db   = getFirestore(app);
 const gProvider = new GoogleAuthProvider();
 
 window._fbReady = true;
+window._doLogout = function(){ signOut(auth); };
 function showLoginErr(msg){
   var el=document.getElementById('loginErr');
   if(msg){ el.style.display='block'; el.textContent=msg; }
