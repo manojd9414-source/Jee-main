@@ -595,15 +595,20 @@ function showLoginLoading(on){
   }
 }
 
+// ── Login: try popup first, fallback to redirect ──
 window._doLogin = async function(){
   showLoginErr('');
   showLoginLoading(true);
   try{
+    // Try popup first
     await signInWithPopup(auth, gProvider);
+    // onAuthStateChanged will handle UI
   } catch(popupErr){
+    // If popup blocked or failed, use redirect
     if(popupErr.code==='auth/popup-blocked' || popupErr.code==='auth/popup-closed-by-user' || popupErr.code==='auth/cancelled-popup-request'){
       try{
         await signInWithRedirect(auth, gProvider);
+        // Page will reload — onAuthStateChanged handles after return
       } catch(redirErr){
         showLoginErr('Login failed: '+redirErr.message);
         showLoginLoading(false);
@@ -617,8 +622,10 @@ window._doLogin = async function(){
 
 window._doLogout = function(){ signOut(auth); };
 
+// ── Handle redirect result when page loads after redirect ──
 getRedirectResult(auth).then(function(result){
   if(result && result.user){
+    // Redirect login successful — onAuthStateChanged will fire
     console.log('Redirect login ok:', result.user.email);
   }
 }).catch(function(e){
@@ -627,6 +634,7 @@ getRedirectResult(auth).then(function(result){
   }
 });
 
+// ── Firestore helpers ──
 window.FS = {
   async saveSyllabus(done){
     var uid=window._currentUser&&window._currentUser.uid; if(!uid)return;
@@ -694,6 +702,7 @@ window.FS = {
   }
 };
 
+// ── Auth state ──
 onAuthStateChanged(auth, async function(user){
   if(user){
     window._currentUser = user;
@@ -701,6 +710,7 @@ onAuthStateChanged(auth, async function(user){
     document.getElementById('mainApp').style.display='block';
     document.getElementById('topbar').style.display='flex';
     document.getElementById('bottomNav').style.display='flex';
+    // Phone users won't have photoURL/displayName
     document.getElementById('userAvatar').src = user.photoURL||'https://ui-avatars.com/api/?name=JEE&background=4f46e5&color=fff&size=40';
     document.getElementById('userName').textContent = user.displayName||(user.phoneNumber?user.phoneNumber:'JEE Aspirant');
     try{
@@ -724,6 +734,7 @@ onAuthStateChanged(auth, async function(user){
 </script>
 
 <script>
+// ═══ DATA ═══
 var SYL = {
   physics:{name:"Physics",color:"#4f46e5",cls:"ph",chapters:["Units & Dimensions","Kinematics 1D","Kinematics 2D & Projectile","Laws of Motion","Work, Energy & Power","Circular Motion","Rotational Motion","Gravitation","Properties of Matter","Simple Harmonic Motion","Wave Motion & Sound","Heat & Thermodynamics","Kinetic Theory of Gases","Ray Optics","Wave Optics","Electrostatics","Current Electricity","Magnetism","Electromagnetic Induction","Alternating Current","EM Waves","Modern Physics","Semiconductor Devices","Communication Systems"]},
   chemistry:{name:"Chemistry",color:"#ea580c",cls:"ch",chapters:["Basic Concepts","Atomic Structure","Chemical Bonding","States of Matter","Thermodynamics","Equilibrium","Redox Reactions","Electrochemistry","Chemical Kinetics","Surface Chemistry","Periodic Table","p-Block Elements","d & f Block Elements","Coordination Compounds","Hydrogen","s-Block Elements","Haloalkanes & Haloarenes","Alcohols, Phenols & Ethers","Aldehydes & Ketones","Carboxylic Acids","Amines","Biomolecules","Polymers","Chemistry in Everyday Life","Environmental Chemistry","General Organic Chemistry","Hydrocarbons","IUPAC Nomenclature","Reaction Mechanisms","Isomerism","Metallurgy","Solid State","Solutions"]},
@@ -731,6 +742,7 @@ var SYL = {
 };
 var SCOL = {physics:"#4f46e5",chemistry:"#ea580c",maths:"#16a34a"};
 
+// ═══ STATE ═══
 var mocks = [], done = {}, studyData = {}, dailyGoalHrs = 8;
 var curSub = 'physics', studySec = 0, studyOn = false, studyIv = null;
 var curSylSub = 'physics', curPeriod = 'day';
@@ -744,16 +756,19 @@ function fmtHM(sec){ var h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60); ret
 function fmtHMS(sec){ return p2(Math.floor(sec/3600))+':'+p2(Math.floor((sec%3600)/60))+':'+p2(sec%60); }
 function p2(n){ return String(n).padStart(2,'0'); }
 
+// ═══ INIT ═══
 window.initUserData = async function(){
   showSheetsStatus('loading');
   var uid = getUID(); if(!uid) return;
   mocks=[]; done={}; studyData={};
 
+  // Load from Firestore in parallel
   try{ done = await window.FS.loadSyllabus(); } catch(e){ done={}; }
   try{ mocks = await window.FS.loadMocks(); } catch(e){ mocks=[]; }
   try{ studyData = await window.FS.loadStudyTime(); } catch(e){ studyData={}; }
   try{ dailyGoalHrs = await window.FS.loadGoal(); } catch(e){ dailyGoalHrs=8; }
 
+  // Merge localStorage fallback
   try{
     var raw = localStorage.getItem('jee_data_'+uid);
     if(raw){
@@ -774,6 +789,7 @@ window.initUserData = async function(){
   updateStreakBadge();
   initPlannerToday();
 
+  // Set today's date in mock form
   var mi = document.getElementById('mockDate');
   if(mi){ mi.value = getTodayKey(); }
 };
@@ -785,20 +801,28 @@ function saveLocal(){
   }catch(e){}
 }
 
+// ═══ QUOTES ═══
 var QUOTES = [
   {q:"Sapne woh nahi jo neend mein aate hain, sapne woh hain jo neend udaa dete hain.",a:"Dr. APJ Abdul Kalam"},
   {q:"IIT Bombay ka gate khulta hai unke liye jo tab bhi padhte hain jab mann nahi karta.",a:"IIT Bombay Senior"},
   {q:"99 percentile nahi, 100% dedication chahiye.",a:"JEE Mentor"},
   {q:"Har mock test ek chance hai better banne ka. Score mat dekh, mistake dekh.",a:"JEE Topper"},
-  {q:"Powai lake ke kinare ek din chai piyega — as an IITian. Pakka.",a:"Your Future Self"}
+  {q:"Powai lake ke kinare ek din chai piyega — as an IITian. Pakka.",a:"Your Future Self"},
+  {q:"Distraction ek minute ka hota hai, regret lifetime ka.",a:"IIT Bombay Gate"},
+  {q:"Aaj ka revision kal ki revolution hai.",a:"JEE Strategy"},
+  {q:"Mushkilein aati hain toh samajh lo ki tu sahi raaste par hai.",a:"JEE Topper 2023"}
 ];
 (function(){
   var d=new Date(), dy=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
   var q=QUOTES[dy%QUOTES.length];
+  var days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   document.getElementById('qtext').textContent='"'+q.q+'"';
   document.getElementById('qauth').textContent='— '+q.a;
+  document.getElementById('qdate').textContent=days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
 })();
 
+// ═══ COUNTDOWN ═══
 var selDay = 2;
 function mTS(day){ return new Date(2026,3,day,9,0,0).getTime(); }
 function selMainDate(v){ selDay=parseInt(v); }
@@ -816,6 +840,7 @@ function tick(){
 }
 setInterval(tick,1000); tick();
 
+// ═══ NAVIGATION ═══
 function showNav(name, btn){
   document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
   document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('on'); });
@@ -827,12 +852,16 @@ function showNav(name, btn){
   if(name==='stats'){ renderStats(); }
 }
 
+// ═══ STUDY TIMER ═══
 function selSub(sub){
   curSub = sub;
-  ['physics','chemistry','maths'].forEach(function(s){
-    var el = document.getElementById('sbtn-'+(s==='physics'?'ph':s==='chemistry'?'ch':'ma'));
+  var map = {physics:'ph',chemistry:'ch',maths:'ma'};
+  Object.keys(map).forEach(function(s){
+    var el = document.getElementById('sbtn-'+map[s]);
     if(el) el.classList.toggle('on', s===sub);
   });
+  var lbl = document.getElementById('studySubLabel');
+  if(lbl) lbl.textContent = 'Subject: '+sub.charAt(0).toUpperCase()+sub.slice(1);
 }
 
 function togStudyTimer(){
@@ -842,10 +871,13 @@ function togStudyTimer(){
     btn.className='t-btn stop'; btn.textContent='⏸ Pause';
     studyIv = setInterval(function(){
       studySec++;
-      document.getElementById('studyDisp').textContent = fmtHMS(studySec);
+      var el = document.getElementById('studyDisp');
+      if(el) el.textContent = fmtHMS(studySec);
       var key = getTodayKey();
       if(!studyData[key]) studyData[key]={physics:0,chemistry:0,maths:0};
       studyData[key][curSub] = (studyData[key][curSub]||0)+1;
+      // update UI every 10s to avoid lag
+      if(studySec%10===0) renderStudyUI();
     },1000);
   } else {
     btn.className='t-btn start'; btn.textContent='▶ Start';
@@ -858,110 +890,658 @@ function togStudyTimer(){
 
 function rstStudyTimer(){
   studyOn=false; studySec=0; clearInterval(studyIv);
-  document.getElementById('studyDisp').textContent='00:00:00';
-  document.getElementById('studyStartBtn').className='t-btn start';
+  var el = document.getElementById('studyDisp');
+  if(el) el.textContent='00:00:00';
+  var btn = document.getElementById('studyStartBtn');
+  if(btn){ btn.className='t-btn start'; btn.textContent='▶ Start'; }
 }
 
 function renderStudyUI(){
   var key = getTodayKey();
   var td = studyData[key]||{physics:0,chemistry:0,maths:0};
   var totalSec = (td.physics||0)+(td.chemistry||0)+(td.maths||0);
-  document.getElementById('ph-time').textContent=fmtHM(td.physics||0);
-  document.getElementById('ch-time').textContent=fmtHM(td.chemistry||0);
-  document.getElementById('ma-time').textContent=fmtHM(td.maths||0);
+  var ph=document.getElementById('ph-time'),ch=document.getElementById('ch-time'),ma=document.getElementById('ma-time');
+  if(ph) ph.textContent=fmtHM(td.physics||0);
+  if(ch) ch.textContent=fmtHM(td.chemistry||0);
+  if(ma) ma.textContent=fmtHM(td.maths||0);
   var goalSec = dailyGoalHrs*3600;
-  document.getElementById('goalBar').style.width=Math.min(100,Math.round(totalSec/goalSec*100))+'%';
-  document.getElementById('goalValDisp').textContent=fmtHM(totalSec)+' / '+dailyGoalHrs+'h';
+  var pct = Math.min(100,Math.round(totalSec/goalSec*100));
+  var bar = document.getElementById('goalBar');
+  if(bar) bar.style.width=pct+'%';
+  var gv = document.getElementById('goalValDisp');
+  if(gv) gv.textContent=fmtHM(totalSec)+' / '+dailyGoalHrs+'h';
   renderWeekGraph();
 }
 
+function saveGoal(){
+  var gi = document.getElementById('goalInp');
+  dailyGoalHrs = parseInt(gi.value)||8;
+  window.FS.saveGoal(dailyGoalHrs);
+  renderStudyUI();
+}
+
 function renderWeekGraph(){
-  var g=document.getElementById('weekGraph'); if(!g) return;
-  g.innerHTML='';
-  var today=new Date();
+  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var today=new Date(), weekData=[], maxSec=0;
   for(var i=6;i>=0;i--){
     var d=new Date(today); d.setDate(today.getDate()-i);
     var key=d.toISOString().split('T')[0];
     var td=studyData[key]||{physics:0,chemistry:0,maths:0};
     var tot=(td.physics||0)+(td.chemistry||0)+(td.maths||0);
+    weekData.push({day:days[d.getDay()],sec:tot,date:key});
+    if(tot>maxSec) maxSec=tot;
+  }
+  var g=document.getElementById('weekGraph');
+  if(!g) return;
+  g.innerHTML='';
+  weekData.forEach(function(wd){
+    var h=maxSec>0?Math.max(8,Math.round(wd.sec/maxSec*100)):8;
+    var isToday=wd.date===getTodayKey();
     var wrap=document.createElement('div'); wrap.className='week-bar-wrap';
-    wrap.innerHTML='<div class="week-bar-bg"><div class="week-bar-fill" style="height:'+Math.max(8,Math.round(tot/3600/12*100))+'%;background:#4f46e5"></div></div>';
+    wrap.innerHTML='<div class="week-bar-bg"><div class="week-bar-fill" style="height:'+h+'%;background:'+(isToday?'#4f46e5':'#a5b4fc')+'"></div></div>'
+      +'<div class="week-day" style="color:'+(isToday?'#4f46e5':'var(--text3)')+'">'+wd.day+'</div>'
+      +'<div class="week-hrs">'+(wd.sec>0?(Math.round(wd.sec/3600*10)/10)+'h':'')+'</div>';
     g.appendChild(wrap);
+  });
+}
+
+// ═══ SYLLABUS ═══
+function sylTab(sub){
+  curSylSub = sub;
+  ['physics','chemistry','maths'].forEach(function(s){
+    var b = document.getElementById('stab-'+s);
+    if(b) b.classList.toggle('on', s===sub);
+  });
+  renderSylChapList();
+}
+
+function renderSylChapList(){
+  var sk = curSylSub;
+  var container = document.getElementById('sylChapList');
+  if(!container) return;
+  var doneClass = sk==='physics'?'done-ph': sk==='chemistry'?'done-ch':'done-ma';
+  var html='';
+  SYL[sk].chapters.forEach(function(ch,i){
+    var key=sk+i, isDone=!!done[key];
+    html+='<div class="syl-ch-item'+(isDone?' '+doneClass:'')+'" onclick="togCh(\''+sk+'\','+i+')">'
+      +'<div class="syl-tick">'+(isDone?'✓':'')+'</div>'
+      +'<div class="syl-ch-num">'+(i+1)+'</div>'
+      +'<div class="syl-ch-name">'+ch+'</div>'
+      +'</div>';
+  });
+  container.innerHTML=html;
+}
+
+function buildSyl(){
+  updProg();
+  renderSylChapList();
+}
+
+function togCh(sk, i){
+  var key=sk+i;
+  done[key]=!done[key];
+  renderSylChapList();
+  updProg();
+  saveLocal();
+  window.FS.saveSyllabus(done);
+}
+
+function updProg(){
+  var tot=0, dn=0, subData={};
+  Object.keys(SYL).forEach(function(sk){
+    var subDn=0, subTot=SYL[sk].chapters.length;
+    for(var i=0;i<subTot;i++){ tot++; if(done[sk+i]){dn++;subDn++;} }
+    subData[sk]={dn:subDn,tot:subTot};
+  });
+  var pct=tot?Math.round(dn/tot*100):0;
+  var ep=document.getElementById('sylPct'); if(ep) ep.textContent=pct+'%';
+  var eb=document.getElementById('sylBar'); if(eb) eb.style.width=pct+'%';
+  var ec=document.getElementById('sylCnt'); if(ec) ec.textContent=dn+'/'+tot;
+  var sbars=document.getElementById('sylSubBars');
+  if(sbars){
+    var colors={physics:'var(--blue)',chemistry:'var(--orange)',maths:'var(--green)'};
+    var labels={physics:'⚡ Physics',chemistry:'🧪 Chemistry',maths:'📐 Maths'};
+    var html='';
+    Object.keys(SYL).forEach(function(sk){
+      var d2=subData[sk], p2v=d2.tot?Math.round(d2.dn/d2.tot*100):0;
+      html+='<div class="syl-subbar-row">'
+        +'<div class="syl-subbar-label" style="color:'+colors[sk]+'">'+labels[sk]+'</div>'
+        +'<div class="syl-subbar-bg"><div class="syl-subbar-fill" style="width:'+p2v+'%;background:'+colors[sk]+'"></div></div>'
+        +'<div class="syl-subbar-pct" style="color:'+colors[sk]+'">'+p2v+'%</div>'
+        +'</div>';
+    });
+    sbars.innerHTML=html;
   }
 }
 
-function buildSyl(){ updProg(); renderSylChapList(); }
-function sylTab(sub){ curSylSub=sub; renderSylChapList(); }
-function renderSylChapList(){
-  var html='';
-  SYL[curSylSub].chapters.forEach(function(ch,i){
-    var key=curSylSub+i, isDone=!!done[key];
-    html+='<div class="syl-ch-item '+(isDone?'done-'+(curSylSub==='physics'?'ph':curSylSub==='chemistry'?'ch':'ma'):'')+'" onclick="togCh(\''+curSylSub+'\','+i+')">'
-      +'<div class="syl-tick">'+(isDone?'✓':'')+'</div>'
-      +'<div class="syl-ch-name">'+ch+'</div></div>';
-  });
-  document.getElementById('sylChapList').innerHTML=html;
-}
-function togCh(sk,i){ done[sk+i]=!done[sk+i]; buildSyl(); saveLocal(); window.FS.saveSyllabus(done); }
-function updProg(){
-  var tot=0, dn=0;
-  Object.keys(SYL).forEach(function(sk){
-    SYL[sk].chapters.forEach(function(c,i){ tot++; if(done[sk+i]) dn++; });
-  });
-  var p=Math.round(dn/tot*100);
-  document.getElementById('sylPct').textContent=p+'%';
-  document.getElementById('sylBar').style.width=p+'%';
-  document.getElementById('sylCnt').textContent=dn+'/'+tot;
+// ═══ CHAPTER PLANNER ═══
+function initPlannerToday(){
+  planDateKey = getTodayKey();
+  var uid = getUID(); if(!uid) return;
+  try{
+    var raw = localStorage.getItem('jee_plan_'+uid+'_'+planDateKey);
+    if(raw){
+      var obj=JSON.parse(raw);
+      planSelected=obj.selected||{physics:[],chemistry:[],maths:[]};
+      planDone=obj.done||{physics:{},chemistry:{},maths:{}};
+    } else {
+      planSelected={physics:[],chemistry:[],maths:[]};
+      planDone={physics:{},chemistry:{},maths:{}};
+    }
+  }catch(e){
+    planSelected={physics:[],chemistry:[],maths:[]};
+    planDone={physics:{},chemistry:{},maths:{}};
+  }
+  switchPlanSub(planSub);
 }
 
-function initPlannerToday(){ planDateKey=getTodayKey(); renderPlanChapList(); }
-function renderPlanChapList(){
-  var html='';
-  SYL[planSub].chapters.forEach(function(ch,i){
-    var isSel=(planSelected[planSub]||[]).indexOf(i)>-1;
-    html+='<div class="plan-chap-item '+(isSel?'selected':'')+'" onclick="togglePlanChap('+i+')">'
-      +'<div class="plan-chk-box">'+(isSel?'✓':'')+'</div>'
-      +'<div class="plan-chap-name">'+ch+'</div></div>';
-  });
-  document.getElementById('planChapList').innerHTML=html;
+function savePlanLocal(){
+  var uid=getUID(); if(!uid) return;
+  try{
+    localStorage.setItem('jee_plan_'+uid+'_'+planDateKey, JSON.stringify({selected:planSelected,done:planDone}));
+  }catch(e){}
 }
-function togglePlanChap(i){
-  var arr=planSelected[planSub]||[];
-  var p=arr.indexOf(i); if(p>-1) arr.splice(p,1); else arr.push(i);
-  planSelected[planSub]=arr; renderPlanChapList();
+
+function switchPlanSub(sub){
+  planSub=sub;
+  ['physics','chemistry','maths'].forEach(function(s){
+    var t=document.getElementById('ptab-'+s); if(!t) return;
+    if(s===sub){
+      var col=s==='physics'?'var(--blue)':s==='chemistry'?'var(--orange)':'var(--green)';
+      t.style.background=col; t.style.color='#fff'; t.style.borderColor='transparent';
+    } else {
+      t.style.background='#fff'; t.style.color='var(--text2)'; t.style.borderColor='var(--border)';
+    }
+  });
+  renderPlanChapList();
+}
+
+function renderPlanChapList(){
+  var container=document.getElementById('planChapList');
+  if(!container) return;
+  var chapters=SYL[planSub].chapters;
+  var selIdx=planSelected[planSub]||[];
+  var selClass=planSub==='physics'?'selected':planSub==='chemistry'?'sel-ch':'sel-ma';
+  var html='';
+  chapters.forEach(function(ch,i){
+    var isSel=selIdx.indexOf(i)>-1;
+    html+='<div class="plan-chap-item'+(isSel?' '+selClass:'')+'" onclick="togglePlanChap('+i+')">'
+      +'<div class="plan-chk-box">'+(isSel?'✓':'')+'</div>'
+      +'<div class="plan-chap-name">'+ch+'</div>'
+      +'</div>';
+  });
+  container.innerHTML=html;
+  renderPlanSelCount();
+}
+
+function togglePlanChap(idx){
+  if(!planSelected[planSub]) planSelected[planSub]=[];
+  var arr=planSelected[planSub];
+  var pos=arr.indexOf(idx);
+  if(pos>-1){
+    arr.splice(pos,1);
+    if(planDone[planSub]) delete planDone[planSub][idx];
+  } else {
+    arr.push(idx);
+  }
+  savePlanLocal();
+  renderPlanChapList();
+  renderPlanDoneList();
+}
+
+function renderPlanSelCount(){
+  var total=0;
+  Object.keys(planSelected).forEach(function(s){ total+=(planSelected[s]||[]).length; });
+  var el=document.getElementById('planSelCount');
+  if(el){
+    if(total===0){
+      el.textContent='Upar se chapters select karo 👆';
+      el.style.color='var(--text3)';
+    } else {
+      el.textContent='✅ '+total+' chapters selected';
+      el.style.color='var(--blue)';
+    }
+  }
+  renderPlanDoneList();
+}
+
+function renderPlanDoneList(){
+  var doneArea=document.getElementById('planDoneArea');
+  var doneList=document.getElementById('planDoneList');
+  if(!doneArea||!doneList) return;
+
+  var allSelected=[];
+  ['physics','chemistry','maths'].forEach(function(s){
+    (planSelected[s]||[]).forEach(function(idx){
+      allSelected.push({sub:s,idx:idx,ch:SYL[s].chapters[idx]});
+    });
+  });
+
+  if(allSelected.length===0){ doneArea.style.display='none'; return; }
+  doneArea.style.display='block';
+
+  var doneCount=0;
+  var subColors={physics:'#eef2ff',chemistry:'#fff7ed',maths:'#dcfce7'};
+  var subTextColors={physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
+  var subEmoji={physics:'⚡',chemistry:'🧪',maths:'📐'};
+  var html='';
+
+  allSelected.forEach(function(item){
+    var isDone=(planDone[item.sub]&&planDone[item.sub][item.idx])?true:false;
+    if(isDone) doneCount++;
+    html+='<div class="plan-done-item'+(isDone?' ticked':'')+'" onclick="tickPlanChap(\''+item.sub+'\','+item.idx+')">'
+      +'<div class="plan-done-chk">'+(isDone?'✓':'')+'</div>'
+      +'<div class="plan-done-name">'+item.ch+'</div>'
+      +'<span class="plan-done-sub" style="background:'+subColors[item.sub]+';color:'+subTextColors[item.sub]+';">'+subEmoji[item.sub]+' '+SYL[item.sub].name+'</span>'
+      +'</div>';
+  });
+
+  doneList.innerHTML=html;
+
+  var pct=allSelected.length>0?Math.round(doneCount/allSelected.length*100):0;
+  var pf=document.getElementById('planProgFill');
+  if(pf) pf.style.width=pct+'%';
+  var dc=document.getElementById('planDoneCount');
+  if(dc) dc.textContent=doneCount+'/'+allSelected.length+' completed'+(pct===100?' 🎉 Shabash!':'');
+}
+
+function tickPlanChap(sub,idx){
+  if(!planDone[sub]) planDone[sub]={};
+  planDone[sub][idx]=!planDone[sub][idx];
+  savePlanLocal();
+  renderPlanDoneList();
+}
+
+// ═══ ARENA TIMER ═══
+var tSec=0, tOn=false, tIv=null;
+function togTimer(){
+  tOn=!tOn;
+  var b=document.getElementById('tBtn');
+  if(tOn){
+    b.textContent='PAUSE'; b.style.color='var(--red)'; b.style.borderColor='var(--red)';
+    tIv=setInterval(function(){ tSec++; showT(); },1000);
+  } else {
+    b.textContent='START'; b.style.color='var(--green)'; b.style.borderColor='var(--green)';
+    clearInterval(tIv);
+  }
+}
+function rstTimer(){
+  tOn=false; tSec=0; clearInterval(tIv); showT();
+  var b=document.getElementById('tBtn');
+  b.textContent='START'; b.style.color='var(--green)'; b.style.borderColor='var(--green)';
+}
+function showT(){ var el=document.getElementById('tDisp'); if(el) el.textContent=p2(Math.floor(tSec/60))+':'+p2(tSec%60); }
+
+function loadChaps(){
+  var sub=document.getElementById('cSub').value;
+  var sel=document.getElementById('cChap');
+  sel.innerHTML='<option value="all">All Chapters</option>';
+  var subs=sub==='all'?['physics','chemistry','maths']:[sub];
+  subs.forEach(function(sk){
+    var og=document.createElement('optgroup'); og.label=SYL[sk].name;
+    SYL[sk].chapters.forEach(function(ch){
+      var op=document.createElement('option'); op.value=sk+'|'+ch; op.textContent=ch; og.appendChild(op);
+    });
+    sel.appendChild(og);
+  });
+}
+loadChaps();
+
+// ═══ Q GENERATOR ═══
+var qs=[], uAns={}, corrAns={};
+function rnd(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+function genQ(){
+  var sub=document.getElementById('cSub').value;
+  var chapV=document.getElementById('cChap').value;
+  var total=parseInt(document.getElementById('cTotal').value)||12;
+  var nM=Math.round(total*0.6), nN=total-nM;
+  qs=[]; uAns={}; corrAns={};
+  var pool=[];
+  if(chapV==='all'){
+    var subs=sub==='all'?['physics','chemistry','maths']:[sub];
+    subs.forEach(function(sk){
+      SYL[sk].chapters.forEach(function(ch){ pool.push({sk:sk,ch:ch}); });
+    });
+  } else {
+    var pts=chapV.split('|'); pool.push({sk:pts[0],ch:pts[1]});
+  }
+  var id=1;
+  for(var i=0;i<nM;i++){ var c=rnd(pool); qs.push({id:id++,type:'MCQ',sk:c.sk,ch:c.ch}); }
+  for(var i=0;i<nN;i++){ var c=rnd(pool); qs.push({id:id++,type:'NUM',sk:c.sk,ch:c.ch}); }
+  renderQ();
+  document.getElementById('step2').style.display='none';
+  document.getElementById('resCard').classList.remove('on');
+  document.getElementById('statsBar').style.display='flex';
+  updStats(); rstTimer(); if(!tOn) togTimer();
+}
+
+function renderQ(){
+  var tb=document.getElementById('qBody'); tb.innerHTML='';
+  qs.forEach(function(q){
+    var tr=document.createElement('tr');
+    var chCell='<div class="ch-lbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div>'
+      +'<div class="sub-lbl2">'+SYL[q.sk].name+'</div>'
+      +'<span class="badge '+(q.type==='MCQ'?'badge-m':'badge-n')+'">'+q.type+'</span>';
+    var ansCell='<div class="opts">'
+      +'<div class="opt" id="u'+q.id+'A" onclick="uMCQ('+q.id+',\'A\')">A</div>'
+      +'<div class="opt" id="u'+q.id+'B" onclick="uMCQ('+q.id+',\'B\')">B</div>'
+      +'<div class="opt" id="u'+q.id+'C" onclick="uMCQ('+q.id+',\'C\')">C</div>'
+      +'<div class="opt" id="u'+q.id+'D" onclick="uMCQ('+q.id+',\'D\')">D</div>'
+      +'</div>'
+      +'<div class="or-div"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
+      +'<input type="number" class="num-in" id="un'+q.id+'" placeholder="Number..." step="any" oninput="uNum('+q.id+',this.value)">';
+    tr.innerHTML='<td><input type="number" value="'+q.id+'" class="qn-inp" id="qn'+q.id+'" min="1"></td>'
+      +'<td>'+chCell+'</td><td>'+ansCell+'</td>';
+    tb.appendChild(tr);
+  });
+}
+
+function uMCQ(id,o){
+  uAns[id]={t:'MCQ',v:o};
+  ['A','B','C','D'].forEach(function(x){
+    var el=document.getElementById('u'+id+x);
+    if(el) el.classList.toggle('sel',x===o);
+  });
+  var ni=document.getElementById('un'+id); if(ni) ni.value='';
+  updStats();
+}
+function uNum(id,v){
+  if(v!==''){
+    uAns[id]={t:'NUM',v:v};
+    ['A','B','C','D'].forEach(function(x){
+      var e=document.getElementById('u'+id+x); if(e) e.classList.remove('sel');
+    });
+  } else { delete uAns[id]; }
+  updStats();
+}
+function updStats(){
+  var att=Object.keys(uAns).length, tot=qs.length;
+  document.getElementById('sTot').textContent=tot;
+  document.getElementById('sAtt').textContent=att;
+  document.getElementById('sLft').textContent=tot-att;
+  var mcq=0,num=0;
+  qs.forEach(function(q){ if(q.type==='MCQ')mcq++;else num++; });
+  document.getElementById('sMcq').textContent=mcq;
+  document.getElementById('sNum').textContent=num;
+}
+
+function submitAns(){
+  if(!qs.length){ alert('Pehle Generate karo!'); return; }
+  if(tOn) togTimer();
+  corrAns={};
+  qs.forEach(function(q){ var el=document.getElementById('qn'+q.id); q.dispId=el?el.value:q.id; });
+  var tb=document.getElementById('corrBody'); tb.innerHTML='';
+  qs.forEach(function(q){
+    var ua=uAns[q.id];
+    var uaHTML=!ua?'<span style="color:var(--text3);font-style:italic;">skipped</span>'
+      :ua.t==='MCQ'?'<b style="color:var(--blue)">Opt '+ua.v+'</b>'
+      :'<b style="color:var(--orange)">'+ua.v+'</b>';
+    var corrCell='<div class="opts" style="margin-bottom:4px">'
+      +'<div class="opt" id="c'+q.id+'A" onclick="cMCQ('+q.id+',\'A\')">A</div>'
+      +'<div class="opt" id="c'+q.id+'B" onclick="cMCQ('+q.id+',\'B\')">B</div>'
+      +'<div class="opt" id="c'+q.id+'C" onclick="cMCQ('+q.id+',\'C\')">C</div>'
+      +'<div class="opt" id="c'+q.id+'D" onclick="cMCQ('+q.id+',\'D\')">D</div>'
+      +'</div>'
+      +'<div class="or-div"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
+      +'<input type="number" class="num-in" id="cn'+q.id+'" placeholder="Correct..." step="any" oninput="cNum('+q.id+',this.value)">';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><b style="color:var(--blue);font-size:13px;">'+(q.dispId||q.id)+'</b></td>'
+      +'<td><div class="ch-lbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div></td>'
+      +'<td>'+uaHTML+'</td><td>'+corrCell+'</td>';
+    tb.appendChild(tr);
+  });
+  document.getElementById('step2').style.display='block';
+  document.getElementById('resCard').classList.remove('on');
+  document.getElementById('step2').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function cMCQ(id,o){
+  corrAns[id]={t:'MCQ',v:o};
+  ['A','B','C','D'].forEach(function(x){
+    var el=document.getElementById('c'+id+x); if(el) el.classList.toggle('csel',x===o);
+  });
+  var ni=document.getElementById('cn'+id); if(ni) ni.value='';
+}
+function cNum(id,v){
+  if(v!==''){
+    corrAns[id]={t:'NUM',v:v};
+    ['A','B','C','D'].forEach(function(x){
+      var e=document.getElementById('c'+id+x); if(e) e.classList.remove('csel');
+    });
+  } else { delete corrAns[id]; }
+}
+
+function showResult(){
+  var corr=0, wrong=0, skip=0, score=0, html=[];
+  qs.forEach(function(q){
+    var ua=uAns[q.id], ca=corrAns[q.id];
+    var status='sk', uaL='Skipped', caL=ca?(ca.t==='MCQ'?'Opt '+ca.v:ca.v):'—';
+    if(!ua||!ca){
+      skip++;
+      if(ua) uaL=ua.t==='MCQ'?'Opt '+ua.v:ua.v;
+    } else {
+      uaL=ua.t==='MCQ'?'Opt '+ua.v:ua.v;
+      if(ca.t==='MCQ'){
+        if(ua.t==='MCQ'&&ua.v===ca.v){ corr++;score+=4;status='ok'; }
+        else{ wrong++;score-=1;status='no'; }
+      } else {
+        var uv=parseFloat(ua.v), cv=parseFloat(ca.v);
+        if(!isNaN(uv)&&!isNaN(cv)&&Math.abs(uv-cv)<=0.01){ corr++;score+=4;status='ok'; }
+        else{ wrong++;status='no'; }
+      }
+    }
+    html.push('<div class="ans-row '+status+'">'
+      +'<span style="font-size:11px;font-weight:700;color:var(--blue);min-width:26px">Q'+(q.dispId||q.id)+'</span>'
+      +'<span style="flex:1;font-size:12px;color:var(--text2)">'+q.ch+'</span>'
+      +'<span style="font-size:13px;font-weight:700;min-width:60px">'+uaL+'</span>'
+      +'<span style="color:var(--green);font-size:12px;min-width:60px">✓ '+caL+'</span>'
+      +'<span>'+(status==='ok'?'✅':status==='no'?'❌':'⏭️')+'</span>'
+      +'</div>');
+  });
+  document.getElementById('rScore').textContent=score;
+  document.getElementById('rCorr').textContent=corr;
+  document.getElementById('rWrong').textContent=wrong;
+  document.getElementById('rSkip').textContent=skip;
+  document.getElementById('rAcc').textContent=(qs.length?Math.round(corr/qs.length*100):0)+'%';
+  document.getElementById('ansList').innerHTML=html.join('');
+  var rc=document.getElementById('resCard'); rc.classList.add('on');
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
+  // auto-save
+  var d=new Date();
+  saveMockData({id:Date.now(),date:d.toISOString().split('T')[0],score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
+}
+
+// ═══ MOCK TRACKER ═══
+function saveMockData(mock){
+  var uid=getUID(); if(!uid) return;
+  mock.uid=uid; mock.userName=window._currentUser.displayName||'';
+  mocks.unshift(mock);
+  saveLocal();
+  renderStats();
+  window.FS.saveMock(mock);
+}
+
+function saveMock(){
+  var date=document.getElementById('mockDate').value;
+  var mockQs=parseInt(document.getElementById('mockQs').value)||0;
+  var corr=parseInt(document.getElementById('mockCorr').value)||0;
+  if(!date){ alert('Date bharo!'); return; }
+  var wrong=parseInt(document.getElementById('mockWrong').value)||0;
+  var mock={id:Date.now(),date:date,score:corr*4-wrong,qs:mockQs,corr:corr,wrong:wrong};
+  document.getElementById('mockQs').value='';
+  document.getElementById('mockCorr').value='';
+  document.getElementById('mockWrong').value='';
+  saveMockData(mock);
+}
+
+function setPeriod(p,btn){
+  curPeriod=p;
+  document.querySelectorAll('.per-btn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderStats();
+}
+
+function filterMocks(p){
+  var now=new Date();
+  return mocks.filter(function(m){
+    var md=new Date(m.date);
+    if(p==='day') return md.toDateString()===now.toDateString();
+    if(p==='week'){ var w=new Date(now); w.setDate(w.getDate()-7); return md>=w; }
+    if(p==='month') return md.getMonth()===now.getMonth()&&md.getFullYear()===now.getFullYear();
+    return true;
+  });
+}
+
+function calcStreak(){
+  if(!mocks.length) return 0;
+  var seen={};
+  mocks.forEach(function(m){ if(m.date) seen[m.date]=true; });
+  var dates=Object.keys(seen).sort().reverse();
+  var streak=0, today=new Date(); today.setHours(0,0,0,0);
+  for(var i=0;i<dates.length;i++){
+    var d=new Date(dates[i]); d.setHours(0,0,0,0);
+    if(Math.round((today-d)/86400000)===i) streak++;
+    else break;
+  }
+  return streak;
 }
 
 function updateStreakBadge(){
   var s=calcStreak();
-  document.getElementById('streakBadge').textContent='⭐ '+s;
+  var el=document.getElementById('streakBadge');
+  if(el) el.textContent=(s>=3?'🔥':'⭐')+' '+s;
 }
-function calcStreak(){ return mocks.length>0?1:0; }
-function showSheetsStatus(s){ document.getElementById('sheetsStatus').textContent=s; }
 
-function saveMock(){
-  var m={date:document.getElementById('mockDate').value,qs:parseInt(document.getElementById('mockQs').value),corr:parseInt(document.getElementById('mockCorr').value),wrong:parseInt(document.getElementById('mockWrong').value)};
-  m.score=m.corr*4-m.wrong; mocks.unshift(m); saveLocal(); window.FS.saveMock(m); renderStats();
+function showSheetsStatus(s){
+  var el=document.getElementById('sheetsStatus'); if(!el) return;
+  var msgs={loading:'⏳ Data load ho rahi hai...',synced:'☁️ Cloud sync complete!',saved:'✅ Mock saved!',save_err:'⚠️ Save failed — local backup active'};
+  var cols={loading:'var(--orange)',synced:'var(--green)',saved:'var(--green)',save_err:'var(--red)'};
+  el.textContent=msgs[s]||s; el.style.color=cols[s]||'var(--text2)';
 }
+
 function renderStats(){
-  var h='';
-  mocks.forEach(function(m){ h+='<div class="mock-item2"><div>'+m.date+'</div><div style="font-weight:800">'+m.score+' pts</div></div>'; });
-  document.getElementById('mockList').innerHTML=h;
+  var filtered=filterMocks(curPeriod);
+  var totalQs=0, totalCorr=0, totalWrong=0;
+  filtered.forEach(function(m){ totalQs+=m.qs; totalCorr+=m.corr; totalWrong+=(m.wrong||0); });
+  var sg=document.getElementById('sumGrid'); if(!sg) return;
+  sg.innerHTML='<div class="sum-box"><div class="sum-val" style="color:var(--blue)">'+filtered.length+'</div><div class="sum-lbl">MOCKS</div></div>'
+    +'<div class="sum-box"><div class="sum-val">'+totalQs+'</div><div class="sum-lbl">ATTEMPTED</div></div>'
+    +'<div class="sum-box"><div class="sum-val" style="color:var(--green)">'+totalCorr+'</div><div class="sum-lbl">CORRECT ✓</div></div>'
+    +'<div class="sum-box"><div class="sum-val" style="color:var(--red)">'+totalWrong+'</div><div class="sum-lbl">WRONG ✗</div></div>';
+  var ml=document.getElementById('mockList');
+  if(!filtered.length){
+    ml.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:20px;">Is period mein koi mock nahi</div>';
+  } else {
+    var html='';
+    filtered.forEach(function(m){
+      html+='<div class="mock-item2">'
+        +'<div class="mock-dt">'+m.date+(m.auto?' <span style="font-size:9px;background:var(--bluelt);color:var(--blue);padding:2px 5px;border-radius:4px;">AUTO</span>':'')+'</div>'
+        +'<div style="flex:1;display:flex;gap:16px;justify-content:flex-end;">'
+        +'<div class="mock-stat"><div class="mock-stat-lbl">Attempted</div><div class="mock-stat-val" style="color:var(--blue)">'+m.qs+'</div></div>'
+        +'<div class="mock-stat"><div class="mock-stat-lbl">Correct</div><div class="mock-stat-val" style="color:var(--green)">'+m.corr+'</div></div>'
+        +'<div class="mock-stat"><div class="mock-stat-lbl">Wrong</div><div class="mock-stat-val" style="color:var(--red)">'+(m.wrong||0)+'</div></div>'
+        +'</div></div>';
+    });
+    ml.innerHTML=html;
+  }
+  var streak=calcStreak();
+  var mb=document.getElementById('motivBar');
+  mb.innerHTML=(streak>=3?'🔥':'⭐')+' '+(streak>=7?streak+' din ka streak! Machine!':streak>=3?streak+' din consistent!':'Pehla mock lagao aaj!')+' • '+mocks.length+' total mocks';
+  mb.classList.add('on');
+  updateStreakBadge();
 }
 
-function switchAI(n){ aiCur=n; renderChat(); }
-function renderChat(){ document.getElementById('chatWin').innerHTML='AI ready for JEE help...'; }
-function chatSend(){ alert('AI thinking...'); }
-</script>
+// ═══ AI CHAT ═══
+var WORKER_URL="https://jeegemini.manojd9414.workers.dev";
+var SYS_MSG={role:"system",content:"Tu ek expert JEE teacher hai. Physics, Chemistry aur Maths ke questions step-by-step explain kar. Hinglish mein baat kar."};
+var aiCur="gemini";
+var aiHist={gemini:[SYS_MSG],grok:[SYS_MSG],chatgpt:[SYS_MSG]};
+var aiLoad=false;
+var AI_LABELS={gemini:"GEMINI 2.0 FLASH",grok:"GROK 3",chatgpt:"GPT-4o"};
 
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./pwabuilder-sw.js')
-      .then(reg => console.log('SW Registered!', reg))
-      .catch(err => console.log('SW Error:', err));
+function switchAI(name){
+  aiCur=name;
+  document.querySelectorAll('.ai-tab').forEach(function(b){ b.classList.remove('on'); });
+  var t=document.getElementById('astab-'+name); if(t) t.classList.add('on');
+  var lbl=document.getElementById('aiLabel'); if(lbl) lbl.textContent=AI_LABELS[name];
+  renderChat();
+}
+
+function renderChat(){
+  var win=document.getElementById('chatWin'); win.innerHTML='';
+  var hist=aiHist[aiCur];
+  if(hist.length<=1){ addBub('b','👋 JEE ka koi bhi sawaal pucho — Physics, Chemistry ya Maths!'); return; }
+  hist.forEach(function(m){
+    if(m.role!=='system') addBub(m.role==='user'?'u':'b', m.content);
   });
 }
-</script>
 
-</body>
-</html>
+function addBub(side,text){
+  var win=document.getElementById('chatWin');
+  var wrap=document.createElement('div'); wrap.className='cmsg '+side;
+  var bub=document.createElement('div'); bub.className='cbub '+side; bub.textContent=text;
+  wrap.appendChild(bub); win.appendChild(wrap); win.scrollTop=win.scrollHeight;
+}
+
+function chatSend(){
+  if(aiLoad) return;
+  var ta=document.getElementById('chatTxt');
+  var txt=ta.value.trim(); if(!txt) return;
+  ta.value=''; ta.style.height='42px';
+  addBub('u',txt);
+  aiHist[aiCur].push({role:'user',content:txt});
+  aiLoad=true;
+  var btn=document.getElementById('chatSendBtn');
+  btn.disabled=true; btn.textContent='...';
+  // typing indicator
+  var win=document.getElementById('chatWin');
+  var tw=document.createElement('div'); tw.className='cmsg b'; tw.id='typBub';
+  var tb2=document.createElement('div'); tb2.className='cbub b ty'; tb2.textContent='typing...';
+  tw.appendChild(tb2); win.appendChild(tw); win.scrollTop=win.scrollHeight;
+
+  var contents=[];
+  contents.push({role:'user',parts:[{text:'You are an expert JEE teacher. Explain Physics, Chemistry and Maths step by step. Respond in Hinglish (mix of Hindi and English).'}]});
+  contents.push({role:'model',parts:[{text:'Bilkul! Main tumhara JEE expert hoon. Pucho koi bhi sawaal!'}]});
+  aiHist[aiCur].forEach(function(m){
+    if(m.role!=='system'){
+      contents.push({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]});
+    }
+  });
+
+  fetch(WORKER_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'gemini-2.0-flash',contents:contents,generationConfig:{temperature:0.7,maxOutputTokens:2048}})
+  })
+  .then(function(r){
+    if(!r.ok) return r.text().then(function(t){ throw new Error('HTTP '+r.status); });
+    return r.json();
+  })
+  .then(function(data){
+    var reply='';
+    if(data.candidates&&data.candidates[0]&&data.candidates[0].content){
+      reply=data.candidates[0].content.parts[0].text;
+    } else if(data.error){
+      reply='❌ API Error: '+data.error.message;
+    } else {
+      reply='❌ Unexpected response';
+    }
+    aiHist[aiCur].push({role:'assistant',content:reply});
+    var tb3=document.getElementById('typBub'); if(tb3) tb3.remove();
+    addBub('b',reply);
+  })
+  .catch(function(err){
+    var tb3=document.getElementById('typBub'); if(tb3) tb3.remove();
+    addBub('b','❌ Error: '+err.message);
+  })
+  .finally(function(){
+    aiLoad=false; btn.disabled=false; btn.textContent='Send ▶';
+  });
+}
+
+function clearChat(){ aiHist[aiCur]=[SYS_MSG]; renderChat(); }
+function chatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();} }
+function chatResize(el){ el.style.height='42px'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+renderChat();
+</script
