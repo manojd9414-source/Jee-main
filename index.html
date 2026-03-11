@@ -235,6 +235,30 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 #chatSendBtn{padding:10px 16px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;min-height:42px;}
 #chatSendBtn:disabled{opacity:.5;}
 
+/* ── SYLLABUS TABS ── */
+.syl-stab{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .18s;font-family:'Inter',sans-serif;}
+.syl-stab:hover{border-color:var(--blue);color:var(--blue);}
+.syl-stab.on[id="stab-physics"]{background:var(--blue);color:#fff;border-color:var(--blue);}
+.syl-stab.on[id="stab-chemistry"]{background:var(--orange);color:#fff;border-color:var(--orange);}
+.syl-stab.on[id="stab-maths"]{background:var(--green);color:#fff;border-color:var(--green);}
+.syl-ch-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;cursor:pointer;border:1.5px solid var(--border);margin-bottom:6px;background:#fff;transition:all .15s;user-select:none;}
+.syl-ch-item:hover{background:var(--bg);}
+.syl-ch-item.done-ph{background:var(--bluelt);border-color:var(--bluebdr,#c7d2fe);}
+.syl-ch-item.done-ch{background:var(--orangelt);border-color:var(--orangebdr,#fed7aa);}
+.syl-ch-item.done-ma{background:var(--greenlt);border-color:var(--greenbdr,#bbf7d0);}
+.syl-tick{width:22px;height:22px;border-radius:6px;border:2px solid var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;font-size:13px;font-weight:900;}
+.syl-ch-item.done-ph .syl-tick{background:var(--blue);border-color:var(--blue);color:#fff;}
+.syl-ch-item.done-ch .syl-tick{background:var(--orange);border-color:var(--orange);color:#fff;}
+.syl-ch-item.done-ma .syl-tick{background:var(--green);border-color:var(--green);color:#fff;}
+.syl-ch-num{font-size:11px;font-weight:800;color:var(--text3);min-width:22px;}
+.syl-ch-name{font-size:14px;font-weight:600;flex:1;}
+.syl-ch-item.done-ph .syl-ch-name,.syl-ch-item.done-ch .syl-ch-name,.syl-ch-item.done-ma .syl-ch-name{text-decoration:line-through;color:var(--text3);}
+.syl-subbar-row{display:flex;align-items:center;gap:8px;}
+.syl-subbar-label{font-size:12px;font-weight:700;min-width:70px;}
+.syl-subbar-bg{flex:1;background:var(--border);border-radius:99px;height:7px;overflow:hidden;}
+.syl-subbar-fill{height:100%;border-radius:99px;transition:width .5s;}
+.syl-subbar-pct{font-size:12px;font-weight:700;min-width:36px;text-align:right;}
+
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
@@ -470,22 +494,38 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
 
   <div class="sec" id="sec-syl">
+
+    <!-- Overall progress card -->
     <div class="card">
       <div class="card-title">📚 Syllabus Progress</div>
-      <div class="syl-top">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text2)">Overall</div>
-          <div class="syl-pct" id="sylPct">0%</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text2);">Overall</div>
+          <div style="font-size:28px;font-weight:900;color:var(--green);" id="sylPct">0%</div>
         </div>
-        <div style="text-align:right">
-          <div style="font-size:13px;font-weight:600;color:var(--text2)">Chapters</div>
-          <div style="font-size:18px;font-weight:800;color:var(--text)" id="sylCnt">0/0</div>
+        <div style="text-align:right;">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);">Completed</div>
+          <div style="font-size:20px;font-weight:900;" id="sylCnt">0/0</div>
         </div>
       </div>
-      <div class="prog-bg"><div class="prog-fill" id="sylBar" style="width:0%"></div></div>
-      <div class="prog-cnt" id="sylCntSub"></div>
-      <div id="sylBody"></div>
+      <div class="prog-bg" style="margin-bottom:6px;"><div class="prog-fill" id="sylBar" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--green));"></div></div>
+      <div style="font-size:12px;color:var(--text2);text-align:center;" id="sylCntSub"></div>
+      <!-- Per-subject mini bars -->
+      <div id="sylSubBars" style="margin-top:12px;display:flex;flex-direction:column;gap:7px;"></div>
     </div>
+
+    <!-- Subject tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="syl-stab on" id="stab-physics" onclick="sylTab('physics')">⚡ Physics</button>
+      <button class="syl-stab" id="stab-chemistry" onclick="sylTab('chemistry')">🧪 Chemistry</button>
+      <button class="syl-stab" id="stab-maths" onclick="sylTab('maths')">📐 Maths</button>
+    </div>
+
+    <!-- Chapter list (rendered per subject) -->
+    <div class="card" style="padding:12px;">
+      <div id="sylChapList"></div>
+    </div>
+
   </div>
 
   <div class="sec" id="sec-arena">
@@ -613,7 +653,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const app = initializeApp({
   apiKey:"AIzaSyDWIKEUfsdplqu7f6YQKPZ19SUbDTFeFeQ",
@@ -634,7 +674,12 @@ window.logOut=async function(){await signOut(auth);};
 
 window.saveSyllabus=async function(d){
   var uid=window._currentUser?.uid;if(!uid)return;
-  try{await setDoc(doc(db,'users',uid,'data','syllabus'),{done:d},{merge:true});}catch(e){}
+  try{
+    // Convert done object — Firestore can't store undefined values
+    var cleanDone={};
+    Object.keys(d).forEach(function(k){if(d[k]===true)cleanDone[k]=true;});
+    await setDoc(doc(db,'users',uid,'data','syllabus'),{done:cleanDone,updatedAt:serverTimestamp()},{merge:true});
+  }catch(e){console.error('saveSyllabus error:',e);}
 };
 window.loadSyllabus=async function(){
   var uid=window._currentUser?.uid;if(!uid)return{};
@@ -658,13 +703,43 @@ window.loadGoalFS=async function(){
 };
 window.saveMockFirestore=async function(mock){
   var uid=window._currentUser?.uid;if(!uid)return;
-  try{await addDoc(collection(db,'users',uid,'mocks'),{...mock,uid,createdAt:serverTimestamp()});showSheetsStatus('saved');}
-  catch(e){showSheetsStatus('save_err');}
+  try{
+    var data={
+      id:mock.id||Date.now(),
+      date:mock.date||'',
+      score:mock.score||0,
+      qs:mock.qs||0,
+      corr:mock.corr||0,
+      wrong:mock.wrong||0,
+      auto:mock.auto||false,
+      uid:uid,
+      userName:mock.userName||'',
+      createdAt:serverTimestamp()
+    };
+    await addDoc(collection(db,'users',uid,'mocks'),data);
+    showSheetsStatus('saved');
+  }catch(e){
+    console.error('saveMock error:',e);
+    showSheetsStatus('save_err');
+  }
 };
 window.loadMocksFirestore=async function(){
   var uid=window._currentUser?.uid;if(!uid)return[];
-  try{var q=query(collection(db,'users',uid,'mocks'),orderBy('createdAt','desc'));var s=await getDocs(q);return s.docs.map(d=>({firestoreId:d.id,...d.data()}));}
-  catch(e){return[];}
+  try{
+    // No orderBy to avoid index requirement — sort in JS instead
+    var colRef=collection(db,'users',uid,'mocks');
+    var s=await getDocs(colRef);
+    var docs=s.docs.map(function(d){return Object.assign({firestoreId:d.id},d.data());});
+    // Sort by date descending (newest first)
+    docs.sort(function(a,b){
+      var da=a.date||'';var db2=b.date||'';
+      return da<db2?1:da>db2?-1:0;
+    });
+    return docs;
+  }catch(e){
+    console.error('loadMocks error:',e);
+    return[];
+  }
 };
 
 onAuthStateChanged(auth,async function(user){
@@ -713,19 +788,24 @@ function p2(n){return String(n).padStart(2,'0');}
 window.initUserData=async function(uid){
   showSheetsStatus('loading');
   mocks=[];done={};studyData={};
+  // Load each piece separately so one failure doesn't break all
+  try{done=await window.loadSyllabus();}catch(e){done={};}
+  try{mocks=await window.loadMocksFirestore();}catch(e){mocks=[];}
+  try{studyData=await window.loadStudyTime();}catch(e){studyData={};}
+  try{dailyGoalHrs=await window.loadGoalFS();}catch(e){dailyGoalHrs=8;}
+  // Merge with localStorage backup
   try{
-    done=await window.loadSyllabus()||{};
-    mocks=await window.loadMocksFirestore()||[];
-    studyData=await window.loadStudyTime()||{};
-    dailyGoalHrs=await window.loadGoalFS()||8;
-    document.getElementById('goalInp').value=dailyGoalHrs;
-    showSheetsStatus('synced');
-  }catch(e){
     var raw=localStorage.getItem('jee_data_'+uid);
-    var data=raw?JSON.parse(raw):{mocks:[],done:{},studyData:{}};
-    mocks=data.mocks||[];done=data.done||{};studyData=data.studyData||{};
-    showSheetsStatus('local');
-  }
+    if(raw){
+      var local=JSON.parse(raw);
+      if(!done||Object.keys(done).length===0) done=local.done||{};
+      if(!mocks||mocks.length===0) mocks=local.mocks||[];
+      if(!studyData||Object.keys(studyData).length===0) studyData=local.studyData||{};
+    }
+  }catch(e){}
+  var gi=document.getElementById('goalInp');
+  if(gi) gi.value=dailyGoalHrs;
+  showSheetsStatus('synced');
   buildSyl();renderStats();renderStudyUI();updateStreakBadge();
   initPlannerToday();
 };
@@ -778,11 +858,20 @@ setInterval(tick,1000);tick();
 
 // ═══ NAV ═══
 function showNav(name,btn){
-  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('sec-'+name).classList.add('on');
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('on');});
+  var sec = document.getElementById('sec-'+name);
+  if(sec) sec.classList.add('on');
   btn.classList.add('on');
-  // home also shows countdown card (always visible)
+  // When switching to syllabus, re-render current tab
+  if(name==='syl'){
+    renderSylChapList();
+    updProg();
+  }
+  // When switching to timer, re-render study UI
+  if(name==='timer'){
+    renderStudyUI();
+  }
 }
 
 // ═══ STUDY TIMER ═══
@@ -875,59 +964,81 @@ function renderWeekGraph(){
 }
 
 // ═══ SYLLABUS ═══
-function buildSyl(){
-  var body=document.getElementById('sylBody');body.innerHTML='';
-  var subKeys=Object.keys(SYL);
-  subKeys.forEach(function(sk,si){
-    var sub=SYL[sk],sec=document.createElement('div');sec.className='sub-section';
-    var dn=sub.chapters.filter(function(_,i){return !!done[sk+i];}).length;
-    var hd=document.createElement('div');hd.className='sub-head';
-    // Auto-open first subject
-    if(si===0) hd.classList.add('open');
-    hd.innerHTML='<div class="sub-dot" style="background:'+sub.color+'"></div>'
-      +'<div style="flex:1;">'
-      +'<div class="sub-name" style="color:'+sub.color+'">'+sub.name+'</div>'
-      +'</div>'
-      +'<div class="sub-pg" id="sp'+sk+'">'+dn+'/'+sub.chapters.length+'</div>'
-      +'<div class="sub-arr" style="margin-left:4px;">'+(si===0?'▼':'▶')+'</div>';
-    var lst=document.createElement('div');lst.className='ch-list';
-    // Auto-open first
-    if(si===0) lst.classList.add('open');
-    sub.chapters.forEach(function(ch,i){
-      var key=sk+i;
-      var item=document.createElement('div');item.className='ch-item';
-      item.innerHTML='<div class="chk'+(done[key]?' on':'')+'" id="ck'+key+'"></div>'
-        +'<div class="ch-name'+(done[key]?' done':'')+'" id="cn'+key+'">'+ch+'</div>';
-      item.onclick=(function(s2,ix){return function(){togCh(s2,ix);};})(sk,i);
-      lst.appendChild(item);
-    });
-    hd.onclick=(function(h,l){return function(){
-      var isOpen=l.classList.contains('open');
-      h.classList.toggle('open',!isOpen);
-      l.classList.toggle('open',!isOpen);
-      var arr=h.querySelector('.sub-arr');
-      if(arr) arr.textContent=(!isOpen)?'▼':'▶';
-    };})(hd,lst);
-    sec.appendChild(hd);sec.appendChild(lst);body.appendChild(sec);
+var curSylSub = 'physics';  // currently shown subject tab
+
+function sylTab(sub){
+  curSylSub = sub;
+  ['physics','chemistry','maths'].forEach(function(s){
+    var b = document.getElementById('stab-'+s);
+    if(!b) return;
+    b.classList.toggle('on', s===sub);
   });
+  renderSylChapList();
+}
+
+function renderSylChapList(){
+  var sk = curSylSub;
+  var sub = SYL[sk];
+  var container = document.getElementById('sylChapList');
+  if(!container) return;
+  var doneClass = sk==='physics'?'done-ph': sk==='chemistry'?'done-ch':'done-ma';
+  var html = '';
+  sub.chapters.forEach(function(ch, i){
+    var key = sk+i;
+    var isDone = !!done[key];
+    html += '<div class="syl-ch-item'+(isDone?' '+doneClass:'')+'" onclick="togCh(''+sk+'','+i+')">'
+      + '<div class="syl-tick">'+(isDone?'✓':'')+'</div>'
+      + '<div class="syl-ch-num">'+(i+1)+'</div>'
+      + '<div class="syl-ch-name">'+ch+'</div>'
+      + '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function buildSyl(){
   updProg();
+  sylTab(curSylSub);  // render chapter list for current tab
 }
-function togCh(sk,i){
-  var key=sk+i;done[key]=!done[key];
-  var ck=document.getElementById('ck'+key),cn=document.getElementById('cn'+key);
-  if(done[key]){ck.classList.add('on');cn.classList.add('done');}
-  else{ck.classList.remove('on');cn.classList.remove('done');}
-  document.getElementById('sp'+sk).textContent=SYL[sk].chapters.filter((_,j)=>!!done[sk+j]).length+'/'+SYL[sk].chapters.length;
-  updProg();saveLocal();window.saveSyllabus(done);
+
+function togCh(sk, i){
+  var key = sk+i;
+  done[key] = !done[key];
+  // Re-render current tab list (fast)
+  renderSylChapList();
+  updProg();
+  saveLocal();
+  // Save to Firestore (async, don't await)
+  if(window.saveSyllabus) window.saveSyllabus(done);
 }
+
 function updProg(){
-  var tot=0,dn=0;
-  Object.keys(SYL).forEach(function(sk){SYL[sk].chapters.forEach((_,i)=>{tot++;if(done[sk+i])dn++;});});
-  var pct=tot?Math.round(dn/tot*100):0;
-  document.getElementById('sylPct').textContent=pct+'%';
-  document.getElementById('sylBar').style.width=pct+'%';
-  document.getElementById('sylCnt').textContent=dn+'/'+tot;
-  document.getElementById('sylCntSub').textContent=dn+' chapters done out of '+tot;
+  var tot=0, dn=0;
+  var subData = {};
+  Object.keys(SYL).forEach(function(sk){
+    var subDn = 0, subTot = SYL[sk].chapters.length;
+    SYL[sk].chapters.forEach(function(_, i){ tot++; subTot; if(done[sk+i]){dn++; subDn++;} });
+    subData[sk] = {dn: subDn, tot: subTot};
+  });
+  var pct = tot ? Math.round(dn/tot*100) : 0;
+  var el = document.getElementById('sylPct'); if(el) el.textContent = pct+'%';
+  var bar = document.getElementById('sylBar'); if(bar) bar.style.width = pct+'%';
+  var cnt = document.getElementById('sylCnt'); if(cnt) cnt.textContent = dn+'/'+tot;
+  var sub2 = document.getElementById('sylCntSub'); if(sub2) sub2.textContent = dn+' of '+tot+' chapters complete';
+  // Per-subject mini bars
+  var sbars = document.getElementById('sylSubBars');
+  if(sbars){
+    var colors = {physics:'var(--blue)',chemistry:'var(--orange)',maths:'var(--green)'};
+    var labels = {physics:'⚡ Physics',chemistry:'🧪 Chemistry',maths:'📐 Maths'};
+    sbars.innerHTML = Object.keys(SYL).map(function(sk){
+      var d2 = subData[sk];
+      var p2 = d2.tot ? Math.round(d2.dn/d2.tot*100) : 0;
+      return '<div class="syl-subbar-row">'
+        +'<div class="syl-subbar-label" style="color:'+colors[sk]+'">'+labels[sk]+'</div>'
+        +'<div class="syl-subbar-bg"><div class="syl-subbar-fill" style="width:'+p2+'%;background:'+colors[sk]+'"></div></div>'
+        +'<div class="syl-subbar-pct" style="color:'+colors[sk]+'">'+p2+'%</div>'
+        +'</div>';
+    }).join('');
+  }
 }
 
 // ═══ CHAPTER PLANNER ═══
@@ -1223,9 +1334,9 @@ function updateStreakBadge(){
 }
 function showSheetsStatus(s){
   var el=document.getElementById('sheetsStatus');if(!el)return;
-  var msgs={loading:'⏳ Loading...',synced:'☁️ Firestore sync — data lifetime safe!',local:'💾 Offline mode',saved:'✅ Mock saved to cloud!',save_err:'⚠️ Save failed — local backup'};
-  var cols={loading:'var(--text2)',synced:'var(--green)',local:'var(--blue)',saved:'var(--green)',save_err:'var(--orange)'};
-  el.textContent=msgs[s]||'';el.style.color=cols[s]||'var(--text2)';
+  var msgs={loading:'⏳ Data load ho rahi hai...',synced:'☁️ Cloud sync complete! Data safe hai.',local:'💾 Offline — local data loaded',saved:'✅ Mock cloud mein save ho gaya!',save_err:'⚠️ Save failed — local backup active'};
+  var cols={loading:'var(--orange)',synced:'var(--green)',local:'var(--blue)',saved:'var(--green)',save_err:'var(--red)'};
+  el.textContent=msgs[s]||s;el.style.color=cols[s]||'var(--text2)';
 }
 function renderStats(){
   var filtered=filterMocks(curPeriod);
