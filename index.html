@@ -280,6 +280,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
   <div class="tb-right">
     <div class="streak-badge" id="streakBadge">⭐ 0</div>
+    <button onclick="confirmLogout()" style="background:transparent;border:1px solid var(--border);color:var(--text2);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif;">🚪 Logout</button>
   </div>
 </div>
 
@@ -569,6 +570,11 @@ var auth = getAuth(app);
 var db = getFirestore(app);
 var gp = new GoogleAuthProvider();
 gp.setCustomParameters({ prompt:'select_account' });
+
+window._doLogoutFn = function(){
+  var auth = getAuth();
+  signOut(auth).catch(function(e){ console.warn('logout error', e); });
+};
 
 window.doLogin = async function(){
   var btn = document.getElementById('loginBtn');
@@ -1231,6 +1237,20 @@ function clearChat(){aiHist[aiCur]=[SYS];renderChat();}
 function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();}}
 function chatResize(el){el.style.height='42px';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 renderChat();
+
+function confirmLogout(){
+  var modal = document.getElementById('logoutModal');
+  modal.style.display='flex';
+}
+function closeLogoutModal(){
+  var modal = document.getElementById('logoutModal');
+  modal.style.display='none';
+}
+function doLogout(){
+  closeLogoutModal();
+  // signOut via firebase module
+  window._doLogoutFn && window._doLogoutFn();
+}
 </script>
 
 <!-- ══ SERVICE WORKER ══ -->
@@ -1245,5 +1265,17 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+<!-- LOGOUT CONFIRM MODAL -->
+<div id="logoutModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-size:40px;margin-bottom:12px;">🚪</div>
+    <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;">Logout karna hai?</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.5;">Tera data cloud mein safe rahega.<br>Wapas login karke access kar sakte ho.</div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="closeLogoutModal()" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Cancel</button>
+      <button onclick="doLogout()" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Logout</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
