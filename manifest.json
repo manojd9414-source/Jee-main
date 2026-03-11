@@ -1,0 +1,14 @@
+{
+  "background_color": "#000000",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "StudyApp",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "StudyApp",
+  "start_url": "/",
+  "theme_color": "#487364",
+  "id": "StudyApp-id",
+  "description": "This is my personal PWA for JEE preparation",
+  "lang": "en"
+}
