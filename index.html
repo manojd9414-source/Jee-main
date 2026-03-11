@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>JEE 99ile Tracker</title>
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -1564,5 +1565,12 @@ function chatKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSen
 function chatResize(el){ el.style.height='42px'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
 renderChat();
 </script>
-</body>
+</<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Agar file ka naam alag hai toh yahan change karein
+    navigator.serviceWorker.register('/pwabuilder-sw.js');
+  });
+}
+</script>
 </html>
