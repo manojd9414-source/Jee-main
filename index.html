@@ -591,26 +591,64 @@ const app = initializeApp({
 const auth = getAuth(app);
 const db   = getFirestore(app);
 const gProvider = new GoogleAuthProvider();
+gProvider.setCustomParameters({ prompt: 'select_account' });
 
-window._fbReady = true;
-window._doLogin = async function(){
-  showLoginErr('');
-  var btn=document.getElementById('loginBtn');
-  btn.textContent='⏳ Loading...';
-  btn.disabled=true;
-  try{ await signInWithRedirect(auth, gProvider); }
-  catch(e){
-    showLoginErr('Login failed: '+e.message);
-    btn.innerHTML='<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px"> Google se Login Karo';
-    btn.disabled=false;
-  }
-};
-window._doLogout = function(){ signOut(auth); };
 function showLoginErr(msg){
   var el=document.getElementById('loginErr');
   if(msg){ el.style.display='block'; el.textContent=msg; }
   else { el.style.display='none'; el.textContent=''; }
 }
+
+function showLoginLoading(on){
+  var btn=document.getElementById('loginBtn');
+  if(!btn) return;
+  if(on){
+    btn.innerHTML='<span>⏳ Login ho raha hai...</span>';
+    btn.disabled=true;
+  } else {
+    btn.innerHTML='<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" style="width:20px"> Google se Login Karo';
+    btn.disabled=false;
+  }
+}
+
+// ── Login: try popup first, fallback to redirect ──
+window._doLogin = async function(){
+  showLoginErr('');
+  showLoginLoading(true);
+  try{
+    // Try popup first
+    await signInWithPopup(auth, gProvider);
+    // onAuthStateChanged will handle UI
+  } catch(popupErr){
+    // If popup blocked or failed, use redirect
+    if(popupErr.code==='auth/popup-blocked' || popupErr.code==='auth/popup-closed-by-user' || popupErr.code==='auth/cancelled-popup-request'){
+      try{
+        await signInWithRedirect(auth, gProvider);
+        // Page will reload — onAuthStateChanged handles after return
+      } catch(redirErr){
+        showLoginErr('Login failed: '+redirErr.message);
+        showLoginLoading(false);
+      }
+    } else {
+      showLoginErr('Login failed: '+popupErr.message);
+      showLoginLoading(false);
+    }
+  }
+};
+
+window._doLogout = function(){ signOut(auth); };
+
+// ── Handle redirect result when page loads after redirect ──
+getRedirectResult(auth).then(function(result){
+  if(result && result.user){
+    // Redirect login successful — onAuthStateChanged will fire
+    console.log('Redirect login ok:', result.user.email);
+  }
+}).catch(function(e){
+  if(e.code && e.code !== 'auth/no-current-user'){
+    console.warn('Redirect result error:', e.code, e.message);
+  }
+});
 
 // ── Firestore helpers ──
 window.FS = {
@@ -679,15 +717,6 @@ window.FS = {
     }catch(e){ console.warn('loadMocks',e); return[]; }
   }
 };
-
-// ── Handle redirect result (mobile login) ──
-getRedirectResult(auth).then(function(result){
-  if(result&&result.user){
-    console.log("Redirect login success:", result.user.displayName);
-  }
-}).catch(function(e){
-  if(e.code!=="auth/no-current-user") console.warn("Redirect error:",e.message);
-});
 
 // ── Auth state ──
 onAuthStateChanged(auth, async function(user){
