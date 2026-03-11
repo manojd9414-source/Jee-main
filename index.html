@@ -251,6 +251,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
 .qs-opt-btn{padding:7px 14px;border-radius:8px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
 .qs-opt-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.qs-opt-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
@@ -1236,6 +1237,13 @@ function switchAI(name){
   var t=document.getElementById('at'+name);if(t)t.classList.add('on');
   var lbl=document.getElementById('aiLabel');if(lbl)lbl.textContent=AI_LABELS[name];
   renderChat();
+
+function selMockQs(val, btn){
+  document.getElementById('mockQs').value = val;
+  document.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+
 
 function selMockQs(val, btn){
   document.getElementById('mockQs').value = val;
