@@ -1,47 +1,49 @@
-// This is the "Offline page" service worker
+var CACHE_NAME = 'jee99ile-v1';
+var ASSETS = [
+  './index.html',
+  './manifest.json'
+];
 
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
-
-const CACHE = "pwabuilder-page";
-
-// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
-const offlineFallbackPage = "ToDo-replace-this-name.html";
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
-
-self.addEventListener('install', async (event) => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then((cache) => cache.add(offlineFallbackPage))
+self.addEventListener('install', function(e) {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll(ASSETS);
+    })
   );
+  self.skipWaiting();
 });
 
-if (workbox.navigationPreload.isSupported()) {
-  workbox.navigationPreload.enable();
-}
+self.addEventListener('activate', function(e) {
+  e.waitUntil(
+    caches.keys().then(function(keys) {
+      return Promise.all(keys.filter(function(k) {
+        return k !== CACHE_NAME;
+      }).map(function(k) { return caches.delete(k); }));
+    })
+  );
+  self.clients.claim();
+});
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.mode === 'navigate') {
-    event.respondWith((async () => {
-      try {
-        const preloadResp = await event.preloadResponse;
-
-        if (preloadResp) {
-          return preloadResp;
-        }
-
-        const networkResp = await fetch(event.request);
-        return networkResp;
-      } catch (error) {
-
-        const cache = await caches.open(CACHE);
-        const cachedResp = await cache.match(offlineFallbackPage);
-        return cachedResp;
-      }
-    })());
+self.addEventListener('fetch', function(e) {
+  // Network first for Firebase/API calls
+  if (e.request.url.includes('firebase') || 
+      e.request.url.includes('googleapis') ||
+      e.request.url.includes('workers.dev') ||
+      e.request.url.includes('fonts.gstatic')) {
+    e.respondWith(fetch(e.request).catch(function() {
+      return caches.match(e.request);
+    }));
+    return;
   }
+  // Cache first for app files
+  e.respondWith(
+    caches.match(e.request).then(function(cached) {
+      return cached || fetch(e.request).then(function(resp) {
+        return caches.open(CACHE_NAME).then(function(cache) {
+          cache.put(e.request, resp.clone());
+          return resp;
+        });
+      });
+    })
+  );
 });
