@@ -454,7 +454,15 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
           </div>
         </div>
         <div class="cfg-row">
-          <div class="cfg-grp"><label class="cfg-lbl">QUESTIONS</label><input type="number" class="cfg-in" id="cTotal" value="12" min="1" max="40"></div>
+          <div class="cfg-grp"><label class="cfg-lbl">QUESTIONS</label>
+            <select class="cfg-sel" id="cTotal">
+              <option value="5">5 Questions</option>
+              <option value="10">10 Questions</option>
+              <option value="15" selected>15 Questions</option>
+              <option value="20">20 Questions</option>
+              <option value="25">25 Questions</option>
+            </select>
+          </div>
           <div class="cfg-grp"><label class="cfg-lbl">TIME (min)</label><input type="number" class="cfg-in" id="cTime" value="30" min="5" max="180"></div>
           <button class="gen-btn" onclick="genQ()">⚡ Go</button>
         </div>
@@ -490,6 +498,28 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
         <div class="res-box"><div class="res-val" style="color:var(--purple)" id="rAcc">0%</div><div class="res-lbl">ACCURACY</div></div>
       </div>
       <div id="ansList" style="text-align:left;"></div>
+
+      <!-- RANK PREDICTOR -->
+      <div id="rankPredictor" style="display:none;margin-top:16px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:12px;padding:16px;color:#fff;text-align:center;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:1px;opacity:.8;margin-bottom:8px;">🎯 JEE RANK PREDICTOR</div>
+        <div style="font-size:11px;opacity:.7;margin-bottom:12px;">Is practice session ke basis par estimated rank</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;min-width:100px;">
+            <div style="font-size:22px;font-weight:900;" id="predPercentile">0%</div>
+            <div style="font-size:10px;opacity:.8;margin-top:2px;">PERCENTILE</div>
+          </div>
+          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;min-width:100px;">
+            <div style="font-size:22px;font-weight:900;" id="predRank">-</div>
+            <div style="font-size:10px;opacity:.8;margin-top:2px;">EST. RANK</div>
+          </div>
+          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;min-width:100px;">
+            <div style="font-size:22px;font-weight:900;" id="predCategory">-</div>
+            <div style="font-size:10px;opacity:.8;margin-top:2px;">CATEGORY</div>
+          </div>
+        </div>
+        <div id="predMsg" style="margin-top:12px;font-size:13px;font-weight:600;opacity:.9;line-height:1.5;"></div>
+        <div style="margin-top:10px;font-size:10px;opacity:.5;">*Practice session ke basis par estimate. Actual JEE mein vary ho sakta hai.</div>
+      </div>
     </div>
   </div>
 
@@ -973,7 +1003,7 @@ function rnd(a){return a[Math.floor(Math.random()*a.length)];}
 function genQ(){
   var sub=document.getElementById('cSub').value;
   var chapV=document.getElementById('cChap').value;
-  var total=parseInt(document.getElementById('cTotal').value)||12;
+  var total=parseInt(document.getElementById('cTotal').value)||15;
   var nM=Math.round(total*0.6),nN=total-nM;
   qs=[];uAns={};corrAns={};
   var pool=[];
@@ -1089,6 +1119,8 @@ function showResult(){
   document.getElementById('rAcc').textContent=(qs.length?Math.round(corr/qs.length*100):0)+'%';
   document.getElementById('ansList').innerHTML=html.join('');
   var rc=document.getElementById('resCard');rc.classList.add('on');rc.scrollIntoView({behavior:'smooth',block:'start'});
+  // Show rank predictor
+  showRankPredictor(score, qs.length);
   // auto save
   var d=new Date();
   saveMockData({id:Date.now(),date:d.toISOString().split('T')[0],score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
@@ -1189,6 +1221,49 @@ function switchAI(name){
   var t=document.getElementById('at'+name);if(t)t.classList.add('on');
   var lbl=document.getElementById('aiLabel');if(lbl)lbl.textContent=AI_LABELS[name];
   renderChat();
+
+function showRankPredictor(score, total){
+  var rp = document.getElementById('rankPredictor');
+  if(!rp) return;
+  
+  // Max possible score
+  var maxScore = total * 4;
+  var pct = maxScore > 0 ? Math.max(0, score/maxScore*100) : 0;
+  
+  // JEE Main 2024 data based percentile to rank mapping
+  // Approximate: percentile = (1 - rank/1200000) * 100
+  var percentile, rank, category, msg;
+  
+  if(pct >= 90){
+    percentile = Math.min(99.9, 85 + pct*0.149).toFixed(2);
+  } else if(pct >= 70){
+    percentile = (70 + pct*0.214).toFixed(2);
+  } else if(pct >= 50){
+    percentile = (45 + pct*0.5).toFixed(2);
+  } else if(pct >= 30){
+    percentile = (20 + pct*0.833).toFixed(2);
+  } else {
+    percentile = Math.max(0, pct*0.667).toFixed(2);
+  }
+  
+  var p = parseFloat(percentile);
+  // Rank estimate from percentile (approx 12 lakh candidates)
+  var estRank = Math.round((100-p)/100 * 1200000);
+  
+  if(p >= 99.5){ category='IIT Top 5'; rank='< 500'; msg='🔥 Wah bhai! IIT Bombay/Delhi zone mein hai tu! Keep it up!'; }
+  else if(p >= 99){ category='IIT Zone'; rank='< 2,000'; msg='🎯 IIT confirm zone! Bas consistency maintain kar!'; }
+  else if(p >= 98){ category='IIT Zone'; rank='< 5,000'; msg='⚡ IIT milega bhai! Thoda aur push kar!'; }
+  else if(p >= 95){ category='NIT Top'; rank='< 25,000'; msg='📈 NIT Top branch pakki! IIT ke liye thoda aur mehnat!'; }
+  else if(p >= 90){ category='NIT Zone'; rank='< 80,000'; msg='💪 NIT milega! IIT ke liye accuracy improve karo!'; }
+  else if(p >= 80){ category='Good NIT'; rank='< 2,00,000'; msg='📚 Mehnat badhao — IIT ka sapna door nahi!'; }
+  else{ category='Improvement'; rank='>2,00,000'; msg='🚀 Abhi bahut scope hai! Roz practice karo!'; }
+  
+  document.getElementById('predPercentile').textContent = p+'%';
+  document.getElementById('predRank').textContent = rank;
+  document.getElementById('predCategory').textContent = category;
+  document.getElementById('predMsg').textContent = msg;
+  rp.style.display = 'block';
+}
 }
 function renderChat(){
   var win=document.getElementById('chatWin');win.innerHTML='';
