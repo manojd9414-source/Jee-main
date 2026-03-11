@@ -249,6 +249,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .plan-prog-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:8px;}
 .plan-prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),#86efac);transition:width .4s;}
 
+.qs-opt-btn{padding:7px 14px;border-radius:8px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.qs-opt-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
@@ -518,7 +520,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
           </div>
         </div>
         <div id="predMsg" style="margin-top:12px;font-size:13px;font-weight:600;opacity:.9;line-height:1.5;"></div>
-        <div style="margin-top:10px;font-size:10px;opacity:.5;">*Practice session ke basis par estimate. Actual JEE mein vary ho sakta hai.</div>
+        <div id="predScaledScore" style="margin-top:8px;font-size:11px;opacity:.7;font-weight:600;"></div>
+        <div style="margin-top:6px;font-size:10px;opacity:.5;">*Practice session ke basis par estimate. Actual JEE mein vary ho sakta hai.</div>
       </div>
     </div>
   </div>
@@ -531,7 +534,19 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
         <div class="mock-form-title">➕ New Mock Log</div>
         <div class="mock-fields">
           <div class="mock-field"><label class="cfg-lbl">DATE</label><input type="date" class="cfg-in" id="mockDate"></div>
-          <div class="mock-field"><label class="cfg-lbl">ATTEMPTED</label><input type="number" class="cfg-in" id="mockQs" placeholder="75"></div>
+          <div class="mock-field" style="min-width:100%;flex-basis:100%">
+            <label class="cfg-lbl">ATTEMPTED (Questions)</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+              <button type="button" class="qs-opt-btn" onclick="selMockQs(5,this)">5</button>
+              <button type="button" class="qs-opt-btn" onclick="selMockQs(10,this)">10</button>
+              <button type="button" class="qs-opt-btn" onclick="selMockQs(15,this)">15</button>
+              <button type="button" class="qs-opt-btn" onclick="selMockQs(20,this)">20</button>
+              <button type="button" class="qs-opt-btn" onclick="selMockQs(25,this)">25</button>
+              <button type="button" class="qs-opt-btn" onclick="selMockQs(75,this)">75</button>
+              <button type="button" class="qs-opt-btn" onclick="selMockQs(90,this)">90</button>
+            </div>
+            <input type="hidden" id="mockQs" value="75">
+          </div>
           <div class="mock-field"><label class="cfg-lbl">CORRECT</label><input type="number" class="cfg-in" id="mockCorr" placeholder="55"></div>
           <div class="mock-field"><label class="cfg-lbl">WRONG</label><input type="number" class="cfg-in" id="mockWrong" placeholder="20"></div>
         </div>
@@ -1222,47 +1237,76 @@ function switchAI(name){
   var lbl=document.getElementById('aiLabel');if(lbl)lbl.textContent=AI_LABELS[name];
   renderChat();
 
+function selMockQs(val, btn){
+  document.getElementById('mockQs').value = val;
+  document.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+
 function showRankPredictor(score, total){
   var rp = document.getElementById('rankPredictor');
   if(!rp) return;
-  
-  // Max possible score
+
+  // Scale score to full JEE Main (300 marks)
   var maxScore = total * 4;
-  var pct = maxScore > 0 ? Math.max(0, score/maxScore*100) : 0;
+  if(maxScore <= 0){ rp.style.display='none'; return; }
   
-  // JEE Main 2024 data based percentile to rank mapping
-  // Approximate: percentile = (1 - rank/1200000) * 100
-  var percentile, rank, category, msg;
-  
-  if(pct >= 90){
-    percentile = Math.min(99.9, 85 + pct*0.149).toFixed(2);
-  } else if(pct >= 70){
-    percentile = (70 + pct*0.214).toFixed(2);
-  } else if(pct >= 50){
-    percentile = (45 + pct*0.5).toFixed(2);
-  } else if(pct >= 30){
-    percentile = (20 + pct*0.833).toFixed(2);
-  } else {
-    percentile = Math.max(0, pct*0.667).toFixed(2);
-  }
-  
-  var p = parseFloat(percentile);
-  // Rank estimate from percentile (approx 12 lakh candidates)
-  var estRank = Math.round((100-p)/100 * 1200000);
-  
-  if(p >= 99.5){ category='IIT Top 5'; rank='< 500'; msg='🔥 Wah bhai! IIT Bombay/Delhi zone mein hai tu! Keep it up!'; }
-  else if(p >= 99){ category='IIT Zone'; rank='< 2,000'; msg='🎯 IIT confirm zone! Bas consistency maintain kar!'; }
-  else if(p >= 98){ category='IIT Zone'; rank='< 5,000'; msg='⚡ IIT milega bhai! Thoda aur push kar!'; }
-  else if(p >= 95){ category='NIT Top'; rank='< 25,000'; msg='📈 NIT Top branch pakki! IIT ke liye thoda aur mehnat!'; }
-  else if(p >= 90){ category='NIT Zone'; rank='< 80,000'; msg='💪 NIT milega! IIT ke liye accuracy improve karo!'; }
-  else if(p >= 80){ category='Good NIT'; rank='< 2,00,000'; msg='📚 Mehnat badhao — IIT ka sapna door nahi!'; }
-  else{ category='Improvement'; rank='>2,00,000'; msg='🚀 Abhi bahut scope hai! Roz practice karo!'; }
-  
-  document.getElementById('predPercentile').textContent = p+'%';
-  document.getElementById('predRank').textContent = rank;
+  // Scale to 300
+  var scaledScore = Math.round((score / maxScore) * 300);
+  scaledScore = Math.max(0, scaledScore);
+
+  // JEE Main 2024 actual score vs percentile data
+  var percentile;
+  if(scaledScore >= 285)      percentile = 99.99;
+  else if(scaledScore >= 270) percentile = 99.95;
+  else if(scaledScore >= 250) percentile = 99.9;
+  else if(scaledScore >= 230) percentile = 99.7;
+  else if(scaledScore >= 210) percentile = 99.4;
+  else if(scaledScore >= 190) percentile = 98.8;
+  else if(scaledScore >= 170) percentile = 97.5;
+  else if(scaledScore >= 150) percentile = 95.0;
+  else if(scaledScore >= 130) percentile = 91.0;
+  else if(scaledScore >= 110) percentile = 84.0;
+  else if(scaledScore >= 90)  percentile = 74.0;
+  else if(scaledScore >= 70)  percentile = 60.0;
+  else if(scaledScore >= 50)  percentile = 45.0;
+  else if(scaledScore >= 30)  percentile = 28.0;
+  else                        percentile = Math.max(1, scaledScore * 0.4);
+
+  // Rank from percentile (12 lakh candidates JEE Main 2024)
+  var rank = Math.round((100 - percentile) / 100 * 1200000);
+  var rankStr;
+  if(rank < 100)        rankStr = '< 100';
+  else if(rank < 500)   rankStr = '< 500';
+  else if(rank < 1000)  rankStr = '< 1,000';
+  else if(rank < 5000)  rankStr = '< 5,000';
+  else if(rank < 10000) rankStr = '< 10,000';
+  else if(rank < 25000) rankStr = '< 25,000';
+  else if(rank < 50000) rankStr = '< 50,000';
+  else if(rank < 100000)rankStr = '< 1,00,000';
+  else if(rank < 200000)rankStr = '< 2,00,000';
+  else                  rankStr = '> 2,00,000';
+
+  var category, msg;
+  if(percentile >= 99.9){      category='IIT Top 5';  msg='🔥 IIT Bombay/Delhi pakka! Tu beast hai bhai!';}
+  else if(percentile >= 99.5){ category='IIT Zone';   msg='🎯 IIT milega! Bas consistency rakh aur mock dete reh!';}
+  else if(percentile >= 99){   category='IIT Zone';   msg='⚡ IIT possible hai! Accuracy thodi aur badhao!';}
+  else if(percentile >= 98){   category='IIT/NIT+';   msg='📈 IIT ke bahut karib! Weak chapters pe focus karo!';}
+  else if(percentile >= 95){   category='NIT Top';    msg='💪 NIT Top branch pakki! IIT ke liye aur 2-3 mock do!';}
+  else if(percentile >= 90){   category='NIT Zone';   msg='📚 NIT milega! Roz 1 mock lagao improvement hogi!';}
+  else if(percentile >= 80){   category='NIT/IIIT';   msg='🚀 Mehnat badhao — NIT door nahi!';}
+  else{                        category='Keep Going'; msg='💡 Abhi bahut time hai! Concepts clear karo!';}
+
+  document.getElementById('predPercentile').textContent = percentile.toFixed(2)+'%';
+  document.getElementById('predRank').textContent = rankStr;
   document.getElementById('predCategory').textContent = category;
   document.getElementById('predMsg').textContent = msg;
-  rp.style.display = 'block';
+  
+  // Show scaled score info
+  var info = document.getElementById('predScaledScore');
+  if(info) info.textContent = 'Scaled score (out of 300): '+scaledScore;
+  
+  rp.style.display = 'block'; rp.style.marginTop='16px';
 }
 }
 function renderChat(){
