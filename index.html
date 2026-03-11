@@ -29,7 +29,7 @@
 }
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:15px;overscroll-behavior:none;}
 
-/* ── LOGIN ── */
+/* LOGIN */
 #loginScreen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);}
 .login-card{background:#fff;border-radius:24px;padding:40px 28px;text-align:center;max-width:340px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,0.25);}
 .login-logo{font-size:56px;margin-bottom:10px;}
@@ -40,7 +40,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .g-btn img{width:22px;}
 .login-err{margin-top:12px;font-size:12px;color:var(--red);display:none;padding:10px;background:var(--redlt);border-radius:8px;}
 
-/* ── TOP BAR ── */
+/* TOP BAR */
 #topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);}
 .tb-left{display:flex;align-items:center;gap:10px;}
 .tb-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--blue);}
@@ -49,20 +49,20 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .tb-right{display:flex;align-items:center;gap:8px;}
 .streak-badge{display:flex;align-items:center;gap:4px;background:var(--orangelt);border:1px solid #fed7aa;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700;color:var(--orange);}
 
-/* ── MAIN WRAP ── */
+/* MAIN WRAP */
 .wrap{max-width:520px;margin:0 auto;padding:70px 14px 90px;}
 
-/* ── CARDS ── */
+/* CARDS */
 .card{background:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow2);border:1px solid var(--border);}
 .card-title{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px;}
 
-/* ── QUOTE ── */
+/* QUOTE */
 .quote-card{background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:var(--r);padding:16px;margin-bottom:12px;color:#fff;}
 .quote-text{font-size:14px;line-height:1.65;font-style:italic;margin-bottom:8px;}
 .quote-auth{font-size:11px;opacity:.85;font-weight:700;}
 .quote-date{font-size:11px;opacity:.6;margin-top:2px;}
 
-/* ── COUNTDOWN ── */
+/* COUNTDOWN */
 .cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .cd-box{background:var(--bluelt);border:1px solid #c7d2fe;border-radius:var(--r2);padding:12px;text-align:center;}
 .cd-title{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:8px;}
@@ -72,17 +72,17 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .cd-u{font-size:9px;color:var(--text3);margin-top:2px;font-weight:600;}
 .cd-sel{width:100%;margin-top:8px;padding:6px 8px;border-radius:8px;border:1px solid #c7d2fe;background:#fff;font-size:13px;font-weight:600;color:var(--blue);outline:none;font-family:'Inter',sans-serif;}
 
-/* ── BOTTOM NAV ── */
+/* BOTTOM NAV */
 #bottomNav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:#fff;border-top:1px solid var(--border);display:flex;box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding-bottom:env(safe-area-inset-bottom);}
 .nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-family:'Inter',sans-serif;transition:color .15s;}
 .nav-btn.on{color:var(--blue);}
 .nav-icon{font-size:19px;line-height:1;}
 .nav-label{font-size:9px;font-weight:700;letter-spacing:.3px;}
 
-/* ── SECTIONS ── */
+/* SECTIONS */
 .sec{display:none;}.sec.on{display:block;}
 
-/* ── STUDY TIMER ── */
+/* STUDY TIMER */
 .timer-hero{background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:var(--r);padding:24px 16px;text-align:center;margin-bottom:12px;color:#fff;}
 .timer-display{font-size:52px;font-weight:900;letter-spacing:4px;margin:6px 0;font-variant-numeric:tabular-nums;}
 .timer-sub{font-size:12px;opacity:.7;margin-bottom:14px;}
@@ -95,13 +95,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .t-btn.pause{background:#ef4444;color:#fff;}
 .t-btn.reset-btn{background:rgba(255,255,255,.15);color:#fff;}
 
-/* ── GOAL ── */
+/* GOAL */
 .goal-bar-bg{background:var(--border);border-radius:99px;height:10px;overflow:hidden;margin-bottom:6px;}
 .goal-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .5s;}
 .goal-inp{padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:14px;font-weight:600;color:var(--text);outline:none;font-family:'Inter',sans-serif;width:100%;}
 .goal-inp:focus{border-color:var(--blue);}
 
-/* ── SUBJECT TIME ── */
+/* SUBJECT TIME */
 .sub-time-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .stc{border-radius:var(--r2);padding:12px 8px;text-align:center;}
 .stc.ph{background:var(--bluelt);border:1px solid #c7d2fe;}
@@ -114,7 +114,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .stc.ch .stc-val{color:var(--orange);}
 .stc.ma .stc-val{color:var(--green);}
 
-/* ── WEEKLY GRAPH ── */
+/* WEEKLY GRAPH */
 .week-graph{display:flex;align-items:flex-end;gap:5px;height:80px;margin:8px 0 4px;}
 .wbw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .wbb{flex:1;width:100%;background:var(--border);border-radius:6px;overflow:hidden;display:flex;align-items:flex-end;}
@@ -122,7 +122,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .wbd{font-size:9px;font-weight:700;color:var(--text3);}
 .wbh{font-size:9px;font-weight:600;color:var(--text2);}
 
-/* ── SYLLABUS ── */
+/* SYLLABUS */
 .syl-stab{flex:1;padding:10px 6px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;}
 #stab-ph.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 #stab-ch.on{background:var(--orange);color:#fff;border-color:var(--orange);}
@@ -146,7 +146,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .sub-bar-fill{height:100%;border-radius:99px;transition:width .5s;}
 .sub-bar-pct{font-size:11px;font-weight:700;min-width:34px;text-align:right;}
 
-/* ── ARENA ── */
+/* ARENA */
 .cfg-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px;}
 .cfg-grp{display:flex;flex-direction:column;gap:4px;flex:1;min-width:90px;}
 .cfg-lbl{font-size:11px;font-weight:600;color:var(--text2);}
@@ -192,7 +192,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .ans-row.no{background:var(--redlt);border:1px solid #fca5a5;}
 .ans-row.sk{background:var(--bg);border:1px solid var(--border);}
 
-/* ── STATS ── */
+/* STATS */
 .mock-form{background:var(--bg);border-radius:var(--r2);padding:12px;margin-bottom:12px;}
 .mock-form-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;}
 .mock-fields{display:flex;gap:8px;flex-wrap:wrap;}
@@ -213,7 +213,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .motiv{border-radius:10px;padding:12px;text-align:center;font-size:14px;font-weight:700;background:var(--greenlt);border:1px solid #bbf7d0;color:var(--green);margin-top:8px;display:none;}
 .motiv.on{display:block;}
 
-/* ── AI CHAT ── */
+/* AI CHAT */
 .ai-tabs{display:flex;border-bottom:2px solid var(--border);}
 .ai-tab{flex:1;padding:11px 6px;border:none;background:transparent;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Inter',sans-serif;}
 .ai-tab.on{color:var(--blue);border-bottom-color:var(--blue);}
@@ -229,7 +229,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 #chatSendBtn{padding:10px 16px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;min-height:42px;font-family:'Inter',sans-serif;}
 #chatSendBtn:disabled{opacity:.5;}
 
-/* ── PLANNER ── */
+/* PLANNER */
 .plan-stab{flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;transition:all .2s;}
 .plan-ch-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:6px;border:1.5px solid var(--border);background:#fff;cursor:pointer;user-select:none;}
 .plan-ch-item.sph{border-color:#c7d2fe;background:var(--bluelt);}
@@ -257,7 +257,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 </head>
 <body>
 
-<!-- ══ LOGIN SCREEN ══ -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo">🎯</div>
@@ -271,7 +271,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
 </div>
 
-<!-- ══ TOP BAR ══ -->
+<!-- TOP BAR -->
 <div id="topbar" style="display:none">
   <div class="tb-left">
     <img class="tb-avatar" id="userAvatar" src="" alt="">
@@ -286,7 +286,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   </div>
 </div>
 
-<!-- ══ MAIN APP ══ -->
+<!-- MAIN APP -->
 <div class="wrap" id="mainApp" style="display:none">
 
   <!-- QUOTE -->
@@ -343,7 +343,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <!-- HOME placeholder -->
   <div class="sec on" id="sec-home"></div>
 
-  <!-- ══ TIMER SECTION ══ -->
+  <!-- TIMER SECTION -->
   <div class="sec" id="sec-timer">
     <div class="timer-hero">
       <div style="font-size:11px;opacity:.7;font-weight:700;letter-spacing:1px;">STUDY TIMER</div>
@@ -411,7 +411,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
-  <!-- ══ SYLLABUS SECTION ══ -->
+  <!-- SYLLABUS SECTION -->
   <div class="sec" id="sec-syl">
     <div class="card">
       <div class="card-title">📚 Syllabus Progress</div>
@@ -432,7 +432,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
-  <!-- ══ ARENA SECTION ══ -->
+  <!-- ARENA SECTION -->
   <div class="sec" id="sec-arena">
     <div class="card">
       <div class="card-title">⚔️ Practice Arena</div>
@@ -456,7 +456,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
           </div>
         </div>
         <div class="cfg-row">
-          <div class="cfg-grp" style="min-width:100%;flex-basis:100%"><label class="cfg-lbl">QUESTIONS</label>
+          <div class="cfg-grp" style="min-width:100%;flex-basis:100%">
+            <label class="cfg-lbl">QUESTIONS</label>
             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
               <button type="button" class="qs-opt-btn" onclick="selArenaQs(5,this)">5</button>
               <button type="button" class="qs-opt-btn" onclick="selArenaQs(10,this)">10</button>
@@ -501,7 +502,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
         <div class="res-box"><div class="res-val" style="color:var(--purple)" id="rAcc">0%</div><div class="res-lbl">ACCURACY</div></div>
       </div>
       <div id="ansList" style="text-align:left;"></div>
-
       <!-- RANK PREDICTOR -->
       <div id="rankPredictor" style="display:none;margin-top:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:14px;padding:18px 16px;color:#fff;text-align:center;">
         <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;opacity:.75;margin-bottom:4px;">🎯 JEE RANK PREDICTOR</div>
@@ -524,11 +524,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
         <div id="predScaledScore" style="font-size:11px;opacity:.6;margin-top:6px;"></div>
         <div style="font-size:10px;opacity:.4;margin-top:8px;">*Practice estimate — actual JEE mein vary hoga</div>
       </div>
-
     </div>
   </div>
 
-  <!-- ══ STATS SECTION ══ -->
+  <!-- STATS SECTION -->
   <div class="sec" id="sec-stats">
     <div class="card">
       <div class="card-title">📊 Mock Test Tracker</div>
@@ -567,7 +566,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     </div>
   </div>
 
-  <!-- ══ AI SECTION ══ -->
+  <!-- AI SECTION -->
   <div class="sec" id="sec-ai">
     <div class="card" style="padding:0;overflow:hidden;">
       <div class="ai-tabs">
@@ -589,7 +588,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
 </div><!-- end .wrap -->
 
-<!-- ══ BOTTOM NAV ══ -->
+<!-- BOTTOM NAV -->
 <div id="bottomNav" style="display:none">
   <button class="nav-btn on" onclick="showNav('home',this)"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></button>
   <button class="nav-btn" onclick="showNav('timer',this)"><div class="nav-icon">⏱️</div><div class="nav-label">Timer</div></button>
@@ -599,7 +598,20 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <button class="nav-btn" onclick="showNav('ai',this)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></button>
 </div>
 
-<!-- ══ FIREBASE ══ -->
+<!-- LOGOUT CONFIRM MODAL -->
+<div id="logoutModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-size:40px;margin-bottom:12px;">🚪</div>
+    <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;">Logout karna hai?</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.5;">Tera data cloud mein safe rahega.<br>Wapas login karke access kar sakte ho.</div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="closeLogoutModal()" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Cancel</button>
+      <button onclick="doLogout()" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -678,7 +690,7 @@ onAuthStateChanged(auth, async function(user){
 });
 </script>
 
-<!-- ══ MAIN APP SCRIPT ══ -->
+<!-- MAIN APP SCRIPT -->
 <script>
 // ═══ SYLLABUS DATA ═══
 var SYL = {
@@ -1014,6 +1026,19 @@ function loadChaps(){
   });
 }
 
+// ═══ Q SELECTION HELPERS (FIX) ═══
+function selArenaQs(val, btn){
+  document.getElementById('cTotal').value = val;
+  btn.parentNode.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+
+function selMockQs(val, btn){
+  document.getElementById('mockQs').value = val;
+  btn.parentNode.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+}
+
 // ═══ Q GENERATOR ═══
 var qs=[],uAns={},corrAns={};
 function rnd(a){return a[Math.floor(Math.random()*a.length)];}
@@ -1136,11 +1161,64 @@ function showResult(){
   document.getElementById('rAcc').textContent=(qs.length?Math.round(corr/qs.length*100):0)+'%';
   document.getElementById('ansList').innerHTML=html.join('');
   var rc=document.getElementById('resCard');rc.classList.add('on');rc.scrollIntoView({behavior:'smooth',block:'start'});
-  // Show rank predictor
   showRankPredictor(score, qs.length);
-  // auto save
   var d=new Date();
   saveMockData({id:Date.now(),date:d.toISOString().split('T')[0],score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
+}
+
+// ═══ RANK PREDICTOR ═══
+function showRankPredictor(score, total){
+  var rp = document.getElementById('rankPredictor');
+  if(!rp) return;
+  var maxScore = total * 4;
+  if(maxScore <= 0){ rp.style.display='none'; return; }
+  var scaledScore = Math.round((score / maxScore) * 300);
+  scaledScore = Math.max(0, scaledScore);
+  var percentile;
+  if(scaledScore >= 285)      percentile = 99.99;
+  else if(scaledScore >= 270) percentile = 99.95;
+  else if(scaledScore >= 250) percentile = 99.9;
+  else if(scaledScore >= 230) percentile = 99.7;
+  else if(scaledScore >= 210) percentile = 99.4;
+  else if(scaledScore >= 190) percentile = 98.8;
+  else if(scaledScore >= 170) percentile = 97.5;
+  else if(scaledScore >= 150) percentile = 95.0;
+  else if(scaledScore >= 130) percentile = 91.0;
+  else if(scaledScore >= 110) percentile = 84.0;
+  else if(scaledScore >= 90)  percentile = 74.0;
+  else if(scaledScore >= 70)  percentile = 60.0;
+  else if(scaledScore >= 50)  percentile = 45.0;
+  else if(scaledScore >= 30)  percentile = 28.0;
+  else                        percentile = Math.max(1, scaledScore * 0.4);
+  var rank = Math.round((100 - percentile) / 100 * 1200000);
+  var rankStr;
+  if(rank < 100)        rankStr = '< 100';
+  else if(rank < 500)   rankStr = '< 500';
+  else if(rank < 1000)  rankStr = '< 1,000';
+  else if(rank < 5000)  rankStr = '< 5,000';
+  else if(rank < 10000) rankStr = '< 10,000';
+  else if(rank < 25000) rankStr = '< 25,000';
+  else if(rank < 50000) rankStr = '< 50,000';
+  else if(rank < 100000)rankStr = '< 1,00,000';
+  else if(rank < 200000)rankStr = '< 2,00,000';
+  else                  rankStr = '> 2,00,000';
+  var category, msg;
+  if(percentile >= 99.9){      category='IIT Top 5';  msg='🔥 IIT Bombay/Delhi pakka! Tu beast hai bhai!';}
+  else if(percentile >= 99.5){ category='IIT Zone';   msg='🎯 IIT milega! Bas consistency rakh aur mock dete reh!';}
+  else if(percentile >= 99){   category='IIT Zone';   msg='⚡ IIT possible hai! Accuracy thodi aur badhao!';}
+  else if(percentile >= 98){   category='IIT/NIT+';   msg='📈 IIT ke bahut karib! Weak chapters pe focus karo!';}
+  else if(percentile >= 95){   category='NIT Top';    msg='💪 NIT Top branch pakki! IIT ke liye aur 2-3 mock do!';}
+  else if(percentile >= 90){   category='NIT Zone';   msg='📚 NIT milega! Roz 1 mock lagao improvement hogi!';}
+  else if(percentile >= 80){   category='NIT/IIIT';   msg='🚀 Mehnat badhao — NIT door nahi!';}
+  else{                        category='Keep Going'; msg='💡 Abhi bahut time hai! Concepts clear karo!';}
+  document.getElementById('predPercentile').textContent = percentile.toFixed(2)+'%';
+  document.getElementById('predRank').textContent = rankStr;
+  document.getElementById('predCategory').textContent = category;
+  document.getElementById('predMsg').textContent = msg;
+  var info = document.getElementById('predScaledScore');
+  if(info) info.textContent = 'Scaled score (out of 300): '+scaledScore;
+  rp.style.display = 'block';
+  rp.style.marginTop = '16px';
 }
 
 // ═══ MOCK TRACKER ═══
@@ -1157,11 +1235,8 @@ function saveMock(){
   var wrong=parseInt(document.getElementById('mockWrong').value)||0;
   if(!date){alert('Date bharo!');return;}
   saveMockData({id:Date.now(),date:date,score:corr*4-wrong,qs:mockQs,corr:corr,wrong:wrong});
-  document.getElementById('mockQs').value='';
   document.getElementById('mockCorr').value='';
   document.getElementById('mockWrong').value='';
-  document.getElementById('mockQs').value='75';
-  document.querySelectorAll('.qs-opt-btn').forEach(function(b){b.classList.remove('on');});
 }
 function setPeriod(p,btn){
   curPeriod=p;
@@ -1234,90 +1309,15 @@ var WURL='https://jeegemini.manojd9414.workers.dev';
 var SYS={role:'system',content:'Tu ek expert JEE teacher hai. Physics, Chemistry aur Maths ke questions step-by-step explain kar. Hinglish mein baat kar. Bahut clear aur concise reh.'};
 var aiCur='gemini',aiHist={gemini:[SYS],grok:[SYS],chatgpt:[SYS]},aiLoad=false;
 var AI_LABELS={gemini:'GEMINI 2.0 FLASH',grok:'GROK 3',chatgpt:'GPT-4o'};
+
 function switchAI(name){
   aiCur=name;
   document.querySelectorAll('.ai-tab').forEach(function(b){b.classList.remove('on');});
   var t=document.getElementById('at'+name);if(t)t.classList.add('on');
   var lbl=document.getElementById('aiLabel');if(lbl)lbl.textContent=AI_LABELS[name];
   renderChat();
-
-function selMockQs(val, btn){
-  document.getElementById('mockQs').value = val;
-  btn.parentNode.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-}
-function selArenaQs(val, btn){
-  document.getElementById('cTotal').value = val;
-  btn.parentNode.querySelectorAll('.qs-opt-btn').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
 }
 
-function showRankPredictor(score, total){
-  var rp = document.getElementById('rankPredictor');
-  if(!rp) return;
-
-  // Scale score to full JEE Main (300 marks)
-  var maxScore = total * 4;
-  if(maxScore <= 0){ rp.style.display='none'; return; }
-  
-  // Scale to 300
-  var scaledScore = Math.round((score / maxScore) * 300);
-  scaledScore = Math.max(0, scaledScore);
-
-  // JEE Main 2024 actual score vs percentile data
-  var percentile;
-  if(scaledScore >= 285)      percentile = 99.99;
-  else if(scaledScore >= 270) percentile = 99.95;
-  else if(scaledScore >= 250) percentile = 99.9;
-  else if(scaledScore >= 230) percentile = 99.7;
-  else if(scaledScore >= 210) percentile = 99.4;
-  else if(scaledScore >= 190) percentile = 98.8;
-  else if(scaledScore >= 170) percentile = 97.5;
-  else if(scaledScore >= 150) percentile = 95.0;
-  else if(scaledScore >= 130) percentile = 91.0;
-  else if(scaledScore >= 110) percentile = 84.0;
-  else if(scaledScore >= 90)  percentile = 74.0;
-  else if(scaledScore >= 70)  percentile = 60.0;
-  else if(scaledScore >= 50)  percentile = 45.0;
-  else if(scaledScore >= 30)  percentile = 28.0;
-  else                        percentile = Math.max(1, scaledScore * 0.4);
-
-  // Rank from percentile (12 lakh candidates JEE Main 2024)
-  var rank = Math.round((100 - percentile) / 100 * 1200000);
-  var rankStr;
-  if(rank < 100)        rankStr = '< 100';
-  else if(rank < 500)   rankStr = '< 500';
-  else if(rank < 1000)  rankStr = '< 1,000';
-  else if(rank < 5000)  rankStr = '< 5,000';
-  else if(rank < 10000) rankStr = '< 10,000';
-  else if(rank < 25000) rankStr = '< 25,000';
-  else if(rank < 50000) rankStr = '< 50,000';
-  else if(rank < 100000)rankStr = '< 1,00,000';
-  else if(rank < 200000)rankStr = '< 2,00,000';
-  else                  rankStr = '> 2,00,000';
-
-  var category, msg;
-  if(percentile >= 99.9){      category='IIT Top 5';  msg='🔥 IIT Bombay/Delhi pakka! Tu beast hai bhai!';}
-  else if(percentile >= 99.5){ category='IIT Zone';   msg='🎯 IIT milega! Bas consistency rakh aur mock dete reh!';}
-  else if(percentile >= 99){   category='IIT Zone';   msg='⚡ IIT possible hai! Accuracy thodi aur badhao!';}
-  else if(percentile >= 98){   category='IIT/NIT+';   msg='📈 IIT ke bahut karib! Weak chapters pe focus karo!';}
-  else if(percentile >= 95){   category='NIT Top';    msg='💪 NIT Top branch pakki! IIT ke liye aur 2-3 mock do!';}
-  else if(percentile >= 90){   category='NIT Zone';   msg='📚 NIT milega! Roz 1 mock lagao improvement hogi!';}
-  else if(percentile >= 80){   category='NIT/IIIT';   msg='🚀 Mehnat badhao — NIT door nahi!';}
-  else{                        category='Keep Going'; msg='💡 Abhi bahut time hai! Concepts clear karo!';}
-
-  document.getElementById('predPercentile').textContent = percentile.toFixed(2)+'%';
-  document.getElementById('predRank').textContent = rankStr;
-  document.getElementById('predCategory').textContent = category;
-  document.getElementById('predMsg').textContent = msg;
-  
-  // Show scaled score info
-  var info = document.getElementById('predScaledScore');
-  if(info) info.textContent = 'Scaled score (out of 300): '+scaledScore;
-  
-  rp.style.display = 'block'; rp.scrollIntoView({behavior:'smooth',block:'start'}); rp.style.marginTop='16px';
-}
-}
 function renderChat(){
   var win=document.getElementById('chatWin');win.innerHTML='';
   var hist=aiHist[aiCur];
@@ -1366,6 +1366,7 @@ function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend
 function chatResize(el){el.style.height='42px';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 renderChat();
 
+// ═══ LOGOUT ═══
 function confirmLogout(){
   var modal = document.getElementById('logoutModal');
   modal.style.display='flex';
@@ -1376,34 +1377,20 @@ function closeLogoutModal(){
 }
 function doLogout(){
   closeLogoutModal();
-  // signOut via firebase module
   window._doLogoutFn && window._doLogoutFn();
 }
 </script>
 
-<!-- ══ SERVICE WORKER ══ -->
+<!-- SERVICE WORKER -->
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('./sw.js').then(function(reg){
-      console.log('SW registered:', reg.scope);
-    }).catch(function(err){
+    navigator.serviceWorker.register('./sw.js').catch(function(err){
       console.log('SW error:', err);
     });
   });
 }
 </script>
-<!-- LOGOUT CONFIRM MODAL -->
-<div id="logoutModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:300px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-    <div style="font-size:40px;margin-bottom:12px;">🚪</div>
-    <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;">Logout karna hai?</div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.5;">Tera data cloud mein safe rahega.<br>Wapas login karke access kar sakte ho.</div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="closeLogoutModal()" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Cancel</button>
-      <button onclick="doLogout()" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Logout</button>
-    </div>
-  </div>
-</div>
+
 </body>
 </html>
