@@ -6,7 +6,7 @@
   "orientation": "any",
   "scope": "/",
   "short_name": "StudyApp",
-  "start_url": "/",
+  "start_url": "/jee-main/",
   "theme_color": "#487364",
   "id": "StudyApp-id",
   "description": "This is my personal PWA for JEE preparation",
