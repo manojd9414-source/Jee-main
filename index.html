@@ -280,6 +280,19 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
     <div class="quote-date" id="qdate"></div>
   </div>
 
+  <!-- IIT BOMBAY NIGHT BANNER -->
+  <div style="border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative;height:160px;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/IIT_Bombay_-_Main_Building.jpg/1280px-IIT_Bombay_-_Main_Building.jpg" 
+         alt="IIT Bombay" 
+         style="width:100%;height:100%;object-fit:cover;"
+         onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#1e1b4b,#4f46e5)';">
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.2) 60%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;">
+      <div style="color:#f5c842;font-size:11px;font-weight:700;letter-spacing:2px;">🎯 TARGET</div>
+      <div style="color:#fff;font-size:18px;font-weight:800;line-height:1.2;">IIT Bombay / Delhi</div>
+      <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:2px;">Har din ek kadam aur karib</div>
+    </div>
+  </div>
+
   <!-- COUNTDOWN -->
   <div class="card">
     <div class="card-title">⏳ Countdown</div>
@@ -292,7 +305,17 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
           <div class="cd-num"><div class="cd-n" id="mm">00</div><div class="cd-u">M</div></div>
           <div class="cd-num"><div class="cd-n" id="ms">00</div><div class="cd-u">S</div></div>
         </div>
-        <div class="cd-slots" id="dpSlots"></div>
+        <div style="margin-top:8px;">
+          <select id="mainDateSel" onchange="selMainDate(this.value)" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #c7d2fe;background:#fff;font-size:13px;font-weight:600;color:#4f46e5;outline:none;cursor:pointer;">
+            <option value="2">2 Apr 2026</option>
+            <option value="3">3 Apr 2026</option>
+            <option value="4">4 Apr 2026</option>
+            <option value="5">5 Apr 2026</option>
+            <option value="6">6 Apr 2026</option>
+            <option value="7">7 Apr 2026</option>
+            <option value="8">8 Apr 2026</option>
+          </select>
+        </div>
       </div>
       <div class="cd-box" style="background:var(--purplelt);border-color:#ddd6fe;">
         <div class="cd-title" style="color:var(--purple)">JEE ADVANCED</div>
@@ -304,6 +327,19 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
         </div>
         <div style="font-size:10px;color:var(--purple);margin-top:8px;font-weight:600;">📅 18 May 2026</div>
       </div>
+    </div>
+  </div>
+
+  <!-- IIT DELHI PHOTO -->
+  <div style="border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative;height:140px;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/IIT_Delhi_main_building.jpg/1280px-IIT_Delhi_main_building.jpg"
+         alt="IIT Delhi"
+         style="width:100%;height:100%;object-fit:cover;"
+         onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#064e3b,#059669)';">
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.1) 70%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:14px;">
+      <div style="color:#86efac;font-size:11px;font-weight:700;letter-spacing:2px;">🏛️ DREAM CAMPUS</div>
+      <div style="color:#fff;font-size:18px;font-weight:800;">IIT Delhi</div>
+      <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:2px;">Mehnat aaj, glory kal</div>
     </div>
   </div>
 
@@ -663,17 +699,8 @@ var QUOTES=[
 var MD=[{l:"2 Apr",d:2},{l:"3 Apr",d:3},{l:"4 Apr",d:4},{l:"5 Apr",d:5},{l:"6 Apr",d:6},{l:"7 Apr",d:7},{l:"8 Apr",d:8}];
 var selDay=2;
 function mTS(day){return new Date(2026,3,day,9,0,0).getTime();}
-function renderSlots(){
-  var c=document.getElementById('dpSlots'),now=Date.now();c.innerHTML='';
-  MD.forEach(function(d){
-    var past=mTS(d.d)<now,btn=document.createElement('div');
-    btn.className='cd-slot'+(past?' past':'')+(d.d===selDay&&!past?' on':'');
-    btn.textContent=d.l;
-    if(!past)btn.onclick=(function(x){return function(){selDay=x;renderSlots();};})(d.d);
-    c.appendChild(btn);
-  });
-}
-renderSlots();
+function selMainDate(v){selDay=parseInt(v);}
+// No renderSlots needed - using select dropdown
 function fill(diff,a,b,c,dd){
   if(diff<0)diff=0;
   document.getElementById(a).textContent=p2(Math.floor(diff/86400000));
@@ -1043,10 +1070,31 @@ function chatSend(){
   document.getElementById('chatTxt').value='';document.getElementById('chatTxt').style.height='42px';
   addBub('u',txt);aiHist[aiCur].push({role:'user',content:txt});
   aiLoad=true;document.getElementById('chatSendBtn').disabled=true;document.getElementById('chatSendBtn').textContent='...';addTyping();
-  var contents=aiHist[aiCur].filter(m=>m.role!=='system').map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
-  fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents,generationConfig:{temperature:0.7,maxOutputTokens:2048}})})
-    .then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error('HTTP '+r.status);});return r.json();})
-    .then(data=>{var reply=data.candidates[0].content.parts[0].text;aiHist[aiCur].push({role:'assistant',content:reply});rmTyping();addBub('b',reply);})
+  // Build message history for API
+  var contents=[];
+  // Add system as first user message for Gemini compatibility
+  contents.push({role:'user',parts:[{text:'You are an expert JEE teacher. Explain Physics, Chemistry and Maths step by step. Respond in Hinglish.'}]});
+  contents.push({role:'model',parts:[{text:'Bilkul! Main tumhara JEE expert teacher hoon. Physics, Chemistry aur Maths ke koi bhi sawaal pucho!'}]});
+  aiHist[aiCur].filter(m=>m.role!=='system').forEach(m=>{
+    contents.push({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]});
+  });
+  fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    model:'gemini-2.0-flash',
+    contents:contents,
+    generationConfig:{temperature:0.7,maxOutputTokens:2048}
+  })})
+    .then(r=>{if(!r.ok)return r.text().then(t=>{throw new Error('HTTP '+r.status+': '+t.substring(0,100));});return r.json();})
+    .then(data=>{
+      var reply='';
+      if(data.candidates&&data.candidates[0]&&data.candidates[0].content){
+        reply=data.candidates[0].content.parts[0].text;
+      } else if(data.error){
+        reply='❌ API Error: '+data.error.message;
+      } else {
+        reply='❌ Unexpected response format';
+      }
+      aiHist[aiCur].push({role:'assistant',content:reply});rmTyping();addBub('b',reply);
+    })
     .catch(err=>{rmTyping();addBub('b','❌ Error: '+err.message);})
     .finally(()=>{aiLoad=false;document.getElementById('chatSendBtn').disabled=false;document.getElementById('chatSendBtn').textContent='Send ▶';});
 }
