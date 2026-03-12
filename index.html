@@ -1304,7 +1304,7 @@ function showResult(){
 
     // ── Track chapter attempts ──
     var ck = q.sk+'|'+q.ch;
-    if(!chapData[ck]) chapData[ck]={sub:q.sk, ch:q.ch, attempted:0};
+    if(!chapData[ck]) chapData[ck]={sub:q.sk, ch:q.ch, attempted:0, corr:0, wrong:0, skip:0};
     chapData[ck].attempted++;
 
     if(!ua||!ca){skip++;if(ua)uaL=ua.t==='MCQ'?'Opt '+ua.v:ua.v;}
@@ -1313,6 +1313,11 @@ function showResult(){
       if(ca.t==='MCQ'){if(ua.t==='MCQ'&&ua.v===ca.v){corr++;score+=4;status='ok';}else{wrong++;score-=1;status='no';}}
       else{var uv=parseFloat(ua.v),cv=parseFloat(ca.v);if(!isNaN(uv)&&!isNaN(cv)&&Math.abs(uv-cv)<=0.01){corr++;score+=4;status='ok';}else{wrong++;status='no';}}
     }
+    // ── Track per-chapter result ──
+    if(status==='ok') chapData[ck].corr++;
+    else if(status==='no') chapData[ck].wrong++;
+    else chapData[ck].skip++;
+
     html.push('<div class="ans-row '+status+'"><span style="font-size:11px;font-weight:700;color:var(--blue);min-width:24px">Q'+(q.dispId||q.id)+'</span><span style="flex:1;font-size:12px;color:var(--text2)">'+q.ch+'</span><span style="font-size:13px;font-weight:700;min-width:50px">'+uaL+'</span><span style="color:var(--green);font-size:12px;min-width:50px">&check; '+caL+'</span><span>'+(status==='ok'?'\u2705':status==='no'?'\u274C':'\u23ED\uFE0F')+'</span></div>');
   });
 
@@ -1485,9 +1490,12 @@ var ACS_EMOJI  = {physics:'⚡', chemistry:'🧪', maths:'📐'};
 function updateArenaChapterStats(chapData){
   Object.keys(chapData).forEach(function(ck){
     if(!arenaChapterStats[ck]){
-      arenaChapterStats[ck] = {sub: chapData[ck].sub, ch: chapData[ck].ch, attempted: 0};
+      arenaChapterStats[ck] = {sub: chapData[ck].sub, ch: chapData[ck].ch, attempted:0, corr:0, wrong:0, skip:0};
     }
     arenaChapterStats[ck].attempted += chapData[ck].attempted;
+    arenaChapterStats[ck].corr     += (chapData[ck].corr  || 0);
+    arenaChapterStats[ck].wrong    += (chapData[ck].wrong || 0);
+    arenaChapterStats[ck].skip     += (chapData[ck].skip  || 0);
   });
   saveLocal();
   renderArenaChapterStats();
@@ -1522,15 +1530,19 @@ function renderArenaChapterStats(){
     var s = arenaChapterStats[ck];
     var rank = idx + 1;
     var rankColor = rank === 1 ? '#f59e0b' : rank === 2 ? '#94a3b8' : rank === 3 ? '#cd7c2f' : 'var(--text3)';
-    html += '<div class="acs-row">'
-      + '<div class="acs-rank" style="color:'+rankColor+'">'+(rank<=3?['🥇','🥈','🥉'][rank-1]:rank)+'</div>'
-      + '<div class="acs-ch">'+s.ch+'</div>'
-      + '<span class="acs-sub-tag" style="background:'+ACS_SCOLOR[s.sub]+';color:'+ACS_TCOLOR[s.sub]+'">'
-      +   ACS_EMOJI[s.sub]
-      + '</span>'
-      + '<div class="acs-count">'
-      +   '<div class="acs-count-val">'+s.attempted+'</div>'
-      +   '<div class="acs-count-lbl">QS DONE</div>'
+    var acc = s.attempted > 0 ? Math.round((s.corr||0)/s.attempted*100) : 0;
+    html += '<div class="acs-row" style="flex-wrap:wrap;gap:4px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;width:100%;">'
+      +   '<div class="acs-rank" style="color:'+rankColor+'">'+(rank<=3?['🥇','🥈','🥉'][rank-1]:rank)+'</div>'
+      +   '<div class="acs-ch">'+s.ch+'</div>'
+      +   '<span class="acs-sub-tag" style="background:'+ACS_SCOLOR[s.sub]+';color:'+ACS_TCOLOR[s.sub]+'">'+ ACS_EMOJI[s.sub] +'</span>'
+      + '</div>'
+      + '<div style="display:flex;gap:5px;width:100%;margin-top:4px;">'
+      +   '<div class="acs-count" style="flex:1;"><div class="acs-count-val" style="color:var(--blue)">'+s.attempted+'</div><div class="acs-count-lbl">TOTAL</div></div>'
+      +   '<div class="acs-count" style="flex:1;"><div class="acs-count-val" style="color:var(--green)">'+(s.corr||0)+'</div><div class="acs-count-lbl">CORRECT</div></div>'
+      +   '<div class="acs-count" style="flex:1;"><div class="acs-count-val" style="color:var(--red)">'+(s.wrong||0)+'</div><div class="acs-count-lbl">WRONG</div></div>'
+      +   '<div class="acs-count" style="flex:1;"><div class="acs-count-val" style="color:var(--text2)">'+(s.skip||0)+'</div><div class="acs-count-lbl">SKIP</div></div>'
+      +   '<div class="acs-count" style="flex:1;"><div class="acs-count-val" style="color:var(--purple)">'+acc+'%</div><div class="acs-count-lbl">ACC</div></div>'
       + '</div>'
       + '</div>';
   });
