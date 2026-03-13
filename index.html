@@ -268,9 +268,101 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .qs-opt-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── POMODORO ── */
+.pom-toggle{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:12px;}
+.pom-switch{position:relative;width:44px;height:24px;cursor:pointer;}
+.pom-switch input{opacity:0;width:0;height:0;}
+.pom-slider{position:absolute;inset:0;background:rgba(255,255,255,.2);border-radius:24px;transition:.3s;}
+.pom-slider:before{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;left:3px;top:3px;transition:.3s;}
+.pom-switch input:checked+.pom-slider{background:#fff;}
+.pom-switch input:checked+.pom-slider:before{transform:translateX(20px);background:var(--blue);}
+.pom-label{font-size:12px;opacity:.85;font-weight:700;}
+.pom-phase{font-size:11px;font-weight:800;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:8px;}
+.pom-phase.study{background:rgba(255,255,255,.15);color:#fff;}
+.pom-phase.brk{background:#10b981;color:#fff;}
+
+/* ── DAILY CHECKLIST ── */
+.chk-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;margin-bottom:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;user-select:none;transition:all .2s;}
+.chk-item.done-chk{background:var(--greenlt);border-color:#86efac;}
+.chk-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;transition:all .2s;}
+.chk-item.done-chk .chk-box{background:var(--green);border-color:var(--green);color:#fff;}
+.chk-text{flex:1;font-size:14px;font-weight:600;}
+.chk-item.done-chk .chk-text{text-decoration:line-through;color:var(--text3);}
+
+/* ── MILESTONE BADGES ── */
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.bdg{border-radius:12px;padding:12px 8px;text-align:center;border:2px solid var(--border);transition:all .3s;position:relative;overflow:hidden;}
+.bdg.earned{border-color:transparent;box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.bdg.locked{opacity:.45;filter:grayscale(.6);}
+.bdg-ico{font-size:26px;margin-bottom:4px;}
+.bdg-name{font-size:10px;font-weight:800;line-height:1.3;}
+.bdg-sub{font-size:9px;color:var(--text3);margin-top:2px;}
+
+/* ── WEAK SPOT HEATMAP ── */
+.hm-cell{border-radius:8px;padding:8px 10px;margin-bottom:5px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden;}
+.hm-bar{position:absolute;left:0;top:0;bottom:0;border-radius:8px;transition:width .6s;}
+.hm-label{font-size:12px;font-weight:700;flex:1;position:relative;z-index:1;}
+.hm-sub-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;position:relative;z-index:1;}
+.hm-acc{font-size:13px;font-weight:900;position:relative;z-index:1;min-width:36px;text-align:right;}
+
+/* ── MISTAKE LOG ── */
+.err-item{background:var(--redlt);border:1px solid #fca5a5;border-radius:10px;padding:12px;margin-bottom:8px;}
+.err-q{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px;}
+.err-note{width:100%;border:1.5px solid #fca5a5;border-radius:8px;padding:8px 10px;font-size:13px;background:#fff;color:var(--text);resize:none;font-family:'Inter',sans-serif;outline:none;min-height:60px;}
+.err-note:focus{border-color:var(--red);}
+.err-save-btn{margin-top:6px;padding:6px 14px;background:var(--red);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+
+/* ── FLASHCARDS ── */
+.fc-scene{perspective:1000px;height:180px;margin:0 auto 16px;max-width:340px;cursor:pointer;}
+.fc-card{width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;position:relative;border-radius:16px;}
+.fc-card.flipped{transform:rotateY(180deg);}
+.fc-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.fc-front{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;box-shadow:0 8px 24px rgba(79,70,229,.3);}
+.fc-back{background:#fff;border:2px solid var(--border);transform:rotateY(180deg);box-shadow:0 8px 24px rgba(0,0,0,.08);}
+.fc-hint{font-size:10px;opacity:.6;font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.fc-q{font-size:16px;font-weight:800;text-align:center;line-height:1.4;}
+.fc-a{font-size:15px;font-weight:700;color:var(--blue);text-align:center;line-height:1.5;}
+.fc-nav{display:flex;gap:8px;justify-content:center;align-items:center;}
+.fc-nav-btn{padding:8px 18px;border-radius:8px;border:2px solid var(--border);background:#fff;color:var(--text);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+.fc-counter{font-size:13px;font-weight:700;color:var(--text2);}
+.fc-sub-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.fc-sub-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+.fc-sub-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* ── LEADERBOARD ── */
+.lb-row{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;margin-bottom:6px;background:var(--bg);border:1px solid var(--border);}
+.lb-row.me{background:var(--bluelt);border-color:#c7d2fe;}
+.lb-rank{font-size:15px;font-weight:900;min-width:30px;}
+.lb-name{flex:1;font-size:13px;font-weight:700;}
+.lb-score{font-size:16px;font-weight:900;color:var(--blue);}
+.lb-acc{font-size:11px;color:var(--text2);font-weight:600;}
+
+/* ── SPACED REPETITION ── */
+.sr-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:6px;border:1.5px solid var(--border);background:#fff;}
+.sr-due{font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;}
+.sr-due.today{background:#fee2e2;color:var(--red);}
+.sr-due.soon{background:#fef9c3;color:#854d0e;}
+.sr-due.ok{background:var(--greenlt);color:var(--green);}
+
+/* ── DEEP WORK MODE ── */
+body.deep-work #topbar{opacity:.3;pointer-events:none;}
+body.deep-work .nav-btn:not(.on){opacity:.2;}
+.dw-overlay{display:none;position:fixed;inset:0;z-index:250;background:rgba(0,0,0,.85);align-items:center;justify-content:center;flex-direction:column;gap:20px;}
+body.deep-work .dw-overlay{display:flex;}
+.dw-time{font-size:72px;font-weight:900;color:#fff;letter-spacing:6px;font-variant-numeric:tabular-nums;}
+.dw-msg{font-size:16px;color:rgba(255,255,255,.7);font-weight:600;text-align:center;}
+.dw-exit{padding:10px 24px;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
 </style>
 </head>
 <body>
+<!-- DEEP WORK OVERLAY -->
+<div class="dw-overlay" id="dwOverlay">
+  <div style="font-size:13px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.5);margin-bottom:-10px;">🎯 DEEP WORK MODE</div>
+  <div class="dw-time" id="dwTime">00:00:00</div>
+  <div class="dw-msg" id="dwMsg">IIT Bombay gate ke paas pohonch raha hai tu 🔥</div>
+  <button class="dw-exit" onclick="exitDeepWork()">✕ Exit Focus Mode</button>
+</div>
 
 <!-- LOGIN SCREEN -->
 <div id="loginScreen">
@@ -367,10 +459,26 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
   <!-- HOME -->
   <div class="sec on" id="sec-home">
-    <div class="card" style="text-align:center;padding:18px 14px;">
-      <div style="font-size:32px;margin-bottom:6px;">🎯</div>
-      <div style="font-size:16px;font-weight:800;color:var(--blue);margin-bottom:4px;">IIT ke liye padh raha hai bhai!</div>
-      <div style="font-size:12px;color:var(--text2);">Timer pe ja aur study start kar ⏱️</div>
+    <!-- DAILY CHECKLIST -->
+    <div class="card">
+      <div class="card-title">✅ Aaj Ka Mission</div>
+      <div id="checklistItems"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input type="text" id="newTaskInp" placeholder="Nayi task likhao..." style="flex:1;padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;font-weight:600;outline:none;font-family:'Inter',sans-serif;" onkeydown="if(event.key==='Enter')addChecklistItem()">
+        <button onclick="addChecklistItem()" class="gen-btn">+ Add</button>
+      </div>
+    </div>
+
+    <!-- MILESTONE BADGES -->
+    <div class="card">
+      <div class="card-title">🏆 Milestones & Badges</div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+
+    <!-- SPACED REPETITION REMINDERS -->
+    <div class="card" id="srCard" style="display:none;">
+      <div class="card-title">🔁 Revision Reminders (Spaced Rep)</div>
+      <div id="srList"></div>
     </div>
   </div>
 
@@ -378,6 +486,16 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
   <div class="sec" id="sec-timer">
     <div class="timer-hero">
       <div style="font-size:11px;opacity:.7;font-weight:700;letter-spacing:1px;">STUDY TIMER</div>
+      <!-- Pomodoro toggle -->
+      <div class="pom-toggle">
+        <span class="pom-label">🍅 Pomodoro</span>
+        <label class="pom-switch">
+          <input type="checkbox" id="pomToggle" onchange="togglePomodoro()">
+          <span class="pom-slider"></span>
+        </label>
+        <span class="pom-label" id="pomInfo">OFF</span>
+      </div>
+      <div class="pom-phase study" id="pomPhaseLabel" style="display:none;">📚 STUDY PHASE — 25 min</div>
       <div class="timer-display" id="studyDisp">00:00:00</div>
       <div class="timer-sub" id="studySubLabel">Subject chuno, phir start karo</div>
       <div class="sub-selector">
@@ -388,6 +506,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div class="timer-btns">
         <button class="t-btn start" id="studyStartBtn" onclick="togStudyTimer()">▶ Start</button>
         <button class="t-btn reset-btn" onclick="rstStudyTimer()">↺ Reset</button>
+        <button class="t-btn reset-btn" id="deepWorkBtn" onclick="enterDeepWork()" title="Deep Work Mode">🎯 Focus</button>
       </div>
     </div>
 
@@ -453,13 +572,54 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div class="prog-bg"><div class="prog-fill" id="sylBar" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--green));"></div></div>
       <div id="sylSubBars" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>
     </div>
+    <!-- Main Tabs: Chapters | Flashcards -->
     <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button class="syl-stab on" id="stab-ph" onclick="sylTab('physics')">⚡ Physics</button>
-      <button class="syl-stab" id="stab-ch" onclick="sylTab('chemistry')">🧪 Chemistry</button>
-      <button class="syl-stab" id="stab-ma" onclick="sylTab('maths')">📐 Maths</button>
+      <button id="sylModeChap" onclick="setSylMode('chap',this)" style="flex:1;padding:9px 6px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">📖 Chapters</button>
+      <button id="sylModeFlash" onclick="setSylMode('flash',this)" style="flex:1;padding:9px 6px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🃏 Flashcards</button>
     </div>
-    <div class="card" style="padding:12px;">
-      <div id="sylChapList"></div>
+    <!-- Chapter view -->
+    <div id="sylChapView">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="syl-stab on" id="stab-ph" onclick="sylTab('physics')">⚡ Physics</button>
+        <button class="syl-stab" id="stab-ch" onclick="sylTab('chemistry')">🧪 Chemistry</button>
+        <button class="syl-stab" id="stab-ma" onclick="sylTab('maths')">📐 Maths</button>
+      </div>
+      <div class="card" style="padding:12px;">
+        <div id="sylChapList"></div>
+      </div>
+    </div>
+    <!-- Flashcard view -->
+    <div id="sylFlashView" style="display:none;">
+      <div class="card">
+        <div class="card-title">🃏 Formula Flashcards</div>
+        <div class="fc-sub-row">
+          <button class="fc-sub-btn on" onclick="setFCSub('physics',this)">⚡ Physics</button>
+          <button class="fc-sub-btn" onclick="setFCSub('chemistry',this)">🧪 Chemistry</button>
+          <button class="fc-sub-btn" onclick="setFCSub('maths',this)">📐 Maths</button>
+        </div>
+        <div class="fc-scene" onclick="flipCard()">
+          <div class="fc-card" id="fcCard">
+            <div class="fc-face fc-front">
+              <div class="fc-hint">TAP TO FLIP</div>
+              <div class="fc-q" id="fcQuestion">Loading...</div>
+            </div>
+            <div class="fc-face fc-back">
+              <div class="fc-hint">ANSWER</div>
+              <div class="fc-a" id="fcAnswer">...</div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-nav">
+          <button class="fc-nav-btn" onclick="prevCard()">← Prev</button>
+          <span class="fc-counter" id="fcCounter">1 / 1</span>
+          <button class="fc-nav-btn" onclick="nextCard()">Next →</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;justify-content:center;">
+          <button onclick="markFC('know')" style="flex:1;max-width:130px;padding:9px;border-radius:8px;border:none;background:var(--greenlt);color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✅ Pata Hai</button>
+          <button onclick="markFC('review')" style="flex:1;max-width:130px;padding:9px;border-radius:8px;border:none;background:var(--redlt);color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🔁 Dobara Dekho</button>
+        </div>
+        <div id="fcProgress" style="margin-top:10px;text-align:center;font-size:12px;color:var(--text2);font-weight:600;"></div>
+      </div>
     </div>
   </div>
 
@@ -533,6 +693,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
         <div class="res-box"><div class="res-val" style="color:var(--purple)" id="rAcc">0%</div><div class="res-lbl">ACCURACY</div></div>
       </div>
       <div id="ansList" style="text-align:left;"></div>
+      <!-- MISTAKE LOG (Error Book) -->
+      <div id="mistakeLogSection" style="display:none;margin-top:14px;text-align:left;">
+        <div style="font-size:13px;font-weight:800;color:var(--red);margin-bottom:10px;">📒 Error Book — Wrong Sawal Note Karo</div>
+        <div id="mistakeLogItems"></div>
+        <button onclick="saveMistakeLog()" class="gen-btn" style="width:100%;margin-top:8px;background:var(--red);">💾 Mistakes Firestore mein Save Karo</button>
+      </div>
+      <button onclick="showNav('stats',document.querySelectorAll('.nav-btn')[4])" style="margin-top:12px;width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">📊 Stats mein dekho →</button>
       <!-- RANK PREDICTOR -->
       <div id="rankPredictor" style="display:none;margin-top:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:14px;padding:18px 16px;color:#fff;text-align:center;">
         <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;opacity:.75;margin-bottom:4px;">🎯 JEE RANK PREDICTOR</div>
@@ -616,6 +783,43 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
       <div id="arenaChapList"></div>
     </div>
 
+    <!-- 🔥 WEAK SPOT HEATMAP -->
+    <div class="card" id="heatmapCard" style="display:none;">
+      <div class="acs-header">
+        <div class="card-title" style="margin-bottom:0;">🔥 Weak Spot Finder</div>
+        <span style="font-size:11px;color:var(--text2);">Accuracy by Chapter</span>
+      </div>
+      <div class="acs-filter" style="margin-top:8px;">
+        <button class="acs-fbtn on" id="hmf-all" onclick="setHMFilter('all',this)">All</button>
+        <button class="acs-fbtn" id="hmf-physics" onclick="setHMFilter('physics',this)">⚡ Physics</button>
+        <button class="acs-fbtn" id="hmf-chemistry" onclick="setHMFilter('chemistry',this)">🧪 Chemistry</button>
+        <button class="acs-fbtn" id="hmf-maths" onclick="setHMFilter('maths',this)">📐 Maths</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;font-size:10px;font-weight:700;">
+        <span style="background:#fee2e2;color:#dc2626;padding:3px 8px;border-radius:5px;">🔴 Weak &lt;50%</span>
+        <span style="background:#fef9c3;color:#854d0e;padding:3px 8px;border-radius:5px;">🟡 OK 50-75%</span>
+        <span style="background:var(--greenlt);color:var(--green);padding:3px 8px;border-radius:5px;">🟢 Strong &gt;75%</span>
+      </div>
+      <div id="heatmapList"></div>
+    </div>
+
+    <!-- 📒 ERROR BOOK (Saved Mistakes) -->
+    <div class="card" id="errorBookCard" style="display:none;">
+      <div class="acs-header">
+        <div class="card-title" style="margin-bottom:0;">📒 Error Book</div>
+        <button class="acs-clear-btn" onclick="clearErrorBook()">🗑️ Clear All</button>
+      </div>
+      <div id="errorBookList"></div>
+    </div>
+
+    <!-- 🏆 LEADERBOARD -->
+    <div class="card">
+      <div class="card-title">🏆 Leaderboard</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">Top scorers across all users — real-time!</div>
+      <button onclick="refreshLeaderboard()" style="width:100%;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--blue);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:10px;">🔄 Refresh</button>
+      <div id="leaderboardList"><div style="text-align:center;color:var(--text3);padding:16px;font-size:13px;">Loading...</div></div>
+    </div>
+
   </div>
 
   <!-- AI SECTION -->
@@ -667,7 +871,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 var app = initializeApp({
   apiKey:"AIzaSyDWIKEUfsdplqu7f6YQKPZ19SUbDTFeFeQ",
@@ -681,8 +885,8 @@ var auth = getAuth(app);
 var db = getFirestore(app);
 var gp = new GoogleAuthProvider();
 
-// Fix: Set LOCAL persistence so user stays logged in across sessions
-setPersistence(auth, browserLocalPersistence).catch(function(e){ console.warn('Persistence error', e); });
+// Fix: Keep user logged in persistently
+setPersistence(auth, browserLocalPersistence).catch(function(e){ console.warn('Persistence err', e); });
 
 window._doLogoutFn = function(){
   var auth = getAuth();
@@ -748,9 +952,32 @@ window.FS = {
   async loadGoalFS(){ var uid=window._uid; if(!uid)return 8; try{var s=await getDoc(doc(db,'users',uid,'data','settings')); return s.exists()?(s.data().dailyGoalHrs||8):8;} catch(e){return 8;} },
   async saveMockFS(m){ var uid=window._uid; if(!uid){window.showStatus('guest');return;} try{await addDoc(collection(db,'users',uid,'mocks'),Object.assign({},m,{createdAt:serverTimestamp()})); window.showStatus('saved');} catch(e){window.showStatus('save_err');} },
   async loadMocksFS(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(collection(db,'users',uid,'mocks')); var list=[]; snap.forEach(function(d){list.push(Object.assign({firestoreId:d.id},d.data()));}); list.sort(function(a,b){return a.date<b.date?1:-1;}); return list;} catch(e){return[];} },
-  async saveArenaChapterStats(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','arenaChapterStats'),{stats:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){console.warn('ACS save err',e);} },
-  async loadArenaChapterStats(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','arenaChapterStats')); if(s.exists()&&s.data().stats){return JSON.parse(s.data().stats);}return{};} catch(e){return{};} },
-  async clearArenaChapterStatsFS(){ var uid=window._uid; if(!uid)return; try{await deleteDoc(doc(db,'users',uid,'data','arenaChapterStats'));}catch(e){} }
+  // Arena Chapter Stats
+  async saveArenaChapterStats(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','arenaChapterStats'),{stats:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
+  async loadArenaChapterStats(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','arenaChapterStats')); if(s.exists()&&s.data().stats)return JSON.parse(s.data().stats); return{};}catch(e){return{};} },
+  async clearArenaChapterStatsFS(){ var uid=window._uid; if(!uid)return; try{await deleteDoc(doc(db,'users',uid,'data','arenaChapterStats'));}catch(e){} },
+  // Checklist
+  async saveChecklist(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','checklist'),{items:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
+  async loadChecklist(){ var uid=window._uid; if(!uid)return[]; try{var s=await getDoc(doc(db,'users',uid,'data','checklist')); if(s.exists()&&s.data().items)return JSON.parse(s.data().items); return[];}catch(e){return[];} },
+  // Mistake Log / Error Book
+  async saveMistakes(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','errorBook'),{items:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
+  async loadMistakes(){ var uid=window._uid; if(!uid)return[]; try{var s=await getDoc(doc(db,'users',uid,'data','errorBook')); if(s.exists()&&s.data().items)return JSON.parse(s.data().items); return[];}catch(e){return[];} },
+  // Spaced Repetition
+  async saveSpacedRep(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','spacedRep'),{data:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
+  async loadSpacedRep(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','spacedRep')); if(s.exists()&&s.data().data)return JSON.parse(s.data().data); return{};}catch(e){return{};} },
+  // Leaderboard — shared public collection
+  async updateLeaderboard(name, photoURL, totalQ, corr){ 
+    var uid=window._uid; if(!uid)return;
+    var acc=totalQ>0?Math.round(corr/totalQ*100):0;
+    try{await setDoc(doc(db,'leaderboard',uid),{name:name,photoURL:photoURL||'',totalQ:totalQ,corr:corr,acc:acc,updatedAt:serverTimestamp()},{merge:true});}catch(e){} 
+  },
+  async loadLeaderboard(){ 
+    try{
+      var snap=await getDocs(query(collection(db,'leaderboard'),orderBy('corr','desc'),limit(20)));
+      var list=[]; snap.forEach(function(d){list.push(Object.assign({uid:d.id},d.data()));});
+      return list;
+    }catch(e){return[];} 
+  }
 };
 
 onAuthStateChanged(auth, async function(user){
@@ -793,8 +1020,9 @@ var SCOL = {physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
 // GLOBAL STATE
 // ═══════════════════════════════════════
 var mocks=[], done={}, studyData={}, dailyGoalHrs=8;
-var arenaChapterStats = {}; // { "physics|Kinematics 1D": {sub, ch, attempted} }
-var acsFilter = 'all';
+var arenaChapterStats = {};
+var checklist = [], errorBook = [], spacedRep = {};
+var acsFilter = 'all', hmFilter = 'all';
 var curSub='physics', studySec=0, studyOn=false, studyIv=null;
 var curSylSub='physics', curPeriod='day';
 var planSub='physics', planSelected={physics:[],chemistry:[],maths:[]}, planDone={physics:{},chemistry:{},maths:{}};
@@ -863,7 +1091,8 @@ function showNav(name,btn){
   btn.classList.add('on');
   if(name==='syl'){renderSylChapList();updProg();}
   if(name==='timer'){renderStudyUI();renderPlanChapList();}
-  if(name==='stats'){renderStats();renderArenaChapterStats();}
+  if(name==='stats'){renderStats();renderArenaChapterStats();renderHeatmap();renderErrorBook();renderBadges();refreshLeaderboard();}
+  if(name==='home'){renderChecklist();renderBadges();renderSpacedRepReminders();}
 }
 
 // ═══════════════════════════════════════
@@ -871,7 +1100,7 @@ function showNav(name,btn){
 // ═══════════════════════════════════════
 window.initApp = async function(){
   window.showStatus('loading');
-  done={}; mocks=[]; studyData={}; arenaChapterStats={};
+  done={}; mocks=[]; studyData={}; arenaChapterStats={}; checklist=[]; errorBook=[]; spacedRep={};
 
   if(window._isGuest){
     try{
@@ -882,6 +1111,9 @@ window.initApp = async function(){
         done=obj.done||{};
         studyData=obj.studyData||{};
         arenaChapterStats=obj.arenaChapterStats||{};
+        checklist=obj.checklist||[];
+        errorBook=obj.errorBook||[];
+        spacedRep=obj.spacedRep||{};
       }
     }catch(e){}
     dailyGoalHrs=8;
@@ -890,9 +1122,9 @@ window.initApp = async function(){
     var mi=document.getElementById('mockDate'); if(mi) mi.value=today();
     window.showStatus('guest');
     buildSyl(); renderStats(); renderArenaChapterStats(); renderStudyUI(); updateStreakBadge();
+    renderChecklist(); renderBadges(); renderSpacedRepReminders();
     planDateKey=today(); initPlannerToday();
-    loadChaps();
-    loadTimerState();
+    loadChaps(); loadTimerState();
     return;
   }
 
@@ -900,25 +1132,33 @@ window.initApp = async function(){
   try{ mocks=await window.FS.loadMocksFS(); }catch(e){}
   try{ studyData=await window.FS.loadStudy(); }catch(e){}
   try{ dailyGoalHrs=await window.FS.loadGoalFS(); }catch(e){}
-  // Load arenaChapterStats from Firestore for logged-in users
   try{ arenaChapterStats=await window.FS.loadArenaChapterStats(); }catch(e){}
+  try{ checklist=await window.FS.loadChecklist(); }catch(e){}
+  try{ errorBook=await window.FS.loadMistakes(); }catch(e){}
+  try{ spacedRep=await window.FS.loadSpacedRep(); }catch(e){}
   var gi=document.getElementById('goalInp'); if(gi) gi.value=dailyGoalHrs;
   var mi=document.getElementById('mockDate'); if(mi) mi.value=today();
   window.showStatus('synced');
   buildSyl(); renderStats(); renderArenaChapterStats(); renderStudyUI(); updateStreakBadge();
+  renderChecklist(); renderBadges(); renderSpacedRepReminders();
   planDateKey=today(); initPlannerToday();
-  loadChaps();
-  loadTimerState();
+  loadChaps(); loadTimerState();
+  // Update leaderboard with latest stats
+  var user=window._currentUser;
+  if(user){
+    var totQ=0,totCorr=0;
+    mocks.forEach(function(m){totQ+=m.qs||0;totCorr+=m.corr||0;});
+    window.FS.updateLeaderboard(user.displayName||'JEE Aspirant',user.photoURL||'',totQ,totCorr);
+  }
 };
 
 function saveLocal(){
   var uid=window._isGuest?'guest':(window._uid||null); if(!uid)return;
   try{
     localStorage.setItem('jee_'+uid, JSON.stringify({
-      mocks:mocks,
-      done:done,
-      studyData:studyData,
-      arenaChapterStats:arenaChapterStats
+      mocks:mocks, done:done, studyData:studyData,
+      arenaChapterStats:arenaChapterStats,
+      checklist:checklist, errorBook:errorBook, spacedRep:spacedRep
     }));
   }catch(e){}
 }
@@ -936,32 +1176,7 @@ function selSub(sub){
   var lbl=document.getElementById('studySubLabel');
   if(lbl) lbl.textContent=SYL[sub].name+' padh raha hai...';
 }
-function togStudyTimer(){
-  studyOn=!studyOn;
-  var btn=document.getElementById('studyStartBtn');
-  if(studyOn){
-    btn.className='t-btn pause'; btn.textContent='\u23F8 Pause';
-    studyIv=setInterval(function(){
-      studySec++;
-      var el=document.getElementById('studyDisp'); if(el) el.textContent=fmtHMS(studySec);
-      var k=today();
-      if(!studyData[k]) studyData[k]={physics:0,chemistry:0,maths:0};
-      studyData[k][curSub]=(studyData[k][curSub]||0)+1;
-      if(studySec%30===0){ saveLocal(); saveTimerState(); window.FS.saveStudy(studyData); renderStudyUI(); }
-    },1000);
-  } else {
-    btn.className='t-btn start'; btn.textContent='\u25B6 Start';
-    clearInterval(studyIv);
-    saveLocal(); saveTimerState(); window.FS.saveStudy(studyData); renderStudyUI();
-  }
-}
-function rstStudyTimer(){
-  studyOn=false; studySec=0; clearInterval(studyIv);
-  var el=document.getElementById('studyDisp'); if(el) el.textContent='00:00:00';
-  var btn=document.getElementById('studyStartBtn');
-  if(btn){btn.className='t-btn start';btn.textContent='\u25B6 Start';}
-  saveTimerState();
-}
+// togStudyTimer and rstStudyTimer are defined in the Pomodoro section below
 function renderStudyUI(){
   var k=today(), td=studyData[k]||{physics:0,chemistry:0,maths:0};
   var tot=(td.physics||0)+(td.chemistry||0)+(td.maths||0);
@@ -1032,7 +1247,13 @@ function renderSylChapList(){
 function buildSyl(){ updProg(); renderSylChapList(); }
 function togCh(sk,i){
   var key=sk+i; done[key]=!done[key];
-  renderSylChapList(); updProg(); saveLocal(); window.FS.saveSyl(done);
+  // Spaced repetition: record when chapter was completed
+  if(done[key]){ spacedRep[key]={doneDate:today(),intervals:[3,7,15,30],nextIdx:0}; }
+  else { delete spacedRep[key]; }
+  renderSylChapList(); updProg(); saveLocal();
+  window.FS.saveSyl(done);
+  if(!window._isGuest) window.FS.saveSpacedRep(spacedRep);
+  renderSpacedRepReminders();
 }
 function updProg(){
   var tot=0,dn=0,sub={};
@@ -1364,6 +1585,7 @@ function showResult(){
   document.getElementById('ansList').innerHTML=html.join('');
   var rc=document.getElementById('resCard');rc.classList.add('on');rc.scrollIntoView({behavior:'smooth',block:'start'});
   showRankPredictor(score, qs.length);
+  prepMistakeLog(qs, uAns, corrAns);
 
   var d=new Date();
   saveMockData({id:Date.now(),date:d.toISOString().split('T')[0],score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
@@ -1535,6 +1757,7 @@ function updateArenaChapterStats(chapData){
   saveLocal();
   if(!window._isGuest) window.FS.saveArenaChapterStats(arenaChapterStats);
   renderArenaChapterStats();
+  renderHeatmap();
 }
 
 // Render the stats card in the Stats section
@@ -1600,6 +1823,7 @@ function clearArenaChapterStats(){
   saveLocal();
   if(!window._isGuest) window.FS.clearArenaChapterStatsFS();
   renderArenaChapterStats();
+  renderHeatmap();
 }
 
 // ═══════════════════════════════════════
@@ -1664,6 +1888,496 @@ function clearChat(){aiHist[aiCur]=[SYS];renderChat();}
 function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();}}
 function chatResize(el){el.style.height='42px';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 renderChat();
+
+// ═══════════════════════════════════════
+// 🍅 POMODORO TIMER
+// ═══════════════════════════════════════
+var pomOn=false, pomPhase='study', pomSec=0, pomIv=null;
+var POM_STUDY=25*60, POM_BREAK=5*60;
+var POM_MSGS=['IIT gate ke paas pohonch raha hai tu 🔥','Ek sawal aur solve kar, haan tu kar sakta hai!','Physics formulas yad ho rahi hain? Chal chal!','Concentrate. 25 minutes. Sab kuch baad mein.','Topper wahi hota hai jo bitha rehta hai. Baith!'];
+
+function togglePomodoro(){
+  pomOn=document.getElementById('pomToggle').checked;
+  var info=document.getElementById('pomInfo');
+  var phase=document.getElementById('pomPhaseLabel');
+  if(pomOn){
+    info.textContent='ON — 25+5 min';
+    phase.style.display='inline-block';
+    pomPhase='study'; pomSec=POM_STUDY;
+    updatePomDisplay();
+  } else {
+    info.textContent='OFF';
+    phase.style.display='none';
+    clearInterval(pomIv); pomIv=null;
+    // restore normal timer display
+    var sd=document.getElementById('studyDisp'); if(sd) sd.textContent=fmtHMS(studySec);
+  }
+}
+
+function updatePomDisplay(){
+  var phase=document.getElementById('pomPhaseLabel');
+  if(pomPhase==='study'){
+    phase.textContent='📚 STUDY PHASE — '+Math.ceil(pomSec/60)+' min left';
+    phase.className='pom-phase study';
+  } else {
+    phase.textContent='☕ BREAK TIME — '+Math.ceil(pomSec/60)+' min left';
+    phase.className='pom-phase brk';
+  }
+  var sd=document.getElementById('studyDisp'); if(sd) sd.textContent=p2(Math.floor(pomSec/60))+':'+p2(pomSec%60)+':00';
+}
+
+// Hook into study timer — override display when pomodoro is on
+var _origTogStudy = null;
+(function(){
+  _origTogStudy = window.togStudyTimerPom;
+})();
+
+function togStudyTimer(){
+  studyOn=!studyOn;
+  var btn=document.getElementById('studyStartBtn');
+  if(studyOn){
+    btn.className='t-btn pause'; btn.textContent='\u23F8 Pause';
+    if(pomOn){
+      // Pomodoro mode
+      clearInterval(pomIv);
+      pomIv=setInterval(function(){
+        pomSec--;
+        if(pomSec<=0){
+          // Phase switch
+          if(pomPhase==='study'){
+            pomPhase='break'; pomSec=POM_BREAK;
+            // vibrate if supported
+            if(navigator.vibrate) navigator.vibrate([200,100,200]);
+          } else {
+            pomPhase='study'; pomSec=POM_STUDY;
+            if(navigator.vibrate) navigator.vibrate(300);
+          }
+        }
+        updatePomDisplay();
+        // Also track study time in study phase
+        if(pomPhase==='study'){
+          studySec++;
+          var k=today();
+          if(!studyData[k]) studyData[k]={physics:0,chemistry:0,maths:0};
+          studyData[k][curSub]=(studyData[k][curSub]||0)+1;
+          if(studySec%30===0){ saveLocal(); window.FS.saveStudy(studyData); }
+        }
+        // Update deep work if active
+        if(document.body.classList.contains('deep-work')){
+          var dw=document.getElementById('dwTime'); if(dw) dw.textContent=p2(Math.floor(pomSec/60))+':'+p2(pomSec%60)+':00';
+        }
+      },1000);
+    } else {
+      // Normal mode
+      studyIv=setInterval(function(){
+        studySec++;
+        var el=document.getElementById('studyDisp'); if(el) el.textContent=fmtHMS(studySec);
+        var k=today();
+        if(!studyData[k]) studyData[k]={physics:0,chemistry:0,maths:0};
+        studyData[k][curSub]=(studyData[k][curSub]||0)+1;
+        if(studySec%30===0){ saveLocal(); saveTimerState(); window.FS.saveStudy(studyData); renderStudyUI(); }
+        if(document.body.classList.contains('deep-work')){
+          var dw=document.getElementById('dwTime'); if(dw) dw.textContent=fmtHMS(studySec);
+        }
+      },1000);
+    }
+  } else {
+    btn.className='t-btn start'; btn.textContent='\u25B6 Start';
+    clearInterval(studyIv); clearInterval(pomIv);
+    saveLocal(); saveTimerState(); window.FS.saveStudy(studyData); renderStudyUI();
+  }
+}
+function rstStudyTimer(){
+  studyOn=false; studySec=0; clearInterval(studyIv); clearInterval(pomIv);
+  pomPhase='study'; pomSec=POM_STUDY;
+  var el=document.getElementById('studyDisp'); if(el) el.textContent='00:00:00';
+  var btn=document.getElementById('studyStartBtn');
+  if(btn){btn.className='t-btn start';btn.textContent='\u25B6 Start';}
+  if(pomOn) updatePomDisplay();
+  saveTimerState();
+}
+
+// ═══════════════════════════════════════
+// 🎯 DEEP WORK MODE
+// ═══════════════════════════════════════
+function enterDeepWork(){
+  if(!studyOn){ alert('Pehle timer start karo!'); return; }
+  document.body.classList.add('deep-work');
+  var idx=Math.floor(Math.random()*POM_MSGS.length);
+  var msg=document.getElementById('dwMsg'); if(msg) msg.textContent=POM_MSGS[idx];
+  var dw=document.getElementById('dwTime');
+  if(dw) dw.textContent=pomOn?(p2(Math.floor(pomSec/60))+':'+p2(pomSec%60)+':00'):fmtHMS(studySec);
+}
+function exitDeepWork(){
+  document.body.classList.remove('deep-work');
+}
+
+// ═══════════════════════════════════════
+// ✅ DAILY CHECKLIST
+// ═══════════════════════════════════════
+function renderChecklist(){
+  var el=document.getElementById('checklistItems'); if(!el)return;
+  if(!checklist.length){
+    el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:14px 0;">Koi task nahi — niche add karo! 👇</div>';
+    return;
+  }
+  var html='';
+  checklist.forEach(function(item,i){
+    html+='<div class="chk-item'+(item.done?' done-chk':'')+'" onclick="toggleChkItem('+i+')">'
+      +'<div class="chk-box">'+(item.done?'✓':'')+'</div>'
+      +'<div class="chk-text">'+item.text+'</div>'
+      +'<button onclick="event.stopPropagation();deleteChkItem('+i+')" style="background:transparent;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0 4px;line-height:1;">×</button>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+function addChecklistItem(){
+  var inp=document.getElementById('newTaskInp');
+  var text=inp.value.trim(); if(!text) return;
+  if(checklist.length>=10){ alert('Max 10 tasks!'); return; }
+  checklist.push({text:text, done:false, addedAt:today()});
+  inp.value='';
+  saveLocal();
+  if(!window._isGuest) window.FS.saveChecklist(checklist);
+  renderChecklist();
+  renderBadges();
+}
+function toggleChkItem(i){
+  checklist[i].done=!checklist[i].done;
+  saveLocal();
+  if(!window._isGuest) window.FS.saveChecklist(checklist);
+  renderChecklist(); renderBadges();
+}
+function deleteChkItem(i){
+  checklist.splice(i,1);
+  saveLocal();
+  if(!window._isGuest) window.FS.saveChecklist(checklist);
+  renderChecklist();
+}
+
+// ═══════════════════════════════════════
+// 🏆 MILESTONE BADGES
+// ═══════════════════════════════════════
+var BADGES=[
+  {id:'first_mock',ico:'🏁',name:'First Mock',sub:'Pehla mock lagaya!',check:function(){return mocks.length>=1;}},
+  {id:'mock5',ico:'⚡',name:'5 Mocks Done',sub:'Keep going!',check:function(){return mocks.length>=5;}},
+  {id:'mock25',ico:'🔥',name:'25 Mocks',sub:'Consistent grinder!',check:function(){return mocks.length>=25;}},
+  {id:'streak3',ico:'🔥',name:'3 Day Streak',sub:'Tin din laga!',check:function(){return calcStreak()>=3;}},
+  {id:'streak7',ico:'🏆',name:'7 Day Streak',sub:'Ek hafta solid!',check:function(){return calcStreak()>=7;}},
+  {id:'streak30',ico:'👑',name:'30 Day Streak',sub:'Legend hai tu!',check:function(){return calcStreak()>=30;}},
+  {id:'q100',ico:'📊',name:'100 Questions',sub:'100 sawal solve!',check:function(){var t=0;mocks.forEach(function(m){t+=m.qs||0;});return t>=100;}},
+  {id:'q1000',ico:'🚀',name:'1000 Questions',sub:'Powerhouse!',check:function(){var t=0;mocks.forEach(function(m){t+=m.qs||0;});return t>=1000;}},
+  {id:'syl25',ico:'📚',name:'Syllabus 25%',sub:'Ek chauthai done!',check:function(){var t=0,d=0;Object.keys(SYL).forEach(function(s){t+=SYL[s].chapters.length;for(var i=0;i<SYL[s].chapters.length;i++){if(done[s+i])d++;}});return t>0&&(d/t)>=0.25;}},
+  {id:'syl50',ico:'🎯',name:'Syllabus 50%',sub:'Aadha ho gaya!',check:function(){var t=0,d=0;Object.keys(SYL).forEach(function(s){t+=SYL[s].chapters.length;for(var i=0;i<SYL[s].chapters.length;i++){if(done[s+i])d++;}});return t>0&&(d/t)>=0.5;}},
+  {id:'acc80',ico:'🎯',name:'80% Accuracy',sub:'Bahut khoob!',check:function(){var t=0,c=0;mocks.forEach(function(m){t+=m.qs||0;c+=m.corr||0;});return t>=20&&(c/t)>=0.8;}},
+  {id:'task_done',ico:'✅',name:'All Tasks Done',sub:'Aaj ka mission complete!',check:function(){return checklist.length>0&&checklist.every(function(t){return t.done;});}}
+];
+function renderBadges(){
+  var el=document.getElementById('badgeGrid'); if(!el)return;
+  var html='';
+  BADGES.forEach(function(b){
+    var earned=b.check();
+    var bg=earned?'linear-gradient(135deg,#fef3c7,#fde68a)':'var(--bg)';
+    html+='<div class="bdg '+(earned?'earned':'locked')+'" style="background:'+bg+';"><div class="bdg-ico">'+b.ico+'</div><div class="bdg-name">'+b.name+'</div><div class="bdg-sub">'+b.sub+'</div></div>';
+  });
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// 🔁 SPACED REPETITION REMINDERS
+// ═══════════════════════════════════════
+function renderSpacedRepReminders(){
+  var el=document.getElementById('srList'), card=document.getElementById('srCard');
+  if(!el||!card)return;
+  var todayStr=today();
+  var due=[];
+  Object.keys(spacedRep).forEach(function(key){
+    var sr=spacedRep[key]; if(!sr||!sr.doneDate)return;
+    var idx=sr.nextIdx||0;
+    if(idx>=sr.intervals.length)return; // all intervals done
+    var doneD=new Date(sr.doneDate);
+    var nextDate=new Date(doneD);
+    nextDate.setDate(nextDate.getDate()+sr.intervals[idx]);
+    var nextStr=nextDate.toISOString().split('T')[0];
+    var diff=Math.ceil((nextDate-new Date(todayStr))/86400000);
+    // Parse the key to get subject and chapter
+    var parts=key.match(/^(physics|chemistry|maths)(\d+)$/);
+    if(!parts)return;
+    var sub=parts[1],chapIdx=parseInt(parts[2]),chName=SYL[sub].chapters[chapIdx];
+    if(!chName)return;
+    if(diff<=1){ due.push({key:key,ch:chName,sub:sub,diff:diff,nextStr:nextStr,sr:sr,idx:idx}); }
+  });
+  if(!due.length){ card.style.display='none'; return; }
+  card.style.display='block';
+  var html='';
+  due.forEach(function(item){
+    var tag=item.diff<=0?'today':'soon';
+    var tagTxt=item.diff<=0?'⚠️ DUE TODAY!':'📅 Tomorrow';
+    var subCols={physics:'#eef2ff',chemistry:'#fff7ed',maths:'#dcfce7'};
+    var subTxt={physics:'⚡',chemistry:'🧪',maths:'📐'};
+    html+='<div class="sr-item">'
+      +'<span class="sr-due '+tag+'">'+tagTxt+'</span>'
+      +'<div style="flex:1;font-size:13px;font-weight:700;">'+item.ch+'</div>'
+      +'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:'+subCols[item.sub]+';font-weight:700;">'+subTxt[item.sub]+'</span>'
+      +'<button onclick="markSRDone(\''+item.key+'\','+item.idx+')" style="background:var(--green);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:\'Inter\',sans-serif;">✓ Done</button>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+function markSRDone(key,idx){
+  if(!spacedRep[key])return;
+  spacedRep[key].nextIdx=(idx+1);
+  saveLocal();
+  if(!window._isGuest) window.FS.saveSpacedRep(spacedRep);
+  renderSpacedRepReminders();
+}
+
+// ═══════════════════════════════════════
+// 🔥 WEAK SPOT HEATMAP
+// ═══════════════════════════════════════
+var hmFilter='all';
+function setHMFilter(f,btn){
+  hmFilter=f;
+  document.querySelectorAll('#hmf-all,#hmf-physics,#hmf-chemistry,#hmf-maths').forEach(function(b){b.classList.remove('on');});
+  if(btn) btn.classList.add('on');
+  renderHeatmap();
+}
+function renderHeatmap(){
+  var el=document.getElementById('heatmapList'), card=document.getElementById('heatmapCard');
+  if(!el||!card)return;
+  var keys=Object.keys(arenaChapterStats);
+  if(hmFilter!=='all') keys=keys.filter(function(k){return arenaChapterStats[k].sub===hmFilter;});
+  if(!keys.length){ card.style.display='none'; return; }
+  card.style.display='block';
+  // Sort by accuracy ascending (weakest first)
+  keys.sort(function(a,b){
+    var sa=arenaChapterStats[a], sb=arenaChapterStats[b];
+    var aa=sa.attempted>0?sa.corr/sa.attempted:0;
+    var ab=sb.attempted>0?sb.corr/sb.attempted:0;
+    return aa-ab;
+  });
+  var html='';
+  keys.forEach(function(ck){
+    var s=arenaChapterStats[ck];
+    var acc=s.attempted>0?Math.round((s.corr||0)/s.attempted*100):0;
+    var bg=acc>=75?'#dcfce7':acc>=50?'#fef9c3':'#fee2e2';
+    var barCol=acc>=75?'#86efac':acc>=50?'#fde047':'#fca5a5';
+    var textCol=acc>=75?'#16a34a':acc>=50?'#854d0e':'#dc2626';
+    var ACS_SC={physics:'#eef2ff',chemistry:'#fff7ed',maths:'#dcfce7'};
+    var ACS_TC={physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
+    var ACS_EM={physics:'⚡',chemistry:'🧪',maths:'📐'};
+    html+='<div class="hm-cell" style="background:'+bg+';border:1px solid '+barCol+';">'
+      +'<div class="hm-bar" style="width:'+acc+'%;background:'+barCol+';opacity:.3;"></div>'
+      +'<div class="hm-label">'+s.ch+'</div>'
+      +'<span class="hm-sub-tag" style="background:'+ACS_SC[s.sub]+';color:'+ACS_TC[s.sub]+';">'+ACS_EM[s.sub]+'</span>'
+      +'<div class="hm-acc" style="color:'+textCol+';">'+acc+'%</div>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// 📒 MISTAKE LOG / ERROR BOOK
+// ═══════════════════════════════════════
+var currentMistakes=[];
+function prepMistakeLog(qs, uAns, corrAns){
+  var section=document.getElementById('mistakeLogSection');
+  var container=document.getElementById('mistakeLogItems');
+  if(!section||!container)return;
+  currentMistakes=[];
+  var html='';
+  qs.forEach(function(q){
+    var ua=uAns[q.id], ca=corrAns[q.id];
+    if(!ua||!ca)return; // skip skipped
+    var isWrong=false;
+    if(ca.t==='MCQ'&&ua.t==='MCQ'&&ua.v!==ca.v) isWrong=true;
+    if(ca.t==='NUM'){var uv=parseFloat(ua.v),cv=parseFloat(ca.v);if(!isNaN(uv)&&!isNaN(cv)&&Math.abs(uv-cv)>0.01)isWrong=true;}
+    if(!isWrong)return;
+    var mistakeId='m_'+Date.now()+'_'+q.id;
+    currentMistakes.push({id:mistakeId, ch:q.ch, sub:q.sk, myAns:ua.t==='MCQ'?'Opt '+ua.v:ua.v, corrAns2:ca.t==='MCQ'?'Opt '+ca.v:ca.v, date:today(), note:''});
+    html+='<div class="err-item" id="ei_'+mistakeId+'">'
+      +'<div class="err-q">Q: '+q.ch+' | Mera: '+(ua.t==='MCQ'?'Opt '+ua.v:ua.v)+' | Sahi: '+(ca.t==='MCQ'?'Opt '+ca.v:ca.v)+'</div>'
+      +'<textarea class="err-note" id="en_'+mistakeId+'" placeholder="Yahan galti ki wajah likhao... (optional)"></textarea>'
+      +'</div>';
+  });
+  if(currentMistakes.length){
+    section.style.display='block';
+    container.innerHTML=html;
+  } else {
+    section.style.display='none';
+  }
+}
+function saveMistakeLog(){
+  currentMistakes.forEach(function(m){
+    var inp=document.getElementById('en_'+m.id);
+    m.note=inp?inp.value.trim():'';
+  });
+  // Add to global errorBook, avoid duplicates by id
+  currentMistakes.forEach(function(m){
+    errorBook.unshift(m);
+  });
+  if(errorBook.length>200) errorBook=errorBook.slice(0,200);
+  saveLocal();
+  if(!window._isGuest) window.FS.saveMistakes(errorBook);
+  document.getElementById('mistakeLogSection').style.display='none';
+  alert('✅ '+currentMistakes.length+' mistakes Error Book mein save ho gayi!');
+  currentMistakes=[];
+}
+function renderErrorBook(){
+  var el=document.getElementById('errorBookList'), card=document.getElementById('errorBookCard');
+  if(!el||!card)return;
+  if(!errorBook.length){ card.style.display='none'; return; }
+  card.style.display='block';
+  var ACS_SC2={physics:'#eef2ff',chemistry:'#fff7ed',maths:'#dcfce7'};
+  var ACS_TC2={physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
+  var html='';
+  errorBook.slice(0,30).forEach(function(m){
+    html+='<div style="background:var(--redlt);border:1px solid #fca5a5;border-radius:10px;padding:11px 12px;margin-bottom:7px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">'
+      +'<span style="background:'+ACS_SC2[m.sub]+';color:'+ACS_TC2[m.sub]+';font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;">'+(m.sub==='physics'?'⚡':m.sub==='chemistry'?'🧪':'📐')+'</span>'
+      +'<div style="flex:1;font-size:13px;font-weight:700;color:var(--red);">'+m.ch+'</div>'
+      +'<span style="font-size:10px;color:var(--text3);">'+m.date+'</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--text2);">Mera: <b>'+m.myAns+'</b> | Sahi: <b style="color:var(--green);">'+m.corrAns2+'</b></div>'
+      +(m.note?'<div style="font-size:12px;color:var(--text);margin-top:5px;padding:6px;background:#fff;border-radius:6px;">📝 '+m.note+'</div>':'')
+      +'</div>';
+  });
+  if(errorBook.length>30) html+='<div style="text-align:center;font-size:12px;color:var(--text3);padding:8px;">...aur '+(errorBook.length-30)+' aur mistakes</div>';
+  el.innerHTML=html;
+}
+function clearErrorBook(){
+  if(!confirm('Saari mistakes clear kar doon?')) return;
+  errorBook=[];
+  saveLocal();
+  if(!window._isGuest) window.FS.saveMistakes(errorBook);
+  renderErrorBook();
+}
+
+// ═══════════════════════════════════════
+// 🃏 FLASHCARDS
+// ═══════════════════════════════════════
+var FLASHCARDS={
+  physics:[
+    {q:'Newton ka 1st Law (Inertia)',a:'Ek body rest ya uniform motion mein rahti hai jab tak external force na lage. F=0 → a=0'},
+    {q:'Work-Energy Theorem',a:'Net Work = ΔKE\nW = ½mv² - ½mu²'},
+    {q:'Ohm\'s Law',a:'V = IR\nV = Voltage, I = Current, R = Resistance'},
+    {q:'Coulomb\'s Law',a:'F = kq₁q₂/r²\nk = 9×10⁹ N·m²/C²'},
+    {q:'SHM: Time Period formula',a:'T = 2π√(m/k) for spring\nT = 2π√(L/g) for pendulum'},
+    {q:'Lens formula',a:'1/v - 1/u = 1/f\nMagnification m = v/u = -f/(u-f)'},
+    {q:'Einstein\'s Photoelectric formula',a:'KE_max = hν - φ\nh = 6.626×10⁻³⁴ J·s'},
+    {q:'de Broglie wavelength',a:'λ = h/mv = h/p\nFor electron: λ = 12.27/√V Angstrom'},
+    {q:'Faraday\'s Law of EMF',a:'ε = -dΦ/dt\nΦ = BAcosθ'},
+    {q:'Bernoulli\'s equation',a:'P + ½ρv² + ρgh = constant (along streamline)'},
+  ],
+  chemistry:[
+    {q:'Ideal Gas Law',a:'PV = nRT\nR = 8.314 J/mol·K = 0.0821 L·atm/mol·K'},
+    {q:'Arrhenius Equation',a:'k = Ae^(-Ea/RT)\nln(k₂/k₁) = (Ea/R)(1/T₁ - 1/T₂)'},
+    {q:'Henderson-Hasselbalch equation',a:'pH = pKa + log([A⁻]/[HA])\nUsed for buffer pH calculation'},
+    {q:'Nernst Equation',a:'E = E° - (RT/nF)ln(Q)\nAt 25°C: E = E° - (0.0592/n)log(Q)'},
+    {q:'Hybridisation of SF₆',a:'sp³d² hybridisation\nOctahedral geometry, 6 bond pairs'},
+    {q:'Bohr Model: Radius formula',a:'rₙ = 0.529n²/Z Angstrom\nFor H atom: r₁ = 0.529 Å'},
+    {q:'van\'t Hoff Factor (i)',a:'i = 1 + α(n-1) for electrolytes\nElevates ΔTb, ΔTf, π proportionally'},
+    {q:'Balmer Series (Hydrogen)',a:'Visible light, nᵢ = 3,4,5... → nf = 2\n1/λ = RH(1/4 - 1/n²)'},
+    {q:'Gibb\'s Free Energy',a:'ΔG = ΔH - TΔS\nΔG < 0 → spontaneous reaction'},
+    {q:'Equivalent weight formula',a:'Eq. wt = Mol. wt / n-factor\nn-factor = change in oxidation no.'},
+  ],
+  maths:[
+    {q:'Quadratic Formula',a:'x = (-b ± √(b²-4ac)) / 2a\nDiscriminant D = b² - 4ac'},
+    {q:'Integration: ∫xⁿ dx',a:'xⁿ⁺¹/(n+1) + C\n(n ≠ -1)\n∫x⁻¹ dx = ln|x| + C'},
+    {q:'Sum of n terms of AP',a:'Sₙ = n/2 × (2a + (n-1)d)\nor Sₙ = n/2 × (a + l)'},
+    {q:'Binomial Theorem: General term',a:'Tᵣ₊₁ = ⁿCᵣ × aⁿ⁻ʳ × bʳ\nMiddle term when n is even: T(n/2+1)'},
+    {q:'Distance formula (3D)',a:'d = √[(x₂-x₁)² + (y₂-y₁)² + (z₂-z₁)²]'},
+    {q:'Differentiation: d/dx(sin x)',a:'cos x\nd/dx(cos x) = -sin x\nd/dx(tan x) = sec²x'},
+    {q:'Area of ellipse',a:'A = πab\na = semi-major axis\nb = semi-minor axis'},
+    {q:'Probability: Bayes Theorem',a:'P(A|B) = P(B|A)·P(A) / P(B)\nConditional probability formula'},
+    {q:'Limit: lim(x→0) sinx/x',a:'= 1\nAlso: lim(x→0) tanx/x = 1\nlim(x→0) (1-cosx)/x = 0'},
+    {q:'Matrix Inverse condition',a:'A⁻¹ exists only if |A| ≠ 0\nA⁻¹ = adj(A) / |A|'},
+  ]
+};
+var fcSub='physics', fcIdx=0, fcFlipped=false, fcKnow=[], fcReview=[];
+function setSylMode(mode,btn){
+  document.getElementById('sylChapView').style.display=mode==='chap'?'block':'none';
+  document.getElementById('sylFlashView').style.display=mode==='flash'?'block':'none';
+  document.getElementById('sylModeChap').style.background=mode==='chap'?'var(--blue)':'#fff';
+  document.getElementById('sylModeChap').style.color=mode==='chap'?'#fff':'var(--text2)';
+  document.getElementById('sylModeChap').style.border=mode==='chap'?'none':'1.5px solid var(--border)';
+  document.getElementById('sylModeFlash').style.background=mode==='flash'?'var(--blue)':'#fff';
+  document.getElementById('sylModeFlash').style.color=mode==='flash'?'#fff':'var(--text2)';
+  document.getElementById('sylModeFlash').style.border=mode==='flash'?'none':'1.5px solid var(--border)';
+  if(mode==='flash') loadFC();
+}
+function setFCSub(sub,btn){
+  fcSub=sub; fcIdx=0; fcFlipped=false;
+  document.querySelectorAll('.fc-sub-btn').forEach(function(b){b.classList.remove('on');});
+  if(btn) btn.classList.add('on');
+  loadFC();
+}
+function loadFC(){
+  var cards=FLASHCARDS[fcSub]||[];
+  if(!cards.length)return;
+  fcIdx=Math.max(0,Math.min(fcIdx,cards.length-1));
+  var q=document.getElementById('fcQuestion'), a=document.getElementById('fcAnswer');
+  var cnt=document.getElementById('fcCounter');
+  if(q) q.textContent=cards[fcIdx].q;
+  if(a) a.textContent=cards[fcIdx].a;
+  if(cnt) cnt.textContent=(fcIdx+1)+' / '+cards.length;
+  fcFlipped=false;
+  var card=document.getElementById('fcCard'); if(card) card.classList.remove('flipped');
+  updateFCProgress();
+}
+function flipCard(){
+  fcFlipped=!fcFlipped;
+  var card=document.getElementById('fcCard'); if(card) card.classList.toggle('flipped',fcFlipped);
+}
+function nextCard(){
+  var cards=FLASHCARDS[fcSub]||[];
+  fcIdx=(fcIdx+1)%cards.length;
+  loadFC();
+}
+function prevCard(){
+  var cards=FLASHCARDS[fcSub]||[];
+  fcIdx=(fcIdx-1+cards.length)%cards.length;
+  loadFC();
+}
+function markFC(status){
+  var key=fcSub+'_'+fcIdx;
+  if(status==='know'){ fcKnow.push(key); fcReview=fcReview.filter(function(k){return k!==key;}); }
+  else { fcReview.push(key); fcKnow=fcKnow.filter(function(k){return k!==key;}); }
+  updateFCProgress();
+  nextCard();
+}
+function updateFCProgress(){
+  var el=document.getElementById('fcProgress'); if(!el)return;
+  var cards=FLASHCARDS[fcSub]||[];
+  var known=fcKnow.filter(function(k){return k.startsWith(fcSub+'_');}).length;
+  var review=fcReview.filter(function(k){return k.startsWith(fcSub+'_');}).length;
+  el.textContent='✅ Pata hai: '+known+' | 🔁 Dobara: '+review+' | Total: '+cards.length;
+}
+
+// ═══════════════════════════════════════
+// 🏆 LEADERBOARD
+// ═══════════════════════════════════════
+function refreshLeaderboard(){
+  var el=document.getElementById('leaderboardList'); if(!el)return;
+  el.innerHTML='<div style="text-align:center;color:var(--text3);padding:16px;font-size:13px;">⏳ Loading...</div>';
+  if(!window.FS||!window.FS.loadLeaderboard){el.innerHTML='<div style="text-align:center;color:var(--text3);padding:16px;font-size:13px;">Login karke leaderboard dekho!</div>';return;}
+  window.FS.loadLeaderboard().then(function(list){
+    if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--text3);padding:16px;font-size:13px;">Koi data nahi abhi</div>';return;}
+    var html='';
+    list.forEach(function(row,i){
+      var rank=i+1;
+      var rankIco=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+      var isMe=window._uid&&row.uid===window._uid;
+      html+='<div class="lb-row'+(isMe?' me':'')+'">'
+        +'<div class="lb-rank">'+rankIco+'</div>'
+        +'<img src="'+(row.photoURL||'https://ui-avatars.com/api/?name=JEE&background=4f46e5&color=fff&size=30')+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" onerror="this.src=\'https://ui-avatars.com/api/?name=JEE&background=4f46e5&color=fff&size=30\'">'
+        +'<div class="lb-name">'+(row.name||'JEE Aspirant')+(isMe?' 👈':'')+'</div>'
+        +'<div><div class="lb-score">'+row.corr+'</div><div class="lb-acc">'+row.acc+'% acc</div></div>'
+        +'</div>';
+    });
+    el.innerHTML=html;
+  }).catch(function(){el.innerHTML='<div style="text-align:center;color:var(--text3);padding:16px;font-size:13px;">⚠️ Load failed. Login karo ya retry karo.</div>';});
+}
 
 // ═══════════════════════════════════════
 // LOGOUT
