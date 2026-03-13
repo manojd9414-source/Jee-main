@@ -666,8 +666,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 var app = initializeApp({
   apiKey:"AIzaSyDWIKEUfsdplqu7f6YQKPZ19SUbDTFeFeQ",
@@ -680,7 +680,9 @@ var app = initializeApp({
 var auth = getAuth(app);
 var db = getFirestore(app);
 var gp = new GoogleAuthProvider();
-gp.setCustomParameters({ prompt:'select_account' });
+
+// Fix: Set LOCAL persistence so user stays logged in across sessions
+setPersistence(auth, browserLocalPersistence).catch(function(e){ console.warn('Persistence error', e); });
 
 window._doLogoutFn = function(){
   var auth = getAuth();
@@ -745,7 +747,10 @@ window.FS = {
   async saveGoalFS(g){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','settings'),{dailyGoalHrs:g},{merge:true});}catch(e){} },
   async loadGoalFS(){ var uid=window._uid; if(!uid)return 8; try{var s=await getDoc(doc(db,'users',uid,'data','settings')); return s.exists()?(s.data().dailyGoalHrs||8):8;} catch(e){return 8;} },
   async saveMockFS(m){ var uid=window._uid; if(!uid){window.showStatus('guest');return;} try{await addDoc(collection(db,'users',uid,'mocks'),Object.assign({},m,{createdAt:serverTimestamp()})); window.showStatus('saved');} catch(e){window.showStatus('save_err');} },
-  async loadMocksFS(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(collection(db,'users',uid,'mocks')); var list=[]; snap.forEach(function(d){list.push(Object.assign({firestoreId:d.id},d.data()));}); list.sort(function(a,b){return a.date<b.date?1:-1;}); return list;} catch(e){return[];} }
+  async loadMocksFS(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(collection(db,'users',uid,'mocks')); var list=[]; snap.forEach(function(d){list.push(Object.assign({firestoreId:d.id},d.data()));}); list.sort(function(a,b){return a.date<b.date?1:-1;}); return list;} catch(e){return[];} },
+  async saveArenaChapterStats(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','arenaChapterStats'),{stats:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){console.warn('ACS save err',e);} },
+  async loadArenaChapterStats(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','arenaChapterStats')); if(s.exists()&&s.data().stats){return JSON.parse(s.data().stats);}return{};} catch(e){return{};} },
+  async clearArenaChapterStatsFS(){ var uid=window._uid; if(!uid)return; try{await deleteDoc(doc(db,'users',uid,'data','arenaChapterStats'));}catch(e){} }
 };
 
 onAuthStateChanged(auth, async function(user){
@@ -895,14 +900,8 @@ window.initApp = async function(){
   try{ mocks=await window.FS.loadMocksFS(); }catch(e){}
   try{ studyData=await window.FS.loadStudy(); }catch(e){}
   try{ dailyGoalHrs=await window.FS.loadGoalFS(); }catch(e){}
-  // Load arenaChapterStats from localStorage for logged-in users
-  try{
-    var uid2=window._uid;
-    if(uid2){
-      var lraw=localStorage.getItem('jee_'+uid2);
-      if(lraw){ var lobj=JSON.parse(lraw); arenaChapterStats=lobj.arenaChapterStats||{}; }
-    }
-  }catch(e){}
+  // Load arenaChapterStats from Firestore for logged-in users
+  try{ arenaChapterStats=await window.FS.loadArenaChapterStats(); }catch(e){}
   var gi=document.getElementById('goalInp'); if(gi) gi.value=dailyGoalHrs;
   var mi=document.getElementById('mockDate'); if(mi) mi.value=today();
   window.showStatus('synced');
@@ -1534,6 +1533,7 @@ function updateArenaChapterStats(chapData){
     arenaChapterStats[ck].skip     += (chapData[ck].skip  || 0);
   });
   saveLocal();
+  if(!window._isGuest) window.FS.saveArenaChapterStats(arenaChapterStats);
   renderArenaChapterStats();
 }
 
@@ -1598,6 +1598,7 @@ function clearArenaChapterStats(){
   if(!confirm('Arena chapter stats reset kar doon?\nYeh undo nahi hoga!')) return;
   arenaChapterStats = {};
   saveLocal();
+  if(!window._isGuest) window.FS.clearArenaChapterStatsFS();
   renderArenaChapterStats();
 }
 
