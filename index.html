@@ -666,7 +666,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, setPersistence, browserLocalStoragePersistence } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 var app = initializeApp({
@@ -678,6 +678,7 @@ var app = initializeApp({
   appId:"1:53875825948:web:a199bb3ae362f918aceed9"
 });
 var auth = getAuth(app);
+setPersistence(auth, browserLocalStoragePersistence).catch(function(){});
 var db = getFirestore(app);
 var gp = new GoogleAuthProvider();
 gp.setCustomParameters({ prompt:'select_account' });
@@ -887,6 +888,7 @@ window.initApp = async function(){
     buildSyl(); renderStats(); renderArenaChapterStats(); renderStudyUI(); updateStreakBadge();
     planDateKey=today(); initPlannerToday();
     loadChaps();
+    loadTimerState();
     return;
   }
 
@@ -908,6 +910,7 @@ window.initApp = async function(){
   buildSyl(); renderStats(); renderArenaChapterStats(); renderStudyUI(); updateStreakBadge();
   planDateKey=today(); initPlannerToday();
   loadChaps();
+  loadTimerState();
 };
 
 function saveLocal(){
@@ -946,12 +949,12 @@ function togStudyTimer(){
       var k=today();
       if(!studyData[k]) studyData[k]={physics:0,chemistry:0,maths:0};
       studyData[k][curSub]=(studyData[k][curSub]||0)+1;
-      if(studySec%30===0){ saveLocal(); window.FS.saveStudy(studyData); renderStudyUI(); }
+      if(studySec%30===0){ saveLocal(); saveTimerState(); window.FS.saveStudy(studyData); renderStudyUI(); }
     },1000);
   } else {
     btn.className='t-btn start'; btn.textContent='\u25B6 Start';
     clearInterval(studyIv);
-    saveLocal(); window.FS.saveStudy(studyData); renderStudyUI();
+    saveLocal(); saveTimerState(); window.FS.saveStudy(studyData); renderStudyUI();
   }
 }
 function rstStudyTimer(){
@@ -959,6 +962,7 @@ function rstStudyTimer(){
   var el=document.getElementById('studyDisp'); if(el) el.textContent='00:00:00';
   var btn=document.getElementById('studyStartBtn');
   if(btn){btn.className='t-btn start';btn.textContent='\u25B6 Start';}
+  saveTimerState();
 }
 function renderStudyUI(){
   var k=today(), td=studyData[k]||{physics:0,chemistry:0,maths:0};
@@ -1144,18 +1148,51 @@ function tickPlanChap(sub,idx){
   savePlanLocal(); renderPlanDoneList();
 }
 
-// ═══════════════════════════════════════
-// ARENA TIMER
-// ═══════════════════════════════════════
+function saveTimerState(){
+  try{
+    var uid=window._isGuest?'guest':(window._uid||null); if(!uid)return;
+    localStorage.setItem('jee_timer_'+uid, JSON.stringify({
+      studySec:studySec,
+      studyOn:false,  // always save as paused — timer shouldn't auto-run on reload
+      curSub:curSub,
+      tSec:tSec,
+      tOn:false       // arena timer bhi paused save karo
+    }));
+  }catch(e){}
+}
+function loadTimerState(){
+  try{
+    var uid=window._isGuest?'guest':(window._uid||null); if(!uid)return;
+    var raw=localStorage.getItem('jee_timer_'+uid);
+    if(!raw)return;
+    var obj=JSON.parse(raw);
+    // Restore study timer
+    if(typeof obj.studySec==='number') studySec=obj.studySec;
+    if(obj.curSub) curSub=obj.curSub;
+    // Restore arena timer
+    if(typeof obj.tSec==='number') tSec=obj.tSec;
+    // Update displays
+    var sd=document.getElementById('studyDisp'); if(sd) sd.textContent=fmtHMS(studySec);
+    showT();
+    // Restore subject button highlight
+    var map={physics:'ph',chemistry:'ch',maths:'ma'};
+    Object.keys(map).forEach(function(s){
+      var el=document.getElementById('sb'+map[s]);
+      if(el) el.classList.toggle('on',s===curSub);
+    });
+    var lbl=document.getElementById('studySubLabel');
+    if(lbl && studySec>0) lbl.textContent=SYL[curSub].name+' padh raha hai...';
+  }catch(e){}
+}
 var tSec=0,tOn=false,tIv=null;
 function togTimer(){
   tOn=!tOn;
   var b=document.getElementById('tBtn');
   if(tOn){b.textContent='PAUSE';b.style.color='var(--red)';b.style.borderColor='var(--red)';tIv=setInterval(function(){tSec++;showT();},1000);}
-  else{b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';clearInterval(tIv);}
+  else{b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';clearInterval(tIv);saveTimerState();}
 }
 function rstTimer(){
-  tOn=false;tSec=0;clearInterval(tIv);showT();
+  tOn=false;tSec=0;clearInterval(tIv);showT();saveTimerState();
   var b=document.getElementById('tBtn');b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';
 }
 function showT(){var el=document.getElementById('tDisp');if(el)el.textContent=p2(Math.floor(tSec/60))+':'+p2(tSec%60);}
@@ -1643,7 +1680,7 @@ function doLogout(){
 }
 </script>
 
-<!-- SERVICE WORKER -->
+// SERVICE WORKER -->
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
@@ -1652,6 +1689,15 @@ if('serviceWorker' in navigator){
     });
   });
 }
+// Jab bhi app background mein jaye ya band ho — timer save karo
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'hidden'){
+    saveTimerState();
+    saveLocal();
+  }
+});
+window.addEventListener('pagehide', function(){ saveTimerState(); saveLocal(); });
+window.addEventListener('beforeunload', function(){ saveTimerState(); saveLocal(); });
 </script>
 
 </body>
