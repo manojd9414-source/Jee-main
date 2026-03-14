@@ -27,6 +27,57 @@
   --shadow2:0 4px 16px rgba(0,0,0,0.08);
   --r:14px;--r2:10px;
 }
+body.dark{
+  --bg:#0f0f13;--white:#1a1a24;--card:#1a1a24;
+  --bluelt:#1e1b4b;--greenlt:#052e16;--orangelt:#431407;
+  --redlt:#450a0a;--purplelt:#2e1065;
+  --text:#e5e7eb;--text2:#9ca3af;--text3:#6b7280;
+  --border:#2a2a3a;
+  --shadow:0 1px 3px rgba(0,0,0,0.4);
+  --shadow2:0 4px 16px rgba(0,0,0,0.3);
+}
+body.dark #topbar{background:#1a1a24;border-color:#2a2a3a;}
+body.dark #bottomNav{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .card{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .syl-ch-item{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .syl-ch-item.dph{background:#1e1b4b;border-color:#3730a3;}
+body.dark .syl-ch-item.dch{background:#431407;border-color:#9a3412;}
+body.dark .syl-ch-item.dma{background:#052e16;border-color:#166534;}
+body.dark .mock-item2{background:#111118;border-color:#2a2a3a;}
+body.dark .sum-box{background:#111118;border-color:#2a2a3a;}
+body.dark .cd-box{background:#1e1b4b;}
+body.dark .cd-num{background:#111118;}
+body.dark .cfg-sel,.dark .cfg-in{background:#111118;color:var(--text);border-color:#2a2a3a;}
+body.dark .goal-inp{background:#111118;color:var(--text);border-color:#2a2a3a;}
+body.dark .opt{background:#111118;border-color:#2a2a3a;color:var(--text);}
+body.dark .plan-ch-item,.dark .plan-done-item{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .per-btn{background:#111118;border-color:#2a2a3a;color:var(--text2);}
+body.dark .per-btn.on{background:var(--blue);color:#fff;}
+body.dark .acs-row{background:#111118;border-color:#2a2a3a;}
+body.dark .acs-count{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .acs-fbtn{background:#111118;border-color:#2a2a3a;color:var(--text2);}
+body.dark .sr-item{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .lb-row{background:#111118;border-color:#2a2a3a;}
+body.dark .lb-row.me{background:#1e1b4b;border-color:#3730a3;}
+body.dark .mock-form{background:#111118;}
+body.dark .chk-item{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .cbub.b{background:#111118;border-color:#2a2a3a;}
+body.dark #chatTxt{background:#111118;border-color:#2a2a3a;color:var(--text);}
+body.dark .chat-inp{background:#111118;border-color:#2a2a3a;}
+body.dark .timer-hero{background:linear-gradient(135deg,#0d0d1a,#1e1b4b);}
+body.dark .lec-ch-item{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .err-item{background:#1f0a0a;border-color:#7f1d1d;}
+body.dark .fc-back{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .fc-back .fc-a{color:#818cf8;}
+body.dark .hm-cell{border-color:#2a2a3a!important;}
+body.dark input[type="date"],body.dark input[type="number"]{background:#111118;color:var(--text);border-color:#2a2a3a;}
+body.dark .qs-opt-btn{background:#111118;border-color:#2a2a3a;color:var(--text2);}
+body.dark .qs-opt-btn.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+body.dark .pw-search-inp{background:#0f0f13;}
+body.dark select{background:#111118;color:var(--text);}
+/* Dark mode toggle button */
+.dm-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 8px;cursor:pointer;font-size:16px;line-height:1;transition:all .2s;}
+body.dark .dm-btn{background:#2a2a3a;border-color:#3a3a4a;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:15px;overscroll-behavior:none;}
 
 /* LOGIN */
@@ -453,6 +504,7 @@ body.deep-work .dw-overlay{display:flex;}
   </div>
   <div class="tb-right">
     <div class="streak-badge" id="streakBadge">⭐ 0</div>
+    <button class="dm-btn" id="dmToggleBtn" onclick="toggleDarkMode()" title="Dark/Light Mode">🌙</button>
     <button id="logoutBtn" onclick="confirmLogout()" style="background:transparent;border:1px solid var(--border);color:var(--text2);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif;">🚪 Logout</button>
     <button id="loginFromGuestBtn" onclick="loginFromGuest()" style="display:none;background:var(--blue);border:none;color:#fff;font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Inter',sans-serif;">🔑 Login Karo</button>
   </div>
@@ -2990,6 +3042,12 @@ function renderPWRelated(sub, ch){
 }
 
 // ═══════════════════════════════════════
+// DARK MODE
+var _darkMode=false;
+function initDarkMode(){try{var s=localStorage.getItem('jee_dark_mode');if(s==='1'){_darkMode=true;document.body.classList.add('dark');var b=document.getElementById('dmToggleBtn');if(b)b.textContent='\u2600\ufe0f';}}catch(e){}}
+function toggleDarkMode(){_darkMode=!_darkMode;document.body.classList.toggle('dark',_darkMode);var b=document.getElementById('dmToggleBtn');if(b)b.textContent=_darkMode?'\u2600\ufe0f':'\ud83c\udf19';try{localStorage.setItem('jee_dark_mode',_darkMode?'1':'0');}catch(e){}}
+initDarkMode();
+
 // LOGOUT
 // ═══════════════════════════════════════
 function confirmLogout(){
@@ -3003,6 +3061,8 @@ function doLogout(){
   window._doLogoutFn && window._doLogoutFn();
 }
 </script>
+
+<script>
 
 // SERVICE WORKER -->
 <script>
