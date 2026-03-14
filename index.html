@@ -1034,7 +1034,7 @@ window.FS = {
   async saveMockFS(m){ var uid=window._uid; if(!uid){window.showStatus('guest');return;} try{await addDoc(collection(db,'users',uid,'mocks'),Object.assign({},m,{createdAt:serverTimestamp()})); window.showStatus('saved');} catch(e){window.showStatus('save_err');} },
   async loadMocksFS(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(collection(db,'users',uid,'mocks')); var list=[]; snap.forEach(function(d){list.push(Object.assign({firestoreId:d.id},d.data()));}); list.sort(function(a,b){return a.date<b.date?1:-1;}); return list;} catch(e){return[];} },
   // Arena Chapter Stats
-  async saveArenaChapterStats(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','arenaChapterStats'),{stats:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
+  async saveArenaChapterStats(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','arenaChapterStats'),{stats:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true}); window.showStatus('saved');}catch(e){console.error('ACS Firestore save error:',e); window.showStatus('save_err');} },
   async loadArenaChapterStats(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','arenaChapterStats')); if(s.exists()&&s.data().stats)return JSON.parse(s.data().stats); return{};}catch(e){return{};} },
   async clearArenaChapterStatsFS(){ var uid=window._uid; if(!uid)return; try{await deleteDoc(doc(db,'users',uid,'data','arenaChapterStats'));}catch(e){} },
   // Checklist
@@ -1972,7 +1972,7 @@ function updateArenaChapterStats(chapData){
     arenaChapterStats[ck].skip     += (chapData[ck].skip  || 0);
   });
   saveLocal();
-  if(!window._isGuest) window.FS.saveArenaChapterStats(arenaChapterStats);
+  if(window.FS && window._uid) window.FS.saveArenaChapterStats(arenaChapterStats);
   renderArenaChapterStats();
   renderHeatmap();
   renderSubjectStats();
@@ -2039,7 +2039,7 @@ function clearArenaChapterStats(){
   if(!confirm('Arena chapter stats reset kar doon?\nYeh undo nahi hoga!')) return;
   arenaChapterStats = {};
   saveLocal();
-  if(!window._isGuest) window.FS.clearArenaChapterStatsFS();
+  if(window.FS && window._uid) window.FS.clearArenaChapterStatsFS();
   renderArenaChapterStats();
   renderHeatmap();
   renderSubjectStats();
