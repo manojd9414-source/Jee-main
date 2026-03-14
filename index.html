@@ -2589,19 +2589,25 @@ function renderLecChapList(){
   var subCols={physics:'#eef2ff',chemistry:'#fff7ed',maths:'#dcfce7'};
   var subTxt={physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
   var subEmj={physics:'⚡',chemistry:'🧪',maths:'📐'};
-  var html='';
+  el.innerHTML='';
   SYL[sub].chapters.forEach(function(ch){
     var ck=sub+'|'+ch;
     var hasSaved=!!(lecLinks[ck]);
-    html+='<div class="lec-ch-item">'
-      +'<span class="lec-sub-tag" style="background:'+subCols[sub]+';color:'+subTxt[sub]+';">'+subEmj[sub]+'</span>'
-      +'<div class="lec-ch-name">'+ch+'</div>'
-      +'<button ... onclick="openPWModal(this.dataset.ck)" data-ck="'+ck+'">'
-      +(hasSaved?'▶ Saved':'🔴 Watch')
-      +'</button>'
-      +'</div>';
+    var row=document.createElement('div');
+    row.className='lec-ch-item';
+    var tag=document.createElement('span');
+    tag.className='lec-sub-tag';
+    tag.style.background=subCols[sub]; tag.style.color=subTxt[sub];
+    tag.textContent=subEmj[sub];
+    var name=document.createElement('div');
+    name.className='lec-ch-name'; name.textContent=ch;
+    var btn=document.createElement('button');
+    btn.className='lec-watch-btn'+(hasSaved?' saved':'');
+    btn.textContent=hasSaved?'▶ Saved':'🔴 Watch';
+    (function(chapKey){ btn.onclick=function(){ openPWModal(chapKey); }; })(ck);
+    row.appendChild(tag); row.appendChild(name); row.appendChild(btn);
+    el.appendChild(row);
   });
-  el.innerHTML=html;
 }
 
 // Open the PW video modal for a chapter
@@ -2700,29 +2706,27 @@ function pwOpenYTSearch(){
 function renderPWRelated(sub, ch){
   var el=document.getElementById('pwRelatedList'); if(!el)return;
   var query=PW_SEARCH[sub]&&PW_SEARCH[sub][ch]?PW_SEARCH[sub][ch]:'Physics+Wallah+'+encodeURIComponent(ch)+'+JEE';
-  // Show 3 common PW JEE playlists + direct chapter search
   var items=[
     {title:'🔴 PW — '+ch+' (YouTube Search)',meta:'Search result khulega YouTube mein',url:'https://www.youtube.com/results?search_query='+query},
     {title:'📚 PW JEE Main 2026 Playlist',meta:'Full JEE Main batch — PW channel',url:'https://www.youtube.com/@PhysicsWallah/playlists'},
     {title:'🎯 PW Lakshya JEE 2026',meta:'Lakshya batch — top videos',url:'https://www.youtube.com/results?search_query=Physics+Wallah+Lakshya+JEE+2026+'+encodeURIComponent(ch)},
-    {title:'⚡ PW Arjuna JEE Batch',meta:'Arjuna batch chapter video',url:'https://www.youtube.com/results?search_query=Physics+Wallah+Arjuna+JEE+'+encodeURIComponent(ch)},
+    {title:'⚡ PW Arjuna JEE Batch',meta:'Arjuna batch chapter video',url:'https://www.youtube.com/results?search_query=Physics+Wallah+Arjuna+JEE+'+encodeURIComponent(ch)}
   ];
-  var html='';
-  items.forEach(function(it){
-    html+='<div class="pw-vid-item" onclick="window.open(''+it.url+'','_blank')">'
-      +'<div class="pw-vid-info"><div class="pw-vid-title">'+it.title+'</div><div class="pw-vid-meta">'+it.meta+'</div></div>'
-      +'<div class="pw-vid-play">↗</div>'
-      +'</div>';
-  });
-  // If saved, show load option
+  el.innerHTML='';
+  // Saved video banner
   if(lecLinks[_pwCurChapKey]){
-    html='<div style="background:rgba(79,70,229,.2);border:1px solid #4f46e5;border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;">'
-      +'<span style="font-size:18px;">✅</span>'
-      +'<div><div style="color:#a5b4fc;font-size:12px;font-weight:700;">Saved Video</div>'
-      +'<div style="color:rgba(255,255,255,.6);font-size:11px;">'+lecLinks[_pwCurChapKey]+'</div></div>'
-      +'</div>'+html;
+    var banner=document.createElement('div');
+    banner.style.cssText='background:rgba(79,70,229,.2);border:1px solid #4f46e5;border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;';
+    banner.innerHTML='<span style="font-size:18px;">✅</span><div><div style="color:#a5b4fc;font-size:12px;font-weight:700;">Saved Video</div><div style="color:rgba(255,255,255,.6);font-size:11px;">'+lecLinks[_pwCurChapKey]+'</div></div>';
+    el.appendChild(banner);
   }
-  el.innerHTML=html;
+  items.forEach(function(it){
+    var row=document.createElement('div');
+    row.className='pw-vid-item';
+    row.innerHTML='<div class="pw-vid-info"><div class="pw-vid-title">'+it.title+'</div><div class="pw-vid-meta">'+it.meta+'</div></div><div class="pw-vid-play">↗</div>';
+    (function(url){ row.onclick=function(){ window.open(url,'_blank'); }; })(it.url);
+    el.appendChild(row);
+  });
 }
 
 // ═══════════════════════════════════════
