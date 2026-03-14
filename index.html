@@ -1790,42 +1790,73 @@ window.showStatus = function(s){
   var cols={loading:'var(--orange)',synced:'var(--green)',saved:'var(--green)',save_err:'var(--red)',guest:'var(--purple)'};
   el.textContent=msgs[s]||s;el.style.color=cols[s]||'var(--text2)';
 };
+var _mockShowCount = 5;
+
 function renderStats(){
-  var filtered=filterMocks(curPeriod);
-  var tQs=0,tCorr=0,tWrong=0;
-  filtered.forEach(function(m){tQs+=m.qs;tCorr+=m.corr;tWrong+=(m.wrong||0);});
-  var sg=document.getElementById('sumGrid');if(!sg)return;
-  sg.innerHTML='<div class="sum-box"><div class="sum-val" style="color:var(--blue)">'+filtered.length+'</div><div class="sum-lbl">MOCKS</div></div>'
-    +'<div class="sum-box"><div class="sum-val">'+tQs+'</div><div class="sum-lbl">ATTEMPTED</div></div>'
-    +'<div class="sum-box"><div class="sum-val" style="color:var(--green)">'+tCorr+'</div><div class="sum-lbl">CORRECT \u2713</div></div>'
-    +'<div class="sum-box"><div class="sum-val" style="color:var(--red)">'+tWrong+'</div><div class="sum-lbl">WRONG \u2717</div></div>';
-  var ml=document.getElementById('mockList');
-  if(!filtered.length){
-    ml.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:20px;">Is period mein koi mock nahi</div>';
-  } else {
-    var html='';
-    filtered.forEach(function(m){
-      html+='<div class="mock-item2">'
-        +'<div class="mock-dt">'+m.date+(m.auto?' <span style="font-size:9px;background:var(--bluelt);color:var(--blue);padding:2px 5px;border-radius:4px;">AUTO</span>':'')+'</div>'
-        +'<div style="flex:1;display:flex;gap:14px;justify-content:flex-end;">'
-        +'<div class="mock-stat"><div class="mock-stat-lbl">Attempted</div><div class="mock-stat-val" style="color:var(--blue)">'+m.qs+'</div></div>'
-        +'<div class="mock-stat"><div class="mock-stat-lbl">Correct</div><div class="mock-stat-val" style="color:var(--green)">'+m.corr+'</div></div>'
-        +'<div class="mock-stat"><div class="mock-stat-lbl">Wrong</div><div class="mock-stat-val" style="color:var(--red)">'+(m.wrong||0)+'</div></div>'
-        +'</div></div>';
-    });
-    ml.innerHTML=html;
-  }
-  var streak=calcStreak();
-  var mb=document.getElementById('motivBar');
+  _mockShowCount = 5;
+  var filtered = filterMocks(curPeriod);
+  var tQs=0, tCorr=0, tWrong=0;
+  filtered.forEach(function(m){ tQs+=m.qs; tCorr+=m.corr; tWrong+=(m.wrong||0); });
+  var sg = document.getElementById('sumGrid'); if(!sg) return;
+  sg.innerHTML =
+    '<div class="sum-box"><div class="sum-val" style="color:var(--blue)">'+filtered.length+'</div><div class="sum-lbl">MOCKS</div></div>'
+   +'<div class="sum-box"><div class="sum-val">'+tQs+'</div><div class="sum-lbl">ATTEMPTED</div></div>'
+   +'<div class="sum-box"><div class="sum-val" style="color:var(--green)">'+tCorr+'</div><div class="sum-lbl">CORRECT \u2713</div></div>'
+   +'<div class="sum-box"><div class="sum-val" style="color:var(--red)">'+tWrong+'</div><div class="sum-lbl">WRONG \u2717</div></div>';
+  renderMockList(filtered);
+  var streak = calcStreak();
+  var mb = document.getElementById('motivBar');
   mb.innerHTML=(streak>=3?'\uD83D\uDD25':'\u2B50')+' '+(streak>=7?streak+' din ka streak! Machine ban gaya!':streak>=3?streak+' din consistent!':mocks.length>0?mocks.length+' mocks done! Keep going!':'Pehla mock lagao aaj!')+' \u2022 '+mocks.length+' total mocks';
   mb.classList.add('on');
   updateStreakBadge();
   renderSubjectStats();
 }
 
-// ═══════════════════════════════════════
-// 📐 SUBJECT-WISE STATS
-// ═══════════════════════════════════════
+function renderMockList(filtered) {
+  if(!filtered) filtered = filterMocks(curPeriod);
+  var ml = document.getElementById('mockList'); if(!ml) return;
+  if(!filtered.length){
+    ml.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:13px;padding:20px;">Is period mein koi mock nahi</div>';
+    return;
+  }
+  var show = Math.min(_mockShowCount, filtered.length);
+  var html = '';
+  for(var i=0; i<show; i++){
+    var m = filtered[i];
+    var acc = m.qs>0 ? Math.round((m.corr||0)/m.qs*100) : 0;
+    var accCol = acc>=75?'var(--green)':acc>=50?'var(--orange)':'var(--red)';
+    html += '<div class="mock-item2">'
+      + '<div class="mock-dt">'+m.date
+      + (m.auto?' <span style="font-size:9px;background:var(--bluelt);color:var(--blue);padding:2px 5px;border-radius:4px;">AUTO</span>':'')
+      + '</div>'
+      + '<div style="flex:1;display:flex;gap:10px;justify-content:flex-end;align-items:center;">'
+      + '<div class="mock-stat"><div class="mock-stat-lbl">Attempted</div><div class="mock-stat-val" style="color:var(--blue)">'+m.qs+'</div></div>'
+      + '<div class="mock-stat"><div class="mock-stat-lbl">Correct</div><div class="mock-stat-val" style="color:var(--green)">'+m.corr+'</div></div>'
+      + '<div class="mock-stat"><div class="mock-stat-lbl">Wrong</div><div class="mock-stat-val" style="color:var(--red)">'+(m.wrong||0)+'</div></div>'
+      + '<div class="mock-stat"><div class="mock-stat-lbl">Acc</div><div class="mock-stat-val" style="color:'+accCol+'">'+acc+'%</div></div>'
+      + '</div></div>';
+  }
+  var remaining = filtered.length - show;
+  if(remaining > 0){
+    html += '<div onclick="mockSeeMore()" style="width:100%;padding:11px;margin-top:6px;border-radius:10px;border:1.5px dashed var(--blue);background:var(--bluelt);color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;text-align:center;">'
+          + '\u25bc  '+remaining+' aur dekho</div>';
+  } else if(filtered.length > 5){
+    html += '<div onclick="mockSeeLess()" style="width:100%;padding:11px;margin-top:6px;border-radius:10px;border:1.5px dashed var(--border);background:var(--bg);color:var(--text3);font-size:13px;font-weight:700;cursor:pointer;text-align:center;">'
+          + '\u25b2  Kam karo</div>';
+  }
+  ml.innerHTML = html;
+}
+
+function mockSeeMore(){
+  _mockShowCount += 10;
+  renderMockList();
+}
+function mockSeeLess(){
+  _mockShowCount = 5;
+  renderMockList();
+}
+
+
 function renderSubjectStats(){
   var el=document.getElementById('subjectStatsGrid'); if(!el)return;
 
