@@ -353,6 +353,34 @@ body.deep-work .dw-overlay{display:flex;}
 .dw-time{font-size:72px;font-weight:900;color:#fff;letter-spacing:6px;font-variant-numeric:tabular-nums;}
 .dw-msg{font-size:16px;color:rgba(255,255,255,.7);font-weight:600;text-align:center;}
 .dw-exit{padding:10px 24px;border-radius:10px;border:2px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+/* ── PW VIDEO MODAL ── */
+.pw-modal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.92);flex-direction:column;align-items:stretch;}
+.pw-modal.open{display:flex;}
+.pw-modal-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#1a1a2e;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0;}
+.pw-modal-title{flex:1;color:#fff;font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pw-close-btn{background:rgba(255,255,255,.1);border:none;color:#fff;width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pw-video-wrap{flex:1;background:#000;position:relative;overflow:hidden;min-height:200px;}
+.pw-video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.pw-panel{background:#1a1a2e;padding:14px 16px;flex-shrink:0;max-height:42vh;overflow-y:auto;}
+.pw-search-bar{display:flex;gap:8px;margin-bottom:12px;}
+.pw-search-inp{flex:1;padding:9px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:13px;font-weight:600;outline:none;font-family:'Inter',sans-serif;}
+.pw-search-inp::placeholder{color:rgba(255,255,255,.35);}
+.pw-search-inp:focus{border-color:#4f46e5;}
+.pw-search-btn{padding:9px 14px;border-radius:8px;border:none;background:#4f46e5;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;}
+.pw-playlist-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;}
+.pw-vid-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;margin-bottom:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);transition:background .15s;}
+.pw-vid-item.playing{background:rgba(79,70,229,.35);border-color:#4f46e5;}
+.pw-vid-info{flex:1;overflow:hidden;}
+.pw-vid-title{font-size:12px;font-weight:700;color:#fff;line-height:1.4;}
+.pw-vid-meta{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;}
+.pw-vid-play{color:#4f46e5;font-size:20px;flex-shrink:0;}
+.pw-save-btn{width:100%;padding:9px;border-radius:8px;border:none;background:linear-gradient(90deg,#4f46e5,#7c3aed);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:10px;}
+.lec-ch-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;border:1.5px solid var(--border);margin-bottom:6px;background:#fff;}
+.lec-ch-name{flex:1;font-size:13px;font-weight:600;}
+.lec-watch-btn{padding:6px 12px;border-radius:7px;border:none;background:linear-gradient(90deg,#ff0000,#cc0000);color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap;font-family:'Inter',sans-serif;}
+.lec-watch-btn.saved{background:linear-gradient(90deg,#4f46e5,#7c3aed);}
+.lec-sub-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;}
+
 </style>
 </head>
 <body>
@@ -362,6 +390,33 @@ body.deep-work .dw-overlay{display:flex;}
   <div class="dw-time" id="dwTime">00:00:00</div>
   <div class="dw-msg" id="dwMsg">IIT Bombay gate ke paas pohonch raha hai tu 🔥</div>
   <button class="dw-exit" onclick="exitDeepWork()">✕ Exit Focus Mode</button>
+</div>
+
+
+<!-- PW VIDEO MODAL -->
+<div class="pw-modal" id="pwModal">
+  <div class="pw-modal-header">
+    <div style="font-size:18px;">▶️</div>
+    <div class="pw-modal-title" id="pwModalTitle">Physics Wallah Lecture</div>
+    <button class="pw-close-btn" onclick="closePWModal()">✕</button>
+  </div>
+  <div class="pw-video-wrap">
+    <iframe id="pwIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+  </div>
+  <div class="pw-panel">
+    <!-- Custom link input -->
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px;">📎 Custom YouTube Link Paste Karo (optional)</div>
+    <div class="pw-search-bar">
+      <input class="pw-search-inp" id="pwCustomInp" placeholder="youtube.com/watch?v=... ya youtu.be/..." oninput="pwLivePreview(this.value)">
+      <button class="pw-search-btn" onclick="pwLoadCustom()">▶ Load</button>
+    </div>
+    <button class="pw-save-btn" onclick="pwSaveLink()">💾 Is Chapter ke liye Save Karo</button>
+    <!-- Related PW videos list -->
+    <div id="pwRelatedLabel" class="pw-playlist-label" style="margin-top:14px;">🔴 PW RELATED VIDEOS (YouTube mein khulenge)</div>
+    <div id="pwRelatedList"></div>
+    <!-- Open YouTube search fallback -->
+    <button onclick="pwOpenYTSearch()" style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.7);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px;">🔍 YouTube pe PW Search Karo</button>
+  </div>
 </div>
 
 <!-- LOGIN SCREEN -->
@@ -572,10 +627,11 @@ body.deep-work .dw-overlay{display:flex;}
       <div class="prog-bg"><div class="prog-fill" id="sylBar" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--green));"></div></div>
       <div id="sylSubBars" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>
     </div>
-    <!-- Main Tabs: Chapters | Flashcards -->
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <button id="sylModeChap" onclick="setSylMode('chap',this)" style="flex:1;padding:9px 6px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">📖 Chapters</button>
-      <button id="sylModeFlash" onclick="setSylMode('flash',this)" style="flex:1;padding:9px 6px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🃏 Flashcards</button>
+    <!-- Main Tabs: Chapters | Flashcards | Lectures -->
+    <div style="display:flex;gap:6px;margin-bottom:10px;">
+      <button id="sylModeChap" onclick="setSylMode('chap',this)" style="flex:1;padding:9px 4px;border-radius:10px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">📖 Chapters</button>
+      <button id="sylModeFlash" onclick="setSylMode('flash',this)" style="flex:1;padding:9px 4px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🃏 Flashcards</button>
+      <button id="sylModeLec" onclick="setSylMode('lec',this)" style="flex:1;padding:9px 4px;border-radius:10px;border:1.5px solid #ff0000;background:#fff;color:#cc0000;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">▶ Lectures</button>
     </div>
     <!-- Chapter view -->
     <div id="sylChapView">
@@ -588,6 +644,25 @@ body.deep-work .dw-overlay{display:flex;}
         <div id="sylChapList"></div>
       </div>
     </div>
+    <!-- Lectures view -->
+    <div id="sylLecView" style="display:none;">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="syl-stab on" id="ltab-ph" onclick="lecTab('physics')">⚡ Physics</button>
+        <button class="syl-stab" id="ltab-ch" onclick="lecTab('chemistry')">🧪 Chemistry</button>
+        <button class="syl-stab" id="ltab-ma" onclick="lecTab('maths')">📐 Maths</button>
+      </div>
+      <div style="background:linear-gradient(90deg,#ff0000,#cc0000);border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+        <div style="font-size:22px;">▶️</div>
+        <div>
+          <div style="color:#fff;font-size:13px;font-weight:800;">PW Lectures — In-App Player</div>
+          <div style="color:rgba(255,255,255,.8);font-size:11px;">Chapter pe tap karo → YouTube link paste karo → Save karo</div>
+        </div>
+      </div>
+      <div class="card" style="padding:12px;">
+        <div id="lecChapList"></div>
+      </div>
+    </div>
+
     <!-- Flashcard view -->
     <div id="sylFlashView" style="display:none;">
       <div class="card">
@@ -977,7 +1052,10 @@ window.FS = {
       var list=[]; snap.forEach(function(d){list.push(Object.assign({uid:d.id},d.data()));});
       return list;
     }catch(e){return[];} 
-  }
+  },
+  // PW Lecture Links — saved per user per chapter key
+  async saveLecLinks(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','lecLinks'),{links:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
+  async loadLecLinks(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','lecLinks')); if(s.exists()&&s.data().links)return JSON.parse(s.data().links); return{};}catch(e){return{};} }
 };
 
 onAuthStateChanged(auth, async function(user){
@@ -1021,7 +1099,7 @@ var SCOL = {physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
 // ═══════════════════════════════════════
 var mocks=[], done={}, studyData={}, dailyGoalHrs=8;
 var arenaChapterStats = {};
-var checklist = [], errorBook = [], spacedRep = {};
+var checklist = [], errorBook = [], spacedRep = {}, lecLinks = {};
 var acsFilter = 'all', hmFilter = 'all';
 var curSub='physics', studySec=0, studyOn=false, studyIv=null;
 var curSylSub='physics', curPeriod='day';
@@ -1100,7 +1178,7 @@ function showNav(name,btn){
 // ═══════════════════════════════════════
 window.initApp = async function(){
   window.showStatus('loading');
-  done={}; mocks=[]; studyData={}; arenaChapterStats={}; checklist=[]; errorBook=[]; spacedRep={};
+  done={}; mocks=[]; studyData={}; arenaChapterStats={}; checklist=[]; errorBook=[]; spacedRep={}; lecLinks={};
 
   if(window._isGuest){
     try{
@@ -1114,6 +1192,7 @@ window.initApp = async function(){
         checklist=obj.checklist||[];
         errorBook=obj.errorBook||[];
         spacedRep=obj.spacedRep||{};
+        lecLinks=obj.lecLinks||{};
       }
     }catch(e){}
     dailyGoalHrs=8;
@@ -1136,6 +1215,7 @@ window.initApp = async function(){
   try{ checklist=await window.FS.loadChecklist(); }catch(e){}
   try{ errorBook=await window.FS.loadMistakes(); }catch(e){}
   try{ spacedRep=await window.FS.loadSpacedRep(); }catch(e){}
+  try{ lecLinks=await window.FS.loadLecLinks(); }catch(e){}
   var gi=document.getElementById('goalInp'); if(gi) gi.value=dailyGoalHrs;
   var mi=document.getElementById('mockDate'); if(mi) mi.value=today();
   window.showStatus('synced');
@@ -1158,7 +1238,7 @@ function saveLocal(){
     localStorage.setItem('jee_'+uid, JSON.stringify({
       mocks:mocks, done:done, studyData:studyData,
       arenaChapterStats:arenaChapterStats,
-      checklist:checklist, errorBook:errorBook, spacedRep:spacedRep
+      checklist:checklist, errorBook:errorBook, spacedRep:spacedRep, lecLinks:lecLinks
     }));
   }catch(e){}
 }
@@ -2295,16 +2375,33 @@ var FLASHCARDS={
   ]
 };
 var fcSub='physics', fcIdx=0, fcFlipped=false, fcKnow=[], fcReview=[];
+var curLecSub='physics';
 function setSylMode(mode,btn){
   document.getElementById('sylChapView').style.display=mode==='chap'?'block':'none';
   document.getElementById('sylFlashView').style.display=mode==='flash'?'block':'none';
+  var lecView=document.getElementById('sylLecView'); if(lecView) lecView.style.display=mode==='lec'?'block':'none';
+  // Chap btn
   document.getElementById('sylModeChap').style.background=mode==='chap'?'var(--blue)':'#fff';
   document.getElementById('sylModeChap').style.color=mode==='chap'?'#fff':'var(--text2)';
   document.getElementById('sylModeChap').style.border=mode==='chap'?'none':'1.5px solid var(--border)';
+  // Flash btn
   document.getElementById('sylModeFlash').style.background=mode==='flash'?'var(--blue)':'#fff';
   document.getElementById('sylModeFlash').style.color=mode==='flash'?'#fff':'var(--text2)';
   document.getElementById('sylModeFlash').style.border=mode==='flash'?'none':'1.5px solid var(--border)';
+  // Lec btn
+  var lb=document.getElementById('sylModeLec');
+  if(lb){ lb.style.background=mode==='lec'?'#cc0000':'#fff'; lb.style.color=mode==='lec'?'#fff':'#cc0000'; lb.style.border=mode==='lec'?'none':'1.5px solid #ff0000'; }
   if(mode==='flash') loadFC();
+  if(mode==='lec') renderLecChapList();
+}
+function lecTab(sub){
+  curLecSub=sub;
+  ['physics','chemistry','maths'].forEach(function(s){
+    var id='ltab-'+(s==='physics'?'ph':s==='chemistry'?'ch':'ma');
+    var b=document.getElementById(id); if(!b)return;
+    b.classList.toggle('on',s===sub);
+  });
+  renderLecChapList();
 }
 function setFCSub(sub,btn){
   fcSub=sub; fcIdx=0; fcFlipped=false;
@@ -2377,6 +2474,255 @@ function refreshLeaderboard(){
     });
     el.innerHTML=html;
   }).catch(function(){el.innerHTML='<div style="text-align:center;color:var(--text3);padding:16px;font-size:13px;">⚠️ Load failed. Login karo ya retry karo.</div>';});
+}
+
+
+// ═══════════════════════════════════════
+// ▶ PW LECTURE PLAYER
+// ═══════════════════════════════════════
+
+// Pre-mapped PW YouTube search queries for each chapter
+// These open YouTube search for "Physics Wallah [chapter]" — no hardcoded IDs needed
+var PW_SEARCH = {
+  physics: {
+    'Units & Dimensions':'Physics+Wallah+Units+Dimensions+JEE',
+    'Kinematics 1D':'Physics+Wallah+Kinematics+1D+JEE',
+    'Kinematics 2D & Projectile':'Physics+Wallah+Kinematics+2D+Projectile+JEE',
+    'Laws of Motion':'Physics+Wallah+Laws+of+Motion+JEE',
+    'Work, Energy & Power':'Physics+Wallah+Work+Energy+Power+JEE',
+    'Circular Motion':'Physics+Wallah+Circular+Motion+JEE',
+    'Rotational Motion':'Physics+Wallah+Rotational+Motion+JEE',
+    'Gravitation':'Physics+Wallah+Gravitation+JEE',
+    'Properties of Matter':'Physics+Wallah+Properties+of+Matter+JEE',
+    'Simple Harmonic Motion':'Physics+Wallah+SHM+JEE',
+    'Wave Motion & Sound':'Physics+Wallah+Waves+Sound+JEE',
+    'Heat & Thermodynamics':'Physics+Wallah+Thermodynamics+JEE',
+    'Kinetic Theory of Gases':'Physics+Wallah+Kinetic+Theory+JEE',
+    'Ray Optics':'Physics+Wallah+Ray+Optics+JEE',
+    'Wave Optics':'Physics+Wallah+Wave+Optics+JEE',
+    'Electrostatics':'Physics+Wallah+Electrostatics+JEE',
+    'Current Electricity':'Physics+Wallah+Current+Electricity+JEE',
+    'Magnetism':'Physics+Wallah+Magnetism+JEE',
+    'Electromagnetic Induction':'Physics+Wallah+EMI+JEE',
+    'Alternating Current':'Physics+Wallah+Alternating+Current+JEE',
+    'EM Waves':'Physics+Wallah+EM+Waves+JEE',
+    'Modern Physics':'Physics+Wallah+Modern+Physics+JEE',
+    'Semiconductor Devices':'Physics+Wallah+Semiconductors+JEE',
+    'Communication Systems':'Physics+Wallah+Communication+JEE'
+  },
+  chemistry: {
+    'Basic Concepts':'Physics+Wallah+Basic+Concepts+Chemistry+JEE',
+    'Atomic Structure':'Physics+Wallah+Atomic+Structure+JEE',
+    'Chemical Bonding':'Physics+Wallah+Chemical+Bonding+JEE',
+    'States of Matter':'Physics+Wallah+States+of+Matter+JEE',
+    'Thermodynamics':'Physics+Wallah+Thermodynamics+Chemistry+JEE',
+    'Equilibrium':'Physics+Wallah+Equilibrium+JEE',
+    'Redox Reactions':'Physics+Wallah+Redox+Reactions+JEE',
+    'Electrochemistry':'Physics+Wallah+Electrochemistry+JEE',
+    'Chemical Kinetics':'Physics+Wallah+Chemical+Kinetics+JEE',
+    'Surface Chemistry':'Physics+Wallah+Surface+Chemistry+JEE',
+    'Periodic Table':'Physics+Wallah+Periodic+Table+JEE',
+    'p-Block Elements':'Physics+Wallah+p+Block+JEE',
+    'd & f Block Elements':'Physics+Wallah+d+f+Block+JEE',
+    'Coordination Compounds':'Physics+Wallah+Coordination+Compounds+JEE',
+    'Hydrogen':'Physics+Wallah+Hydrogen+JEE',
+    's-Block Elements':'Physics+Wallah+s+Block+JEE',
+    'Haloalkanes & Haloarenes':'Physics+Wallah+Haloalkanes+JEE',
+    'Alcohols, Phenols & Ethers':'Physics+Wallah+Alcohols+Phenols+JEE',
+    'Aldehydes & Ketones':'Physics+Wallah+Aldehydes+Ketones+JEE',
+    'Carboxylic Acids':'Physics+Wallah+Carboxylic+Acids+JEE',
+    'Amines':'Physics+Wallah+Amines+JEE',
+    'Biomolecules':'Physics+Wallah+Biomolecules+JEE',
+    'Polymers':'Physics+Wallah+Polymers+JEE',
+    'Chemistry in Everyday Life':'Physics+Wallah+Chemistry+Everyday+Life+JEE',
+    'Environmental Chemistry':'Physics+Wallah+Environmental+Chemistry+JEE',
+    'General Organic Chemistry':'Physics+Wallah+GOC+JEE',
+    'Hydrocarbons':'Physics+Wallah+Hydrocarbons+JEE',
+    'IUPAC Nomenclature':'Physics+Wallah+IUPAC+JEE',
+    'Reaction Mechanisms':'Physics+Wallah+Reaction+Mechanisms+JEE',
+    'Isomerism':'Physics+Wallah+Isomerism+JEE',
+    'Metallurgy':'Physics+Wallah+Metallurgy+JEE',
+    'Solid State':'Physics+Wallah+Solid+State+JEE',
+    'Solutions':'Physics+Wallah+Solutions+JEE'
+  },
+  maths: {
+    'Sets, Relations & Functions':'Physics+Wallah+Sets+Relations+Functions+JEE',
+    'Complex Numbers':'Physics+Wallah+Complex+Numbers+JEE',
+    'Quadratic Equations':'Physics+Wallah+Quadratic+Equations+JEE',
+    'Progressions & Series':'Physics+Wallah+Progressions+Series+JEE',
+    'Binomial Theorem':'Physics+Wallah+Binomial+Theorem+JEE',
+    'Permutations & Combinations':'Physics+Wallah+Permutations+Combinations+JEE',
+    'Matrices':'Physics+Wallah+Matrices+JEE',
+    'Determinants':'Physics+Wallah+Determinants+JEE',
+    'Straight Lines':'Physics+Wallah+Straight+Lines+JEE',
+    'Circles':'Physics+Wallah+Circles+JEE',
+    'Parabola':'Physics+Wallah+Parabola+JEE',
+    'Ellipse':'Physics+Wallah+Ellipse+JEE',
+    'Hyperbola':'Physics+Wallah+Hyperbola+JEE',
+    '3D Geometry':'Physics+Wallah+3D+Geometry+JEE',
+    'Vectors':'Physics+Wallah+Vectors+JEE',
+    'Limits & Continuity':'Physics+Wallah+Limits+Continuity+JEE',
+    'Differentiability':'Physics+Wallah+Differentiability+JEE',
+    'Differentiation':'Physics+Wallah+Differentiation+JEE',
+    'Application of Derivatives':'Physics+Wallah+Application+Derivatives+JEE',
+    'Indefinite Integration':'Physics+Wallah+Indefinite+Integration+JEE',
+    'Definite Integration':'Physics+Wallah+Definite+Integration+JEE',
+    'Area Under Curves':'Physics+Wallah+Area+Curves+JEE',
+    'Differential Equations':'Physics+Wallah+Differential+Equations+JEE',
+    'Probability':'Physics+Wallah+Probability+JEE',
+    'Statistics':'Physics+Wallah+Statistics+JEE',
+    'Trigonometry':'Physics+Wallah+Trigonometry+JEE',
+    'Inverse Trigonometry':'Physics+Wallah+Inverse+Trigonometry+JEE',
+    'Mathematical Reasoning':'Physics+Wallah+Mathematical+Reasoning+JEE',
+    'Linear Programming':'Physics+Wallah+Linear+Programming+JEE',
+    'Height & Distance':'Physics+Wallah+Height+Distance+JEE'
+  }
+};
+
+var _pwCurChapKey = '';  // currently open chapter key
+var _pwCurChapName = '';
+
+// Render lecture chapter list
+function renderLecChapList(){
+  var el=document.getElementById('lecChapList'); if(!el)return;
+  var sub=curLecSub||'physics';
+  var subCols={physics:'#eef2ff',chemistry:'#fff7ed',maths:'#dcfce7'};
+  var subTxt={physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
+  var subEmj={physics:'⚡',chemistry:'🧪',maths:'📐'};
+  var html='';
+  SYL[sub].chapters.forEach(function(ch){
+    var ck=sub+'|'+ch;
+    var hasSaved=!!(lecLinks[ck]);
+    html+='<div class="lec-ch-item">'
+      +'<span class="lec-sub-tag" style="background:'+subCols[sub]+';color:'+subTxt[sub]+';">'+subEmj[sub]+'</span>'
+      +'<div class="lec-ch-name">'+ch+'</div>'
+      +'<button class="lec-watch-btn'+(hasSaved?' saved':'')+'" onclick="openPWModal(''+ck.replace(/'/g,"\'")+'')">'
+      +(hasSaved?'▶ Saved':'🔴 Watch')
+      +'</button>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+
+// Open the PW video modal for a chapter
+function openPWModal(chapKey){
+  _pwCurChapKey=chapKey;
+  var parts=chapKey.split('|'); var sub=parts[0]; var ch=parts.slice(1).join('|');
+  _pwCurChapName=ch;
+  document.getElementById('pwModalTitle').textContent='▶ '+ch;
+  document.getElementById('pwCustomInp').value='';
+  var modal=document.getElementById('pwModal'); modal.classList.add('open');
+  document.body.style.overflow='hidden';
+
+  // If saved link, load it
+  var iframe=document.getElementById('pwIframe');
+  if(lecLinks[chapKey]){
+    iframe.src=buildEmbedURL(lecLinks[chapKey]);
+  } else {
+    iframe.src='';
+  }
+
+  // Render related video search links (open YouTube in new tab)
+  renderPWRelated(sub,ch);
+}
+
+function closePWModal(){
+  var modal=document.getElementById('pwModal'); modal.classList.remove('open');
+  document.body.style.overflow='';
+  // Stop video
+  var iframe=document.getElementById('pwIframe'); if(iframe) iframe.src='';
+}
+
+// Extract YouTube video ID from any YouTube URL format
+function extractYTID(url){
+  url=url.trim();
+  var patterns=[
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_\-]{11})/,
+    /^([A-Za-z0-9_\-]{11})$/  // bare video ID
+  ];
+  for(var i=0;i<patterns.length;i++){
+    var m=url.match(patterns[i]);
+    if(m)return m[1];
+  }
+  return null;
+}
+
+function buildEmbedURL(url){
+  var id=extractYTID(url);
+  if(id) return 'https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0';
+  return url; // fallback
+}
+
+function pwLivePreview(val){
+  // If valid YT url, load in iframe immediately
+  var id=extractYTID(val);
+  var iframe=document.getElementById('pwIframe');
+  if(id) iframe.src='https://www.youtube.com/embed/'+id+'?rel=0';
+}
+
+function pwLoadCustom(){
+  var val=document.getElementById('pwCustomInp').value.trim();
+  if(!val){alert('Pehle YouTube link paste karo!');return;}
+  var id=extractYTID(val);
+  if(!id){alert('Valid YouTube link nahi hai!\nExample: https://youtube.com/watch?v=xxxxx');return;}
+  var iframe=document.getElementById('pwIframe');
+  iframe.src='https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0';
+}
+
+function pwSaveLink(){
+  var val=document.getElementById('pwCustomInp').value.trim();
+  if(!val){
+    // If no new link entered but iframe is playing, save that
+    var src=document.getElementById('pwIframe').src;
+    var id=extractYTID(src);
+    if(id){ lecLinks[_pwCurChapKey]='https://youtu.be/'+id; }
+    else { alert('Koi link nahi hai save karne ke liye!\nPehle YouTube link paste karo.'); return; }
+  } else {
+    var id2=extractYTID(val);
+    if(!id2){alert('Valid YouTube link nahi hai!');return;}
+    lecLinks[_pwCurChapKey]='https://youtu.be/'+id2;
+  }
+  saveLocal();
+  if(!window._isGuest) window.FS.saveLecLinks(lecLinks);
+  renderLecChapList();
+  // Show confirmation in modal
+  var btn=document.querySelector('.pw-save-btn');
+  if(btn){btn.textContent='✅ Saved!';btn.style.background='#16a34a';setTimeout(function(){btn.textContent='💾 Is Chapter ke liye Save Karo';btn.style.background='';},2000);}
+}
+
+function pwOpenYTSearch(){
+  var sub=_pwCurChapKey.split('|')[0];
+  var ch=_pwCurChapName;
+  var query=PW_SEARCH[sub]&&PW_SEARCH[sub][ch]?PW_SEARCH[sub][ch]:'Physics+Wallah+'+encodeURIComponent(ch)+'+JEE';
+  window.open('https://www.youtube.com/results?search_query='+query,'_blank');
+}
+
+function renderPWRelated(sub, ch){
+  var el=document.getElementById('pwRelatedList'); if(!el)return;
+  var query=PW_SEARCH[sub]&&PW_SEARCH[sub][ch]?PW_SEARCH[sub][ch]:'Physics+Wallah+'+encodeURIComponent(ch)+'+JEE';
+  // Show 3 common PW JEE playlists + direct chapter search
+  var items=[
+    {title:'🔴 PW — '+ch+' (YouTube Search)',meta:'Search result khulega YouTube mein',url:'https://www.youtube.com/results?search_query='+query},
+    {title:'📚 PW JEE Main 2026 Playlist',meta:'Full JEE Main batch — PW channel',url:'https://www.youtube.com/@PhysicsWallah/playlists'},
+    {title:'🎯 PW Lakshya JEE 2026',meta:'Lakshya batch — top videos',url:'https://www.youtube.com/results?search_query=Physics+Wallah+Lakshya+JEE+2026+'+encodeURIComponent(ch)},
+    {title:'⚡ PW Arjuna JEE Batch',meta:'Arjuna batch chapter video',url:'https://www.youtube.com/results?search_query=Physics+Wallah+Arjuna+JEE+'+encodeURIComponent(ch)},
+  ];
+  var html='';
+  items.forEach(function(it){
+    html+='<div class="pw-vid-item" onclick="window.open(''+it.url+'','_blank')">'
+      +'<div class="pw-vid-info"><div class="pw-vid-title">'+it.title+'</div><div class="pw-vid-meta">'+it.meta+'</div></div>'
+      +'<div class="pw-vid-play">↗</div>'
+      +'</div>';
+  });
+  // If saved, show load option
+  if(lecLinks[_pwCurChapKey]){
+    html='<div style="background:rgba(79,70,229,.2);border:1px solid #4f46e5;border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;">'
+      +'<span style="font-size:18px;">✅</span>'
+      +'<div><div style="color:#a5b4fc;font-size:12px;font-weight:700;">Saved Video</div>'
+      +'<div style="color:rgba(255,255,255,.6);font-size:11px;">'+lecLinks[_pwCurChapKey]+'</div></div>'
+      +'</div>'+html;
+  }
+  el.innerHTML=html;
 }
 
 // ═══════════════════════════════════════
