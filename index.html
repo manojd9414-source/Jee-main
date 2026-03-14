@@ -2596,7 +2596,7 @@ function renderLecChapList(){
     html+='<div class="lec-ch-item">'
       +'<span class="lec-sub-tag" style="background:'+subCols[sub]+';color:'+subTxt[sub]+';">'+subEmj[sub]+'</span>'
       +'<div class="lec-ch-name">'+ch+'</div>'
-      +'<button class="lec-watch-btn'+(hasSaved?' saved':'')+'" onclick="openPWModal(''+ck.replace(/'/g,"\'")+'')">'
+      +'<button ... onclick="openPWModal(this.dataset.ck)" data-ck="'+ck+'">'
       +(hasSaved?'▶ Saved':'🔴 Watch')
       +'</button>'
       +'</div>';
