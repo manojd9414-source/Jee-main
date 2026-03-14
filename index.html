@@ -846,6 +846,15 @@ body.deep-work .dw-overlay{display:flex;}
       <div id="subjectStatsGrid"></div>
     </div>
 
+    <!-- 📅 DAY-WISE ARENA BREAKDOWN CARD -->
+    <div class="card" id="dailyArenaCard">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="card-title" style="margin-bottom:0;">📅 Day-wise Questions</div>
+        <span style="font-size:11px;color:var(--text2);font-weight:600;">Last 7 days</span>
+      </div>
+      <div id="dailyArenaGrid"></div>
+    </div>
+
     <!-- ⚔️ ARENA CHAPTER STATS CARD -->
     <div class="card">
       <div class="acs-header">
@@ -1061,7 +1070,9 @@ window.FS = {
   },
   // PW Lecture Links — saved per user per chapter key
   async saveLecLinks(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','lecLinks'),{links:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
-  async loadLecLinks(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','lecLinks')); if(s.exists()&&s.data().links)return JSON.parse(s.data().links); return{};}catch(e){return{};} }
+  async loadLecLinks(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','lecLinks')); if(s.exists()&&s.data().links)return JSON.parse(s.data().links); return{};}catch(e){return{};} },
+  async saveDailyArena(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','dailyArenaStats'),{stats:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){console.error('DAS save err',e);} },
+  async loadDailyArena(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','dailyArenaStats')); if(s.exists()&&s.data().stats)return JSON.parse(s.data().stats); return{};}catch(e){return{};} }
 };
 
 onAuthStateChanged(auth, async function(user){
@@ -1105,6 +1116,7 @@ var SCOL = {physics:'#4f46e5',chemistry:'#ea580c',maths:'#16a34a'};
 // ═══════════════════════════════════════
 var mocks=[], done={}, studyData={}, dailyGoalHrs=8;
 var arenaChapterStats = {};
+var dailyArenaStats = {}; // {date:{physics:{att,corr,wrong},chemistry:{...},maths:{...},total:{att,corr,wrong}}}
 var checklist = [], errorBook = [], spacedRep = {}, lecLinks = {};
 var acsFilter = 'all', hmFilter = 'all';
 var curSub='physics', studySec=0, studyOn=false, studyIv=null;
@@ -1175,7 +1187,7 @@ function showNav(name,btn){
   btn.classList.add('on');
   if(name==='syl'){renderSylChapList();updProg();}
   if(name==='timer'){renderStudyUI();renderPlanChapList();}
-  if(name==='stats'){renderStats();renderArenaChapterStats();renderHeatmap();renderErrorBook();renderBadges();refreshLeaderboard();}
+  if(name==='stats'){renderStats();renderArenaChapterStats();renderHeatmap();renderErrorBook();renderBadges();refreshLeaderboard();renderDailyArenaStats();}
   if(name==='home'){renderChecklist();renderBadges();renderSpacedRepReminders();}
 }
 
@@ -1184,7 +1196,7 @@ function showNav(name,btn){
 // ═══════════════════════════════════════
 window.initApp = async function(){
   window.showStatus('loading');
-  done={}; mocks=[]; studyData={}; arenaChapterStats={}; checklist=[]; errorBook=[]; spacedRep={}; lecLinks={};
+  done={}; mocks=[]; studyData={}; arenaChapterStats={}; dailyArenaStats={}; checklist=[]; errorBook=[]; spacedRep={}; lecLinks={};
 
   if(window._isGuest){
     try{
@@ -1199,6 +1211,7 @@ window.initApp = async function(){
         errorBook=obj.errorBook||[];
         spacedRep=obj.spacedRep||{};
         lecLinks=obj.lecLinks||{};
+        dailyArenaStats=obj.dailyArenaStats||{};
       }
     }catch(e){}
     dailyGoalHrs=8;
@@ -1222,6 +1235,7 @@ window.initApp = async function(){
   try{ errorBook=await window.FS.loadMistakes(); }catch(e){}
   try{ spacedRep=await window.FS.loadSpacedRep(); }catch(e){}
   try{ lecLinks=await window.FS.loadLecLinks(); }catch(e){}
+  try{ dailyArenaStats=await window.FS.loadDailyArena(); }catch(e){}
   var gi=document.getElementById('goalInp'); if(gi) gi.value=dailyGoalHrs;
   var mi=document.getElementById('mockDate'); if(mi) mi.value=today();
   window.showStatus('synced');
@@ -1243,7 +1257,7 @@ function saveLocal(){
   try{
     localStorage.setItem('jee_'+uid, JSON.stringify({
       mocks:mocks, done:done, studyData:studyData,
-      arenaChapterStats:arenaChapterStats,
+      arenaChapterStats:arenaChapterStats, dailyArenaStats:dailyArenaStats,
       checklist:checklist, errorBook:errorBook, spacedRep:spacedRep, lecLinks:lecLinks
     }));
   }catch(e){}
@@ -1674,7 +1688,11 @@ function showResult(){
   prepMistakeLog(qs, uAns, corrAns);
 
   var d=new Date();
-  saveMockData({id:Date.now(),date:d.toISOString().split('T')[0],score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
+  var dateKey = d.toISOString().split('T')[0];
+  saveMockData({id:Date.now(),date:dateKey,score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
+
+  // ── Update daily subject-wise stats ──
+  updateDailyArenaStats(dateKey, chapData);
 
   // ── Save chapter stats ──
   updateArenaChapterStats(chapData);
@@ -1854,6 +1872,109 @@ function mockSeeMore(){
 function mockSeeLess(){
   _mockShowCount = 5;
   renderMockList();
+}
+
+
+
+
+// ═══════════════════════════════════════
+// 📅 DAILY ARENA STATS
+// ═══════════════════════════════════════
+function updateDailyArenaStats(dateKey, chapData){
+  if(!dailyArenaStats[dateKey]){
+    dailyArenaStats[dateKey]={
+      physics:{att:0,corr:0,wrong:0,skip:0},
+      chemistry:{att:0,corr:0,wrong:0,skip:0},
+      maths:{att:0,corr:0,wrong:0,skip:0},
+      total:{att:0,corr:0,wrong:0,skip:0}
+    };
+  }
+  var day=dailyArenaStats[dateKey];
+  Object.keys(chapData).forEach(function(ck){
+    var c=chapData[ck], sub=c.sub;
+    if(!day[sub]) return;
+    day[sub].att  += c.attempted||0;
+    day[sub].corr += c.corr||0;
+    day[sub].wrong+= c.wrong||0;
+    day[sub].skip += c.skip||0;
+    day.total.att  += c.attempted||0;
+    day.total.corr += c.corr||0;
+    day.total.wrong+= c.wrong||0;
+    day.total.skip += c.skip||0;
+  });
+  saveLocal();
+  if(window.FS && window._uid) window.FS.saveDailyArena(dailyArenaStats);
+  renderDailyArenaStats();
+}
+
+function renderDailyArenaStats(){
+  var el=document.getElementById('dailyArenaGrid'); if(!el) return;
+  var allDates=Object.keys(dailyArenaStats).sort().reverse().slice(0,30);
+  if(!allDates.length){
+    el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:16px 0;line-height:1.8;">Arena mein questions solve karo\u2014daily breakdown yahan dikhega!</div>';
+    return;
+  }
+  var dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var subs=[
+    {key:'physics',  label:'Physics',   col:'var(--blue)',   bg:'#eef2ff', emoji:'\u26a1'},
+    {key:'chemistry',label:'Chemistry', col:'var(--orange)', bg:'#fff7ed', emoji:'\u{1f9ea}'},
+    {key:'maths',    label:'Maths',     col:'var(--green)',  bg:'#dcfce7', emoji:'\u{1f4d0}'}
+  ];
+  var html='';
+  allDates.forEach(function(dk){
+    var day=dailyArenaStats[dk];
+    var t=day.total||{att:0,corr:0,wrong:0,skip:0};
+    if(!t.att) return;
+    var acc=t.att>0?Math.round(t.corr/t.att*100):0;
+    var accCol=acc>=75?'var(--green)':acc>=50?'var(--orange)':'var(--red)';
+    var dateObj=new Date(dk+'T00:00:00');
+    var isToday=dk===today();
+    var dayLabel=isToday?'Today \uD83D\uDD25':dayNames[dateObj.getDay()]+', '+dateObj.getDate()+' '+months[dateObj.getMonth()];
+
+    html+='<div style="border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;">';
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:10px 13px;background:'
+      +(isToday?'var(--bluelt)':'var(--bg)')+';border-bottom:1px solid var(--border);">'
+      +'<div style="flex:1;font-size:13px;font-weight:800;color:'+(isToday?'var(--blue)':'var(--text)')+';">'+dayLabel+'</div>'
+      +'<div style="display:flex;gap:8px;align-items:baseline;">'
+      +'<div style="text-align:center;min-width:36px;">'
+        +'<div style="font-size:20px;font-weight:900;color:var(--blue);line-height:1;">'+t.att+'</div>'
+        +'<div style="font-size:9px;font-weight:700;color:var(--text3);">TOTAL</div>'
+      +'</div>'
+      +'<div style="text-align:center;min-width:30px;">'
+        +'<div style="font-size:17px;font-weight:900;color:var(--green);line-height:1;">'+t.corr+'</div>'
+        +'<div style="font-size:9px;font-weight:700;color:var(--text3);">\u2713</div>'
+      +'</div>'
+      +'<div style="text-align:center;min-width:30px;">'
+        +'<div style="font-size:17px;font-weight:900;color:var(--red);line-height:1;">'+t.wrong+'</div>'
+        +'<div style="font-size:9px;font-weight:700;color:var(--text3);">\u2717</div>'
+      +'</div>'
+      +'<div style="text-align:center;min-width:38px;">'
+        +'<div style="font-size:17px;font-weight:900;color:'+accCol+';line-height:1;">'+acc+'%</div>'
+        +'<div style="font-size:9px;font-weight:700;color:var(--text3);">ACC</div>'
+      +'</div>'
+      +'</div></div>';
+
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);">';
+    subs.forEach(function(s){
+      var sd=day[s.key]||{att:0,corr:0,wrong:0};
+      var sacc=sd.att>0?Math.round((sd.corr||0)/sd.att*100):0;
+      var saccCol=sacc>=75?s.col:sacc>=50?'var(--orange)':'var(--red)';
+      html+='<div style="background:'+s.bg+';padding:8px 6px;text-align:center;">'
+        +'<div style="font-size:11px;font-weight:800;color:'+s.col+';margin-bottom:3px;">'+s.emoji+' '+s.label+'</div>'
+        +(sd.att>0
+          ?'<div style="font-size:19px;font-weight:900;color:'+s.col+';line-height:1;">'+sd.att+'</div>'
+           +'<div style="display:flex;justify-content:center;gap:5px;margin-top:3px;">'
+           +'<span style="font-size:9px;font-weight:700;color:var(--green);">\u2713'+(sd.corr||0)+'</span>'
+           +'<span style="font-size:9px;font-weight:700;color:var(--red);">\u00d7'+(sd.wrong||0)+'</span>'
+           +'<span style="font-size:9px;font-weight:700;color:'+saccCol+';">'+sacc+'%</span>'
+           +'</div>'
+          :'<div style="font-size:15px;font-weight:700;color:var(--text3);">\u2014</div>')
+        +'</div>';
+    });
+    html+='</div></div>';
+  });
+  el.innerHTML=html;
 }
 
 
