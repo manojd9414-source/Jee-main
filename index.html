@@ -840,6 +840,12 @@ body.deep-work .dw-overlay{display:flex;}
       <div class="motiv" id="motivBar"></div>
     </div>
 
+    <!-- 📐 SUBJECT-WISE QUESTION STATS CARD -->
+    <div class="card" id="subjectStatsCard">
+      <div class="card-title">📐 Subject-wise Total Questions</div>
+      <div id="subjectStatsGrid"></div>
+    </div>
+
     <!-- ⚔️ ARENA CHAPTER STATS CARD -->
     <div class="card">
       <div class="acs-header">
@@ -1814,6 +1820,106 @@ function renderStats(){
   mb.innerHTML=(streak>=3?'\uD83D\uDD25':'\u2B50')+' '+(streak>=7?streak+' din ka streak! Machine ban gaya!':streak>=3?streak+' din consistent!':mocks.length>0?mocks.length+' mocks done! Keep going!':'Pehla mock lagao aaj!')+' \u2022 '+mocks.length+' total mocks';
   mb.classList.add('on');
   updateStreakBadge();
+  renderSubjectStats();
+}
+
+// ═══════════════════════════════════════
+// 📐 SUBJECT-WISE STATS
+// ═══════════════════════════════════════
+function renderSubjectStats(){
+  var el=document.getElementById('subjectStatsGrid'); if(!el)return;
+
+  // Aggregate from arenaChapterStats (all-time, not period-filtered)
+  var sub={physics:{att:0,corr:0,wrong:0,skip:0},chemistry:{att:0,corr:0,wrong:0,skip:0},maths:{att:0,corr:0,wrong:0,skip:0}};
+  Object.keys(arenaChapterStats).forEach(function(ck){
+    var s=arenaChapterStats[ck];
+    if(!sub[s.sub])return;
+    sub[s.sub].att  += s.attempted||0;
+    sub[s.sub].corr += s.corr||0;
+    sub[s.sub].wrong+= s.wrong||0;
+    sub[s.sub].skip += s.skip||0;
+  });
+
+  var total=sub.physics.att+sub.chemistry.att+sub.maths.att;
+
+  // If no arena data yet, show empty state
+  if(!total){
+    el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:16px 0;line-height:1.8;">⚔️ Arena mein questions solve karo<br>yahan subject-wise breakdown dikhega!</div>';
+    return;
+  }
+
+  var subs=[
+    {key:'physics', label:'Physics', emoji:'⚡', bg:'var(--bluelt)', border:'#c7d2fe', col:'var(--blue)'},
+    {key:'chemistry', label:'Chemistry', emoji:'🧪', bg:'var(--orangelt)', border:'#fed7aa', col:'var(--orange)'},
+    {key:'maths', label:'Maths', emoji:'📐', bg:'var(--greenlt)', border:'#bbf7d0', col:'var(--green)'}
+  ];
+
+  // Overall bar
+  var overallHtml='<div style="background:var(--bg);border-radius:10px;padding:12px 14px;margin-bottom:12px;border:1px solid var(--border);">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+    +'<span style="font-size:12px;font-weight:700;color:var(--text2);">TOTAL QUESTIONS</span>'
+    +'<span style="font-size:22px;font-weight:900;color:var(--blue);">'+total+'</span>'
+    +'</div>'
+    +'<div style="display:flex;height:10px;border-radius:99px;overflow:hidden;gap:2px;">';
+
+  subs.forEach(function(s){
+    var pct=total>0?Math.round(sub[s.key].att/total*100):0;
+    if(pct>0) overallHtml+='<div style="width:'+pct+'%;background:'+s.col+';border-radius:99px;" title="'+s.label+': '+pct+'%"></div>';
+  });
+  overallHtml+='</div>'
+    +'<div style="display:flex;gap:12px;margin-top:6px;">';
+  subs.forEach(function(s){
+    var pct=total>0?Math.round(sub[s.key].att/total*100):0;
+    overallHtml+='<span style="font-size:10px;font-weight:700;color:'+s.col+';">'+s.emoji+' '+pct+'%</span>';
+  });
+  overallHtml+='</div></div>';
+
+  // Per-subject cards
+  var cardsHtml='<div style="display:flex;flex-direction:column;gap:8px;">';
+  subs.forEach(function(s){
+    var d=sub[s.key];
+    var acc=d.att>0?Math.round(d.corr/d.att*100):0;
+    var accCol=acc>=75?'var(--green)':acc>=50?'var(--orange)':'var(--red)';
+    var barW=total>0?Math.round(d.att/total*100):0;
+    cardsHtml+='<div style="background:'+s.bg+';border:1.5px solid '+s.border+';border-radius:12px;padding:12px 14px;">'
+      // Header row
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'
+      +'<span style="font-size:20px;">'+s.emoji+'</span>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:13px;font-weight:800;color:'+s.col+';">'+s.label+'</div>'
+      +'<div style="height:5px;background:rgba(0,0,0,.08);border-radius:99px;margin-top:4px;overflow:hidden;">'
+      +'<div style="width:'+barW+'%;height:100%;background:'+s.col+';border-radius:99px;transition:width .5s;"></div>'
+      +'</div>'
+      +'</div>'
+      +'<div style="text-align:right;">'
+      +'<div style="font-size:22px;font-weight:900;color:'+s.col+';">'+d.att+'</div>'
+      +'<div style="font-size:9px;font-weight:700;color:var(--text3);">ATTEMPTED</div>'
+      +'</div>'
+      +'</div>'
+      // Stats row
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;">'
+      +'<div style="background:rgba(255,255,255,.7);border-radius:8px;padding:7px;text-align:center;">'
+      +'<div style="font-size:16px;font-weight:900;color:var(--green);">'+d.corr+'</div>'
+      +'<div style="font-size:9px;font-weight:700;color:var(--text3);">CORRECT</div>'
+      +'</div>'
+      +'<div style="background:rgba(255,255,255,.7);border-radius:8px;padding:7px;text-align:center;">'
+      +'<div style="font-size:16px;font-weight:900;color:var(--red);">'+d.wrong+'</div>'
+      +'<div style="font-size:9px;font-weight:700;color:var(--text3);">WRONG</div>'
+      +'</div>'
+      +'<div style="background:rgba(255,255,255,.7);border-radius:8px;padding:7px;text-align:center;">'
+      +'<div style="font-size:16px;font-weight:900;color:var(--text2);">'+d.skip+'</div>'
+      +'<div style="font-size:9px;font-weight:700;color:var(--text3);">SKIPPED</div>'
+      +'</div>'
+      +'<div style="background:rgba(255,255,255,.7);border-radius:8px;padding:7px;text-align:center;">'
+      +'<div style="font-size:16px;font-weight:900;color:'+accCol+';">'+acc+'%</div>'
+      +'<div style="font-size:9px;font-weight:700;color:var(--text3);">ACCURACY</div>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
+  });
+  cardsHtml+='</div>';
+
+  el.innerHTML=overallHtml+cardsHtml;
 }
 
 // ═══════════════════════════════════════
@@ -1838,6 +1944,7 @@ function updateArenaChapterStats(chapData){
   if(!window._isGuest) window.FS.saveArenaChapterStats(arenaChapterStats);
   renderArenaChapterStats();
   renderHeatmap();
+  renderSubjectStats();
 }
 
 // Render the stats card in the Stats section
@@ -1904,6 +2011,7 @@ function clearArenaChapterStats(){
   if(!window._isGuest) window.FS.clearArenaChapterStatsFS();
   renderArenaChapterStats();
   renderHeatmap();
+  renderSubjectStats();
 }
 
 // ═══════════════════════════════════════
