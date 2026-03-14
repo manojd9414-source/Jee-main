@@ -396,6 +396,20 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .sr-due.soon{background:#fef9c3;color:#854d0e;}
 .sr-due.ok{background:var(--greenlt);color:var(--green);}
 
+/* ── DOUBLE CONFIRM MODAL ── */
+.dconfirm-overlay{display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px;}
+.dconfirm-overlay.open{display:flex;}
+.dconfirm-box{background:var(--card);border-radius:20px;padding:28px 22px;max-width:320px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center;}
+.dconfirm-icon{font-size:44px;margin-bottom:10px;}
+.dconfirm-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:6px;}
+.dconfirm-msg{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:22px;}
+.dconfirm-step{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--text3);margin-bottom:16px;text-transform:uppercase;}
+.dconfirm-btns{display:flex;gap:10px;}
+.dconfirm-cancel{flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+.dconfirm-ok{flex:1;padding:12px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+.dconfirm-ok.step2{background:#7f1d1d;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+
 /* ── DEEP WORK MODE ── */
 body.deep-work #topbar{opacity:.3;pointer-events:none;}
 body.deep-work .nav-btn:not(.on){opacity:.2;}
@@ -1005,6 +1019,20 @@ body.deep-work .dw-overlay{display:flex;}
     <div style="display:flex;gap:10px;">
       <button onclick="closeLogoutModal()" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Cancel</button>
       <button onclick="doLogout()" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOUBLE CONFIRM MODAL -->
+<div class="dconfirm-overlay" id="dconfirmOverlay">
+  <div class="dconfirm-box">
+    <div class="dconfirm-icon" id="dconfirmIcon">🗑️</div>
+    <div class="dconfirm-step" id="dconfirmStep">STEP 1 OF 2</div>
+    <div class="dconfirm-title" id="dconfirmTitle">Reset karna hai?</div>
+    <div class="dconfirm-msg" id="dconfirmMsg">Yeh action undo nahi hoga!</div>
+    <div class="dconfirm-btns">
+      <button class="dconfirm-cancel" onclick="dconfirmCancel()">Cancel</button>
+      <button class="dconfirm-ok" id="dconfirmOkBtn" onclick="dconfirmNext()">Haan, Reset Karo</button>
     </div>
   </div>
 </div>
@@ -2209,13 +2237,23 @@ function setACSFilter(f, btn){
 
 // Reset all arena chapter stats
 function clearArenaChapterStats(){
-  if(!confirm('Arena chapter stats reset kar doon?\nYeh undo nahi hoga!')) return;
-  arenaChapterStats = {};
-  saveLocal();
-  if(window.FS && window._uid) window.FS.clearArenaChapterStatsFS();
-  renderArenaChapterStats();
-  renderHeatmap();
-  renderSubjectStats();
+  dconfirmShow({
+    icon:'🗑️',
+    title:'Arena Stats Reset?',
+    msg:'Saare chapter-wise stats permanently delete ho jaayenge.',
+    title2:'Pakka reset karna hai?',
+    msg2:'Yeh bilkul undo nahi hoga — saara data chala jaayega!',
+    okText:'Haan, Delete Karo',
+    okText2:'CONFIRM — Haan Pakka Delete Karo',
+    onConfirm: function(){
+      arenaChapterStats = {};
+      saveLocal();
+      if(window.FS && window._uid) window.FS.clearArenaChapterStatsFS();
+      renderArenaChapterStats();
+      renderHeatmap();
+      renderSubjectStats();
+    }
+  });
 }
 
 // ═══════════════════════════════════════
@@ -2276,7 +2314,18 @@ function chatSend(){
   .catch(function(err){var tb3=document.getElementById('typBub');if(tb3)tb3.remove();addBub('b','\u274C Error: '+err.message);})
   .finally(function(){aiLoad=false;btn.disabled=false;btn.textContent='Send \u25B6';});
 }
-function clearChat(){aiHist[aiCur]=[SYS];renderChat();}
+function clearChat(){
+  dconfirmShow({
+    icon:'🤖',
+    title:'Chat Clear?',
+    msg:'"'+['Gemini','Grok','ChatGPT'][['gemini','grok','chatgpt'].indexOf(aiCur)]+'" ki poori conversation delete ho jaayegi.',
+    title2:'Pakka clear karna hai?',
+    msg2:'Chat history wapas nahi aayegi — bilkul undo nahi hoga!',
+    okText:'Haan, Clear Karo',
+    okText2:'CONFIRM — Haan Chat Delete Karo',
+    onConfirm: function(){aiHist[aiCur]=[SYS];renderChat();}
+  });
+}
 function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend();}}
 function chatResize(el){el.style.height='42px';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 renderChat();
@@ -2441,10 +2490,22 @@ function toggleChkItem(i){
   renderChecklist(); renderBadges();
 }
 function deleteChkItem(i){
-  checklist.splice(i,1);
-  saveLocal();
-  if(!window._isGuest) window.FS.saveChecklist(checklist);
-  renderChecklist();
+  var taskName = checklist[i] ? checklist[i].text : 'task';
+  dconfirmShow({
+    icon:'✅',
+    title:'Task Delete?',
+    msg:'"'+taskName+'" permanently delete ho jaayega.',
+    title2:'Pakka delete karna hai?',
+    msg2:'Yeh task list se hamesha ke liye hata diya jaayega!',
+    okText:'Haan, Delete Karo',
+    okText2:'CONFIRM — Haan Delete Karo',
+    onConfirm: function(){
+      checklist.splice(i,1);
+      saveLocal();
+      if(!window._isGuest) window.FS.saveChecklist(checklist);
+      renderChecklist();
+    }
+  });
 }
 
 // ═══════════════════════════════════════
@@ -2638,11 +2699,21 @@ function renderErrorBook(){
   el.innerHTML=html;
 }
 function clearErrorBook(){
-  if(!confirm('Saari mistakes clear kar doon?')) return;
-  errorBook=[];
-  saveLocal();
-  if(!window._isGuest) window.FS.saveMistakes(errorBook);
-  renderErrorBook();
+  dconfirmShow({
+    icon:'📒',
+    title:'Error Book Clear?',
+    msg:'Saari saved mistakes permanently delete ho jaayengi.',
+    title2:'Pakka clear karna hai?',
+    msg2:'Error book bilkul khali ho jaayegi — undo nahi hoga!',
+    okText:'Haan, Clear Karo',
+    okText2:'CONFIRM — Haan Saari Mistakes Delete Karo',
+    onConfirm: function(){
+      errorBook=[];
+      saveLocal();
+      if(!window._isGuest) window.FS.saveMistakes(errorBook);
+      renderErrorBook();
+    }
+  });
 }
 
 // ═══════════════════════════════════════
@@ -3042,6 +3113,44 @@ function renderPWRelated(sub, ch){
 }
 
 // ═══════════════════════════════════════
+// DOUBLE CONFIRM ENGINE
+var _dconfirmCb = null;
+var _dconfirmStep = 1;
+var _dconfirmConfig = {};
+
+function dconfirmShow(cfg){
+  _dconfirmCb = cfg.onConfirm;
+  _dconfirmConfig = cfg;
+  _dconfirmStep = 1;
+  _renderDconfirm();
+  document.getElementById('dconfirmOverlay').classList.add('open');
+}
+function _renderDconfirm(){
+  var cfg = _dconfirmConfig;
+  document.getElementById('dconfirmIcon').textContent = cfg.icon || '🗑️';
+  document.getElementById('dconfirmStep').textContent = 'STEP ' + _dconfirmStep + ' OF 2';
+  var isStep2 = _dconfirmStep === 2;
+  document.getElementById('dconfirmTitle').textContent = isStep2 ? (cfg.title2||cfg.title) : cfg.title;
+  document.getElementById('dconfirmMsg').textContent = isStep2 ? (cfg.msg2||cfg.msg) : cfg.msg;
+  var btn = document.getElementById('dconfirmOkBtn');
+  btn.textContent = isStep2 ? (cfg.okText2||cfg.okText) : cfg.okText;
+  btn.className = 'dconfirm-ok' + (isStep2 ? ' step2' : '');
+}
+function dconfirmNext(){
+  if(_dconfirmStep === 1){
+    _dconfirmStep = 2;
+    _renderDconfirm();
+  } else {
+    dconfirmCancel();
+    if(_dconfirmCb) _dconfirmCb();
+  }
+}
+function dconfirmCancel(){
+  document.getElementById('dconfirmOverlay').classList.remove('open');
+  _dconfirmStep = 1;
+  _dconfirmCb = null;
+}
+
 // DARK MODE
 var _darkMode=false;
 function initDarkMode(){try{var s=localStorage.getItem('jee_dark_mode');if(s==='1'){_darkMode=true;document.body.classList.add('dark');var b=document.getElementById('dmToggleBtn');if(b)b.textContent='\u2600\ufe0f';}}catch(e){}}
