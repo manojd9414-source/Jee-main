@@ -222,7 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .bm{background:var(--bluelt);color:var(--blue);}
 .bn{background:var(--orangelt);color:var(--orange);}
 .opts{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
-.opt{width:60px;height:60px;border-radius:12px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;-webkit-appearance:none;position:relative;z-index:10;}
+.opt{width:42px;height:40px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;-webkit-appearance:none;}
 .opt.sel{border-color:var(--blue);color:#fff;background:var(--blue);}
 .opt.csel{border-color:var(--green);color:#fff;background:var(--green);}
 .or-div{display:flex;align-items:center;gap:6px;margin:5px 0;}
@@ -840,7 +840,17 @@ body.deep-work .dw-overlay{display:flex;}
         <div id="mistakeLogItems"></div>
         <button onclick="saveMistakeLog()" class="gen-btn" style="width:100%;margin-top:8px;background:var(--red);">💾 Mistakes Firestore mein Save Karo</button>
       </div>
-      <button onclick="showNav('stats',document.querySelectorAll('.nav-btn')[4])" style="margin-top:12px;width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">📊 Stats mein dekho →</button>
+            <!-- FINAL SAVE SECTION -->
+      <div id="saveResultSection" style="margin-top:16px;">
+        <button id="saveResultBtn" onclick="finalSaveResult()" style="width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 14px rgba(22,163,74,.35);">💾 Save Result &amp; Stats mein Add Karo</button>
+        <div style="text-align:center;margin-top:7px;font-size:11px;color:var(--text3);">Yeh dabane ke baad hi data stats mein save hoga</div>
+        <button onclick="discardResult()" style="width:100%;padding:9px;margin-top:7px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--text3);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✕ Discard — Save mat karo</button>
+      </div>
+      <div id="saveResultDone" style="display:none;margin-top:16px;background:var(--greenlt);border:1.5px solid #86efac;border-radius:12px;padding:14px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:6px;">✅</div>
+        <div style="font-size:14px;font-weight:800;color:var(--green);">Saved! Stats mein add ho gaya</div>
+        <button onclick="showNav('stats',document.querySelectorAll('.nav-btn')[4])" style="margin-top:10px;padding:8px 20px;border-radius:8px;border:none;background:var(--green);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">📊 Stats dekho →</button>
+      </div>
       <!-- RANK PREDICTOR -->
       <div id="rankPredictor" style="display:none;margin-top:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:14px;padding:18px 16px;color:#fff;text-align:center;">
         <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;opacity:.75;margin-bottom:4px;">🎯 JEE RANK PREDICTOR</div>
@@ -1587,46 +1597,14 @@ var tSec=0,tOn=false,tIv=null;
 function togTimer(){
   tOn=!tOn;
   var b=document.getElementById('tBtn');
-  if(tOn){
-    b.textContent='PAUSE';b.style.color='var(--red)';b.style.borderColor='var(--red)';
-    tIv=setInterval(function(){
-      tSec++;
-      showT();
-      // Auto-submit when time is up
-      var cTimeEl=document.getElementById('cTime');
-      var limitSec=(cTimeEl?parseInt(cTimeEl.value)||30:30)*60;
-      if(tSec>=limitSec){
-        clearInterval(tIv); tOn=false;
-        var btn=document.getElementById('tBtn');
-        if(btn){btn.textContent='START';btn.style.color='var(--green)';btn.style.borderColor='var(--green)';}
-        if(qs.length>0){
-          // Flash warning then auto-submit
-          var disp=document.getElementById('tDisp');
-          if(disp){disp.style.color='#dc2626';disp.textContent='TIME UP!';}
-          setTimeout(function(){
-            if(document.getElementById('step2')&&document.getElementById('step2').style.display==='none'){
-              submitAns();
-            }
-          },800);
-        }
-      }
-    },1000);
-  }
+  if(tOn){b.textContent='PAUSE';b.style.color='var(--red)';b.style.borderColor='var(--red)';tIv=setInterval(function(){tSec++;showT();},1000);}
   else{b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';clearInterval(tIv);saveTimerState();}
 }
 function rstTimer(){
   tOn=false;tSec=0;clearInterval(tIv);showT();saveTimerState();
   var b=document.getElementById('tBtn');b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';
 }
-function showT(){
-  var el=document.getElementById('tDisp'); if(!el)return;
-  var cTimeEl=document.getElementById('cTime');
-  var limitSec=(cTimeEl?parseInt(cTimeEl.value)||30:30)*60;
-  var remaining=Math.max(0, limitSec-tSec);
-  el.textContent=p2(Math.floor(remaining/60))+':'+p2(remaining%60);
-  // Turn red when under 60 seconds
-  el.style.color=remaining<=60?'#dc2626':remaining<=180?'#ea580c':'var(--blue)';
-}
+function showT(){var el=document.getElementById('tDisp');if(el)el.textContent=p2(Math.floor(tSec/60))+':'+p2(tSec%60);}
 
 // ═══════════════════════════════════════
 // Q SELECTION HELPERS
@@ -1703,8 +1681,9 @@ function renderQ(){
       var btn=document.createElement('button');
       btn.type='button'; btn.className='opt';
       btn.id='u'+q.id+letter; btn.textContent=letter;
-      btn.setAttribute('onclick','uMCQ('+q.id+',"'+letter+'")');
-      btn.setAttribute('ontouchstart','event.preventDefault();uMCQ('+q.id+',"'+letter+'")');
+      (function(qid,opt){
+        btn.addEventListener('click',function(e){ e.stopPropagation(); uMCQ(qid,opt); });
+      })(q.id,letter);
       optsDiv.appendChild(btn);
     });
     var orDiv=document.createElement('div'); orDiv.className='or-div';
@@ -1772,8 +1751,9 @@ function submitAns(){
       var btn=document.createElement('button');
       btn.type='button'; btn.className='opt';
       btn.id='c'+q.id+letter; btn.textContent=letter;
-      btn.setAttribute('onclick','cMCQ('+q.id+',"'+letter+'")');
-      btn.setAttribute('ontouchstart','event.preventDefault();cMCQ('+q.id+',"'+letter+'")');
+      (function(qid,opt){
+        btn.addEventListener('click',function(e){ e.stopPropagation(); cMCQ(qid,opt); });
+      })(q.id,letter);
       optsDiv.appendChild(btn);
     });
     var orDiv=document.createElement('div'); orDiv.className='or-div';
@@ -1806,15 +1786,14 @@ function cNum(id,v){
 // ═══════════════════════════════════════
 function showResult(){
   var corr=0,wrong=0,skip=0,score=0,html=[];
-  var chapData = {}; // chapter-wise tracking for this session
+  var chapData={};
 
   qs.forEach(function(q){
     var ua=uAns[q.id],ca=corrAns[q.id];
-    var status='sk',uaL='Skipped',caL=ca?(ca.t==='MCQ'?'Opt '+ca.v:ca.v):'—';
+    var status='sk',uaL='Skipped',caL=ca?(ca.t==='MCQ'?'Opt '+ca.v:ca.v):'\u2014';
 
-    // ── Track chapter attempts ──
-    var ck = q.sk+'|'+q.ch;
-    if(!chapData[ck]) chapData[ck]={sub:q.sk, ch:q.ch, attempted:0, corr:0, wrong:0, skip:0};
+    var ck=q.sk+'|'+q.ch;
+    if(!chapData[ck]) chapData[ck]={sub:q.sk,ch:q.ch,attempted:0,corr:0,wrong:0,skip:0};
     chapData[ck].attempted++;
 
     if(!ua||!ca){skip++;if(ua)uaL=ua.t==='MCQ'?'Opt '+ua.v:ua.v;}
@@ -1823,7 +1802,6 @@ function showResult(){
       if(ca.t==='MCQ'){if(ua.t==='MCQ'&&ua.v===ca.v){corr++;score+=4;status='ok';}else{wrong++;score-=1;status='no';}}
       else{var uv=parseFloat(ua.v),cv=parseFloat(ca.v);if(!isNaN(uv)&&!isNaN(cv)&&Math.abs(uv-cv)<=0.01){corr++;score+=4;status='ok';}else{wrong++;status='no';}}
     }
-    // ── Track per-chapter result ──
     if(status==='ok') chapData[ck].corr++;
     else if(status==='no') chapData[ck].wrong++;
     else chapData[ck].skip++;
@@ -1837,19 +1815,22 @@ function showResult(){
   document.getElementById('rSkip').textContent=skip;
   document.getElementById('rAcc').textContent=(qs.length?Math.round(corr/qs.length*100):0)+'%';
   document.getElementById('ansList').innerHTML=html.join('');
-  var rc=document.getElementById('resCard');rc.classList.add('on');rc.scrollIntoView({behavior:'smooth',block:'start'});
+  var rc=document.getElementById('resCard');
+  rc.classList.add('on');
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
   showRankPredictor(score, qs.length);
   prepMistakeLog(qs, uAns, corrAns);
 
-  var d=new Date();
-  var dateKey = d.toISOString().split('T')[0];
-  saveMockData({id:Date.now(),date:dateKey,score:score,qs:qs.length,corr:corr,wrong:wrong,auto:true});
-
-  // ── Update daily subject-wise stats ──
-  updateDailyArenaStats(dateKey, chapData);
-
-  // ── Save chapter stats ──
-  updateArenaChapterStats(chapData);
+  // Store for manual save only
+  window._pendingResult={
+    score:score, corr:corr, wrong:wrong, skip:skip,
+    qs:qs.length, chapData:chapData,
+    dateKey:new Date().toISOString().split('T')[0]
+  };
+  var ss=document.getElementById('saveResultSection'); if(ss) ss.style.display='block';
+  var sd=document.getElementById('saveResultDone');    if(sd) sd.style.display='none';
+  var sb=document.getElementById('saveResultBtn');
+  if(sb){ sb.disabled=false; sb.style.opacity='1'; sb.textContent='\xf0\x9f\x92\xbe Save Result & Stats mein Add Karo'; }
 }
 
 // ═══════════════════════════════════════
@@ -3231,6 +3212,37 @@ function initDarkMode(){try{var s=localStorage.getItem('jee_dark_mode');if(s==='
 function toggleDarkMode(){_darkMode=!_darkMode;document.body.classList.toggle('dark',_darkMode);var b=document.getElementById('dmToggleBtn');if(b)b.textContent=_darkMode?'\u2600\ufe0f':'\ud83c\udf19';try{localStorage.setItem('jee_dark_mode',_darkMode?'1':'0');}catch(e){}}
 initDarkMode();
 
+// FINAL SAVE RESULT
+function finalSaveResult(){
+  var p=window._pendingResult;
+  if(!p){ alert('Koi pending result nahi!'); return; }
+  var sb=document.getElementById('saveResultBtn');
+  if(sb){ sb.disabled=true; sb.style.opacity='.6'; sb.textContent='Saving...'; }
+
+  var d=new Date(p.dateKey+'T12:00:00');
+  saveMockData({id:Date.now(),date:p.dateKey,score:p.score,qs:p.qs,corr:p.corr,wrong:p.wrong,auto:true});
+  updateDailyArenaStats(p.dateKey, p.chapData);
+  updateArenaChapterStats(p.chapData);
+  window._pendingResult=null;
+
+  // Show done state
+  var ss=document.getElementById('saveResultSection'); if(ss) ss.style.display='none';
+  var sd=document.getElementById('saveResultDone');    if(sd) sd.style.display='block';
+}
+function discardResult(){
+  window._pendingResult=null;
+  var ss=document.getElementById('saveResultSection'); if(ss) ss.style.display='none';
+  var sd=document.getElementById('saveResultDone');    if(sd) sd.style.display='none';
+  var msg=document.createElement('div');
+  msg.style.cssText='margin-top:12px;text-align:center;font-size:12px;color:var(--text3);padding:10px;background:var(--bg);border-radius:8px;';
+  msg.textContent='\u2715 Result discard kar diya gaya \u2014 stats mein save nahi hua';
+  var rc=document.getElementById('resCard');
+  // Remove old msg if any
+  var old=rc.querySelector('.discard-msg'); if(old) old.remove();
+  msg.className='discard-msg';
+  rc.appendChild(msg);
+}
+
 // LOGOUT
 // ═══════════════════════════════════════
 function confirmLogout(){
@@ -3245,6 +3257,9 @@ function doLogout(){
 }
 </script>
 
+<script>
+
+// SERVICE WORKER -->
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
