@@ -222,7 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .bm{background:var(--bluelt);color:var(--blue);}
 .bn{background:var(--orangelt);color:var(--orange);}
 .opts{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
-.opt{width:42px;height:40px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;-webkit-appearance:none;}
+.opt{width:60px;height:60px;border-radius:12px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;-webkit-appearance:none;}
 .opt.sel{border-color:var(--blue);color:#fff;background:var(--blue);}
 .opt.csel{border-color:var(--green);color:#fff;background:var(--green);}
 .or-div{display:flex;align-items:center;gap:6px;margin:5px 0;}
@@ -1587,14 +1587,46 @@ var tSec=0,tOn=false,tIv=null;
 function togTimer(){
   tOn=!tOn;
   var b=document.getElementById('tBtn');
-  if(tOn){b.textContent='PAUSE';b.style.color='var(--red)';b.style.borderColor='var(--red)';tIv=setInterval(function(){tSec++;showT();},1000);}
+  if(tOn){
+    b.textContent='PAUSE';b.style.color='var(--red)';b.style.borderColor='var(--red)';
+    tIv=setInterval(function(){
+      tSec++;
+      showT();
+      // Auto-submit when time is up
+      var cTimeEl=document.getElementById('cTime');
+      var limitSec=(cTimeEl?parseInt(cTimeEl.value)||30:30)*60;
+      if(tSec>=limitSec){
+        clearInterval(tIv); tOn=false;
+        var btn=document.getElementById('tBtn');
+        if(btn){btn.textContent='START';btn.style.color='var(--green)';btn.style.borderColor='var(--green)';}
+        if(qs.length>0){
+          // Flash warning then auto-submit
+          var disp=document.getElementById('tDisp');
+          if(disp){disp.style.color='#dc2626';disp.textContent='TIME UP!';}
+          setTimeout(function(){
+            if(document.getElementById('step2')&&document.getElementById('step2').style.display==='none'){
+              submitAns();
+            }
+          },800);
+        }
+      }
+    },1000);
+  }
   else{b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';clearInterval(tIv);saveTimerState();}
 }
 function rstTimer(){
   tOn=false;tSec=0;clearInterval(tIv);showT();saveTimerState();
   var b=document.getElementById('tBtn');b.textContent='START';b.style.color='var(--green)';b.style.borderColor='var(--green)';
 }
-function showT(){var el=document.getElementById('tDisp');if(el)el.textContent=p2(Math.floor(tSec/60))+':'+p2(tSec%60);}
+function showT(){
+  var el=document.getElementById('tDisp'); if(!el)return;
+  var cTimeEl=document.getElementById('cTime');
+  var limitSec=(cTimeEl?parseInt(cTimeEl.value)||30:30)*60;
+  var remaining=Math.max(0, limitSec-tSec);
+  el.textContent=p2(Math.floor(remaining/60))+':'+p2(remaining%60);
+  // Turn red when under 60 seconds
+  el.style.color=remaining<=60?'#dc2626':remaining<=180?'#ea580c':'var(--blue)';
+}
 
 // ═══════════════════════════════════════
 // Q SELECTION HELPERS
