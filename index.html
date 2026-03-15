@@ -231,13 +231,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .num-in{background:var(--bg);border:2px solid var(--border);color:var(--orange);padding:8px 10px;border-radius:8px;font-size:14px;width:130px;text-align:center;outline:none;font-family:'Inter',sans-serif;}
 .num-in:focus{border-color:var(--orange);}
 .sub-btn2{display:block;width:100%;padding:13px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:14px;}
-.review-row{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;margin-bottom:7px;border:1.5px solid var(--border);background:var(--bg);}
-.review-row.ans-given{background:var(--bluelt);border-color:#c7d2fe;}
-.review-row.not-given{background:var(--redlt);border-color:#fca5a5;}
-.review-qnum{font-size:13px;font-weight:800;color:var(--blue);min-width:28px;}
-.review-ch{flex:1;font-size:12px;font-weight:600;color:var(--text);line-height:1.4;}
-.review-ans{font-size:13px;font-weight:800;min-width:60px;text-align:right;}
-.review-edit{padding:5px 10px;border-radius:7px;border:1.5px solid var(--blue);background:transparent;color:var(--blue);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
 .res-btn-g{display:block;width:100%;padding:13px;background:var(--green);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:14px;}
 .res-card{display:none;background:#fff;border:2px solid #bbf7d0;border-radius:var(--r);padding:16px;margin-top:12px;text-align:center;}
 .res-card.on{display:block;}
@@ -821,32 +814,8 @@ body.deep-work .dw-overlay{display:flex;}
         <thead><tr><th style="width:46px">Q#</th><th style="width:140px">Chapter</th><th>Answer</th></tr></thead>
         <tbody id="qBody"></tbody>
       </table>
-      <button class="sub-btn2" onclick="showReview()">🔍 Review &amp; Submit</button>
+      <button class="sub-btn2" onclick="submitAns()">🔒 Submit Answers</button>
     </div>
-    <!-- REVIEW SCREEN (step 1.5) -->
-    <div class="card" id="reviewCard" style="display:none;border:2px solid #c7d2fe;">
-      <div style="font-size:15px;font-weight:800;color:var(--blue);margin-bottom:4px;text-align:center;">🔍 Apne Jawab Check Karo</div>
-      <div style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:14px;">Koi bhi change karna ho toh "Edit" karo, warna Submit karo</div>
-      <!-- Summary pills -->
-      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-        <div style="flex:1;background:var(--bluelt);border-radius:8px;padding:8px;text-align:center;border:1px solid #c7d2fe;">
-          <div style="font-size:18px;font-weight:900;color:var(--blue);" id="rv_att">0</div>
-          <div style="font-size:9px;font-weight:700;color:var(--text3);">ATTEMPTED</div>
-        </div>
-        <div style="flex:1;background:var(--redlt);border-radius:8px;padding:8px;text-align:center;border:1px solid #fca5a5;">
-          <div style="font-size:18px;font-weight:900;color:var(--red);" id="rv_skip">0</div>
-          <div style="font-size:9px;font-weight:700;color:var(--text3);">SKIPPED</div>
-        </div>
-        <div style="flex:1;background:var(--greenlt);border-radius:8px;padding:8px;text-align:center;border:1px solid #bbf7d0;">
-          <div style="font-size:18px;font-weight:900;color:var(--green);" id="rv_total">0</div>
-          <div style="font-size:9px;font-weight:700;color:var(--text3);">TOTAL</div>
-        </div>
-      </div>
-      <div id="reviewList"></div>
-      <button onclick="confirmSubmit()" style="display:block;width:100%;padding:14px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:11px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;margin-top:14px;box-shadow:0 4px 14px rgba(22,163,74,.3);">🚀 Final Submit</button>
-      <button onclick="backToQuestions()" style="display:block;width:100%;padding:10px;background:transparent;border:1.5px solid var(--border);border-radius:9px;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px;">← Wapas Jaao — Answers Change Karo</button>
-    </div>
-
     <div class="card" id="step2" style="display:none;border:2px solid #fed7aa;">
       <div style="font-size:15px;font-weight:800;color:var(--orange);margin-bottom:12px;text-align:center;">📋 Correct Answers Daalo</div>
       <table class="qtbl">
@@ -1743,89 +1712,6 @@ function updAStats(){
   document.getElementById('sMcq').textContent=mcq;
   document.getElementById('sNum').textContent=num;
 }
-
-// Show Review Screen before final submit
-function showReview(){
-  if(!qs.length){alert('Pehle Generate karo!');return;}
-  if(tOn) togTimer(); // pause timer
-
-  var att=0, skip=0;
-  var el=document.getElementById('reviewList'); if(!el)return;
-  el.innerHTML='';
-
-  qs.forEach(function(q){
-    var qnum=document.getElementById('qn'+q.id);
-    q.dispId=qnum?qnum.value:q.id;
-    var ua=uAns[q.id];
-    var given=!!ua;
-    if(given) att++; else skip++;
-
-    var row=document.createElement('div');
-    row.className='review-row '+(given?'ans-given':'not-given');
-
-    var qn=document.createElement('div');
-    qn.className='review-qnum';
-    qn.textContent='Q'+(q.dispId||q.id);
-
-    var ch=document.createElement('div');
-    ch.className='review-ch';
-    ch.innerHTML='<span style="color:'+SCOL[q.sk]+';font-weight:700;">'+q.ch+'</span>'
-      +'<br><span style="font-size:10px;color:var(--text3);">'+q.type+'</span>';
-
-    var ans=document.createElement('div');
-    ans.className='review-ans';
-    if(!ua){
-      ans.innerHTML='<span style="color:var(--red);font-size:11px;">❌ Skipped</span>';
-    } else if(ua.t==='MCQ'){
-      ans.innerHTML='<span style="background:var(--blue);color:#fff;padding:3px 10px;border-radius:6px;font-size:13px;">'+ua.v+'</span>';
-    } else {
-      ans.innerHTML='<span style="color:var(--orange);font-weight:800;">'+ua.v+'</span>';
-    }
-
-    var edit=document.createElement('button');
-    edit.className='review-edit';
-    edit.textContent='Edit';
-    (function(qid){
-      edit.onclick=function(){
-        backToQuestions();
-        // Scroll to that question
-        setTimeout(function(){
-          var el2=document.getElementById('qn'+qid);
-          if(el2) el2.scrollIntoView({behavior:'smooth',block:'center'});
-        },300);
-      };
-    })(q.id);
-
-    row.appendChild(qn); row.appendChild(ch); row.appendChild(ans); row.appendChild(edit);
-    el.appendChild(row);
-  });
-
-  // Update summary
-  var rva=document.getElementById('rv_att'); if(rva) rva.textContent=att;
-  var rvs=document.getElementById('rv_skip'); if(rvs) rvs.textContent=skip;
-  var rvt=document.getElementById('rv_total'); if(rvt) rvt.textContent=qs.length;
-
-  // Show review card, hide others
-  document.getElementById('reviewCard').style.display='block';
-  document.getElementById('step2').style.display='none';
-  document.getElementById('resCard').classList.remove('on');
-  document.getElementById('reviewCard').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function backToQuestions(){
-  document.getElementById('reviewCard').style.display='none';
-  // Re-start timer if it was running
-  if(!tOn && qs.length>0){
-    var btn=document.getElementById('tBtn');
-    if(btn && btn.textContent.trim()==='START') togTimer();
-  }
-}
-
-function confirmSubmit(){
-  document.getElementById('reviewCard').style.display='none';
-  submitAns();
-}
-
 function submitAns(){
   if(!qs.length){alert('Pehle Generate karo!');return;}
   if(tOn)togTimer();
@@ -2054,11 +1940,14 @@ function renderStats(){
   var tQs=0, tCorr=0, tWrong=0;
   filtered.forEach(function(m){ tQs+=m.qs; tCorr+=m.corr; tWrong+=(m.wrong||0); });
   var sg = document.getElementById('sumGrid'); if(!sg) return;
+  var tAcc = tQs>0 ? Math.round(tCorr/tQs*100) : 0;
+  var accCol = tAcc>=75?'var(--green)':tAcc>=50?'var(--orange)':'var(--red)';
   sg.innerHTML =
     '<div class="sum-box"><div class="sum-val" style="color:var(--blue)">'+filtered.length+'</div><div class="sum-lbl">MOCKS</div></div>'
    +'<div class="sum-box"><div class="sum-val">'+tQs+'</div><div class="sum-lbl">ATTEMPTED</div></div>'
    +'<div class="sum-box"><div class="sum-val" style="color:var(--green)">'+tCorr+'</div><div class="sum-lbl">CORRECT \u2713</div></div>'
-   +'<div class="sum-box"><div class="sum-val" style="color:var(--red)">'+tWrong+'</div><div class="sum-lbl">WRONG \u2717</div></div>';
+   +'<div class="sum-box"><div class="sum-val" style="color:var(--red)">'+tWrong+'</div><div class="sum-lbl">WRONG \u2717</div></div>'
+   +'<div class="sum-box" style="grid-column:1/-1;background:var(--bg);"><div class="sum-val" style="color:'+accCol+'">'+tAcc+'%</div><div class="sum-lbl">\u2022 OVERALL ACCURACY \u2022</div></div>';
   renderMockList(filtered);
   var streak = calcStreak();
   var mb = document.getElementById('motivBar');
