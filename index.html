@@ -222,7 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .bm{background:var(--bluelt);color:var(--blue);}
 .bn{background:var(--orangelt);color:var(--orange);}
 .opts{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
-.opt{width:60px;height:60px;border-radius:12px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;-webkit-appearance:none;}
+.opt{width:60px;height:60px;border-radius:12px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;-webkit-appearance:none;position:relative;z-index:10;}
 .opt.sel{border-color:var(--blue);color:#fff;background:var(--blue);}
 .opt.csel{border-color:var(--green);color:#fff;background:var(--green);}
 .or-div{display:flex;align-items:center;gap:6px;margin:5px 0;}
@@ -1703,10 +1703,8 @@ function renderQ(){
       var btn=document.createElement('button');
       btn.type='button'; btn.className='opt';
       btn.id='u'+q.id+letter; btn.textContent=letter;
-      (function(qid,opt){
-        btn.addEventListener('click',function(e){ e.stopPropagation(); uMCQ(qid,opt); });
-        btn.addEventListener('touchstart',function(e){ e.preventDefault(); e.stopPropagation(); uMCQ(qid,opt); },{passive:false});
-      })(q.id,letter);
+      btn.setAttribute('onclick','uMCQ('+q.id+',"'+letter+'")');
+      btn.setAttribute('ontouchstart','event.preventDefault();uMCQ('+q.id+',"'+letter+'")');
       optsDiv.appendChild(btn);
     });
     var orDiv=document.createElement('div'); orDiv.className='or-div';
@@ -1774,10 +1772,8 @@ function submitAns(){
       var btn=document.createElement('button');
       btn.type='button'; btn.className='opt';
       btn.id='c'+q.id+letter; btn.textContent=letter;
-      (function(qid,opt){
-        btn.addEventListener('click',function(e){ e.stopPropagation(); cMCQ(qid,opt); });
-        btn.addEventListener('touchstart',function(e){ e.preventDefault(); e.stopPropagation(); cMCQ(qid,opt); },{passive:false});
-      })(q.id,letter);
+      btn.setAttribute('onclick','cMCQ('+q.id+',"'+letter+'")');
+      btn.setAttribute('ontouchstart','event.preventDefault();cMCQ('+q.id+',"'+letter+'")');
       optsDiv.appendChild(btn);
     });
     var orDiv=document.createElement('div'); orDiv.className='or-div';
