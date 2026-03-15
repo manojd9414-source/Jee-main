@@ -222,7 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .bm{background:var(--bluelt);color:var(--blue);}
 .bn{background:var(--orangelt);color:var(--orange);}
 .opts{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
-.opt{width:42px;height:40px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;background:#fff;}
+.opt{width:42px;height:40px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:rgba(79,70,229,.2);font-family:'Inter',sans-serif;-webkit-appearance:none;}
 .opt.sel{border-color:var(--blue);color:#fff;background:var(--blue);}
 .opt.csel{border-color:var(--green);color:#fff;background:var(--green);}
 .or-div{display:flex;align-items:center;gap:6px;margin:5px 0;}
@@ -1024,7 +1024,7 @@ body.deep-work .dw-overlay{display:flex;}
 </div>
 
 <!-- DOUBLE CONFIRM MODAL -->
-<div class="dconfirm-overlay" id="dconfirmOverlay">
+<div class="dconfirm-overlay" id="dconfirmOverlay" onclick="dconfirmOverlayClick(event)">
   <div class="dconfirm-box">
     <div class="dconfirm-icon" id="dconfirmIcon">🗑️</div>
     <div class="dconfirm-step" id="dconfirmStep">STEP 1 OF 2</div>
@@ -1653,10 +1653,10 @@ function renderQ(){
       +'<div class="sub-lbl2">'+SYL[q.sk].name+'</div>'
       +'<span class="badge '+(q.type==='MCQ'?'bm':'bn')+'">'+q.type+'</span>';
     var ansCell='<div class="opts">'
-      +'<div class="opt" id="u'+q.id+'A" onclick="uMCQ('+q.id+',\'A\')">A</div>'
-      +'<div class="opt" id="u'+q.id+'B" onclick="uMCQ('+q.id+',\'B\')">B</div>'
-      +'<div class="opt" id="u'+q.id+'C" onclick="uMCQ('+q.id+',\'C\')">C</div>'
-      +'<div class="opt" id="u'+q.id+'D" onclick="uMCQ('+q.id+',\'D\')">D</div>'
+      +'<button type="button" class="opt" id="u'+q.id+'A" onclick="uMCQ('+q.id+',\'A\')">A</button>'
+      +'<button type="button" class="opt" id="u'+q.id+'B" onclick="uMCQ('+q.id+',\'B\')">B</button>'
+      +'<button type="button" class="opt" id="u'+q.id+'C" onclick="uMCQ('+q.id+',\'C\')">C</button>'
+      +'<button type="button" class="opt" id="u'+q.id+'D" onclick="uMCQ('+q.id+',\'D\')">D</button>'
       +'</div>'
       +'<div class="or-div"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
       +'<input type="number" class="num-in" id="un'+q.id+'" placeholder="Number..." step="any" oninput="uNum('+q.id+',this.value)">';
@@ -1700,10 +1700,10 @@ function submitAns(){
       :ua.t==='MCQ'?'<b style="color:var(--blue)">Opt '+ua.v+'</b>'
       :'<b style="color:var(--orange)">'+ua.v+'</b>';
     var corrCell='<div class="opts" style="margin-bottom:4px">'
-      +'<div class="opt" id="c'+q.id+'A" onclick="cMCQ('+q.id+',\'A\')">A</div>'
-      +'<div class="opt" id="c'+q.id+'B" onclick="cMCQ('+q.id+',\'B\')">B</div>'
-      +'<div class="opt" id="c'+q.id+'C" onclick="cMCQ('+q.id+',\'C\')">C</div>'
-      +'<div class="opt" id="c'+q.id+'D" onclick="cMCQ('+q.id+',\'D\')">D</div>'
+      +'<button type="button" class="opt" id="c'+q.id+'A" onclick="cMCQ('+q.id+',\'A\')">A</button>'
+      +'<button type="button" class="opt" id="c'+q.id+'B" onclick="cMCQ('+q.id+',\'B\')">B</button>'
+      +'<button type="button" class="opt" id="c'+q.id+'C" onclick="cMCQ('+q.id+',\'C\')">C</button>'
+      +'<button type="button" class="opt" id="c'+q.id+'D" onclick="cMCQ('+q.id+',\'D\')">D</button>'
       +'</div>'
       +'<div class="or-div"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
       +'<input type="number" class="num-in" id="cn'+q.id+'" placeholder="Correct..." step="any" oninput="cNum('+q.id+',this.value)">';
@@ -3149,6 +3149,9 @@ function dconfirmCancel(){
   document.getElementById('dconfirmOverlay').classList.remove('open');
   _dconfirmStep = 1;
   _dconfirmCb = null;
+}
+function dconfirmOverlayClick(e){
+  if(e.target===document.getElementById('dconfirmOverlay')) dconfirmCancel();
 }
 
 // DARK MODE
