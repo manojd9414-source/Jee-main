@@ -222,7 +222,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .bm{background:var(--bluelt);color:var(--blue);}
 .bn{background:var(--orangelt);color:var(--orange);}
 .opts{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
-.opt{width:42px;height:40px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;background:#fff;}
+.opt{width:42px;height:40px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;background:#fff;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif;-webkit-appearance:none;}
 .opt.sel{border-color:var(--blue);color:#fff;background:var(--blue);}
 .opt.csel{border-color:var(--green);color:#fff;background:var(--green);}
 .or-div{display:flex;align-items:center;gap:6px;margin:5px 0;}
@@ -1646,21 +1646,45 @@ function genQ(){
   updAStats();rstTimer();if(!tOn)togTimer();
 }
 function renderQ(){
-  var tb=document.getElementById('qBody');tb.innerHTML='';
+  var tb=document.getElementById('qBody'); tb.innerHTML='';
   qs.forEach(function(q){
     var tr=document.createElement('tr');
-    var chCell='<div class="ch-lbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div>'
+
+    // Q# cell
+    var td0=document.createElement('td');
+    var qinp=document.createElement('input');
+    qinp.type='number'; qinp.value=q.id; qinp.className='qn-inp';
+    qinp.id='qn'+q.id; qinp.min=1;
+    (function(qid){ qinp.addEventListener('input',function(){ autoFillQNum(qid,this.value); }); })(q.id);
+    td0.appendChild(qinp);
+
+    // Chapter cell
+    var td1=document.createElement('td');
+    td1.innerHTML='<div class="ch-lbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div>'
       +'<div class="sub-lbl2">'+SYL[q.sk].name+'</div>'
       +'<span class="badge '+(q.type==='MCQ'?'bm':'bn')+'">'+q.type+'</span>';
-    var ansCell='<div class="opts">'
-      +'<div class="opt" id="u'+q.id+'A" onclick="uMCQ('+q.id+',\'A\')">A</div>'
-      +'<div class="opt" id="u'+q.id+'B" onclick="uMCQ('+q.id+',\'B\')">B</div>'
-      +'<div class="opt" id="u'+q.id+'C" onclick="uMCQ('+q.id+',\'C\')">C</div>'
-      +'<div class="opt" id="u'+q.id+'D" onclick="uMCQ('+q.id+',\'D\')">D</div>'
-      +'</div>'
-      +'<div class="or-div"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
-      +'<input type="number" class="num-in" id="un'+q.id+'" placeholder="Number..." step="any" oninput="uNum('+q.id+',this.value)">';
-    tr.innerHTML='<td><input type="number" value="'+q.id+'" class="qn-inp" id="qn'+q.id+'" min="1" oninput="autoFillQNum('+q.id+',this.value)"></td><td>'+chCell+'</td><td>'+ansCell+'</td>';
+
+    // Answer cell
+    var td2=document.createElement('td');
+    var optsDiv=document.createElement('div'); optsDiv.className='opts';
+    ['A','B','C','D'].forEach(function(letter){
+      var btn=document.createElement('button');
+      btn.type='button'; btn.className='opt';
+      btn.id='u'+q.id+letter; btn.textContent=letter;
+      (function(qid,opt){
+        btn.addEventListener('click',function(e){ e.stopPropagation(); uMCQ(qid,opt); });
+      })(q.id,letter);
+      optsDiv.appendChild(btn);
+    });
+    var orDiv=document.createElement('div'); orDiv.className='or-div';
+    orDiv.innerHTML='<div class="ln"></div><span>YA</span><div class="ln"></div>';
+    var numInp=document.createElement('input');
+    numInp.type='number'; numInp.className='num-in'; numInp.id='un'+q.id;
+    numInp.placeholder='Number...'; numInp.step='any';
+    (function(qid){ numInp.addEventListener('input',function(){ uNum(qid,this.value); }); })(q.id);
+    td2.appendChild(optsDiv); td2.appendChild(orDiv); td2.appendChild(numInp);
+
+    tr.appendChild(td0); tr.appendChild(td1); tr.appendChild(td2);
     tb.appendChild(tr);
   });
 }
@@ -1693,24 +1717,44 @@ function submitAns(){
   if(tOn)togTimer();
   corrAns={};
   qs.forEach(function(q){var el=document.getElementById('qn'+q.id);q.dispId=el?el.value:q.id;});
-  var tb=document.getElementById('corrBody');tb.innerHTML='';
+  var tb=document.getElementById('corrBody'); tb.innerHTML='';
   qs.forEach(function(q){
     var ua=uAns[q.id];
     var uaHTML=!ua?'<span style="color:var(--text3);font-style:italic;">skipped</span>'
       :ua.t==='MCQ'?'<b style="color:var(--blue)">Opt '+ua.v+'</b>'
       :'<b style="color:var(--orange)">'+ua.v+'</b>';
-    var corrCell='<div class="opts" style="margin-bottom:4px">'
-      +'<div class="opt" id="c'+q.id+'A" onclick="cMCQ('+q.id+',\'A\')">A</div>'
-      +'<div class="opt" id="c'+q.id+'B" onclick="cMCQ('+q.id+',\'B\')">B</div>'
-      +'<div class="opt" id="c'+q.id+'C" onclick="cMCQ('+q.id+',\'C\')">C</div>'
-      +'<div class="opt" id="c'+q.id+'D" onclick="cMCQ('+q.id+',\'D\')">D</div>'
-      +'</div>'
-      +'<div class="or-div"><div class="ln"></div><span>YA</span><div class="ln"></div></div>'
-      +'<input type="number" class="num-in" id="cn'+q.id+'" placeholder="Correct..." step="any" oninput="cNum('+q.id+',this.value)">';
+
     var tr=document.createElement('tr');
-    tr.innerHTML='<td><b style="color:var(--blue);font-size:14px;">'+(q.dispId||q.id)+'</b></td>'
-      +'<td><div class="ch-lbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div></td>'
-      +'<td>'+uaHTML+'</td><td>'+corrCell+'</td>';
+
+    var td0=document.createElement('td');
+    td0.innerHTML='<b style="color:var(--blue);font-size:14px;">'+(q.dispId||q.id)+'</b>';
+
+    var td1=document.createElement('td');
+    td1.innerHTML='<div class="ch-lbl" style="color:'+SCOL[q.sk]+'">'+q.ch+'</div>';
+
+    var td2=document.createElement('td');
+    td2.innerHTML=uaHTML;
+
+    var td3=document.createElement('td');
+    var optsDiv=document.createElement('div'); optsDiv.className='opts'; optsDiv.style.marginBottom='4px';
+    ['A','B','C','D'].forEach(function(letter){
+      var btn=document.createElement('button');
+      btn.type='button'; btn.className='opt';
+      btn.id='c'+q.id+letter; btn.textContent=letter;
+      (function(qid,opt){
+        btn.addEventListener('click',function(e){ e.stopPropagation(); cMCQ(qid,opt); });
+      })(q.id,letter);
+      optsDiv.appendChild(btn);
+    });
+    var orDiv=document.createElement('div'); orDiv.className='or-div';
+    orDiv.innerHTML='<div class="ln"></div><span>YA</span><div class="ln"></div>';
+    var numInp=document.createElement('input');
+    numInp.type='number'; numInp.className='num-in'; numInp.id='cn'+q.id;
+    numInp.placeholder='Correct...'; numInp.step='any';
+    (function(qid){ numInp.addEventListener('input',function(){ cNum(qid,this.value); }); })(q.id);
+    td3.appendChild(optsDiv); td3.appendChild(orDiv); td3.appendChild(numInp);
+
+    tr.appendChild(td0); tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
     tb.appendChild(tr);
   });
   document.getElementById('step2').style.display='block';
