@@ -67,6 +67,27 @@ body.dark .chat-inp{background:#111118;border-color:#2a2a3a;}
 body.dark .timer-hero{background:linear-gradient(135deg,#0d0d1a,#1e1b4b);}
 body.dark .lec-ch-item{background:#1a1a24;border-color:#2a2a3a;}
 body.dark .err-item{background:#1f0a0a;border-color:#7f1d1d;}
+/* TASKS SECTION */
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border-radius:10px;border:1.5px solid var(--border);background:#fff;margin-bottom:6px;cursor:pointer;user-select:none;transition:opacity .2s;}
+.task-item.done{opacity:.5;}
+.task-item.done .task-title{text-decoration:line-through;color:var(--text3);}
+.task-chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:900;margin-top:1px;}
+.task-item.done .task-chk{background:var(--green);border-color:var(--green);color:#fff;}
+.task-body{flex:1;min-width:0;}
+.task-date{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:2px;}
+.task-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.4;}
+.task-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.task-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:800;margin-right:4px;}
+.tag-phy{background:var(--bluelt);color:var(--blue);}
+.tag-pc{background:#fef3c7;color:#d97706;}
+.tag-ioc{background:#f0fdf4;color:#15803d;}
+.tag-oc{background:#fdf4ff;color:#9333ea;}
+.tag-math{background:var(--greenlt);color:var(--green);}
+.tag-test{background:var(--redlt);color:var(--red);}
+.tasks-more-btn{display:block;width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px;text-align:center;}
+.tasks-more-btn:active{background:var(--bluelt);}
+body.dark .task-item{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .tasks-more-btn{background:#1a1a24;border-color:#2a2a3a;}
 body.dark .fc-back{background:#1a1a24;border-color:#2a2a3a;}
 body.dark .fc-back .fc-a{color:#818cf8;}
 body.dark .hm-cell{border-color:#2a2a3a!important;}
@@ -997,6 +1018,29 @@ body.deep-work .dw-overlay{display:flex;}
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- TASKS SECTION -->
+  <div class="sec" id="sec-tasks">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="card-title" style="margin-bottom:0;">📋 Prayas JEE 2027 Schedule</div>
+        <div id="taskCounter" style="font-size:12px;font-weight:700;color:var(--blue);"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:12px;">Aaj se aage ke saare lectures + tests • Checkbox tick karo jab complete ho</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="taskFilters">
+        <button class="acs-fbtn on" onclick="setTaskFilter('all',this)">All</button>
+        <button class="acs-fbtn" onclick="setTaskFilter('P',this)">⚡ Physics</button>
+        <button class="acs-fbtn" onclick="setTaskFilter('PC',this)">🔬 P.Chem</button>
+        <button class="acs-fbtn" onclick="setTaskFilter('IC',this)">⚗️ I.Chem</button>
+        <button class="acs-fbtn" onclick="setTaskFilter('OC',this)">🌿 O.Chem</button>
+        <button class="acs-fbtn" onclick="setTaskFilter('M',this)">📐 Maths</button>
+        <button class="acs-fbtn" onclick="setTaskFilter('TEST',this)">📝 Tests</button>
+      </div>
+      <div id="tasksList"></div>
+      <button class="tasks-more-btn" id="tasksMoreBtn" style="display:none;" onclick="showMoreTasks()">See More</button>
+    </div>
+  </div>
 
 </div><!-- end .wrap -->
 
@@ -1008,6 +1052,7 @@ body.deep-work .dw-overlay{display:flex;}
   <button class="nav-btn" onclick="showNav('arena',this)"><div class="nav-icon">⚔️</div><div class="nav-label">Arena</div></button>
   <button class="nav-btn" onclick="showNav('stats',this)"><div class="nav-icon">📊</div><div class="nav-label">Stats</div></button>
   <button class="nav-btn" onclick="showNav('ai',this)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></button>
+  <button class="nav-btn" onclick="showNav('tasks',this)"><div class="nav-icon">📋</div><div class="nav-label">Tasks</div></button>
 </div>
 
 <!-- LOGOUT CONFIRM MODAL -->
@@ -1269,6 +1314,7 @@ function showNav(name,btn){
   if(name==='timer'){renderStudyUI();renderPlanChapList();}
   if(name==='stats'){renderStats();renderArenaChapterStats();renderHeatmap();renderErrorBook();renderBadges();refreshLeaderboard();renderDailyArenaStats();}
   if(name==='home'){renderChecklist();renderBadges();renderSpacedRepReminders();}
+  if(name==='tasks'){renderTasks();}
 }
 
 // ═══════════════════════════════════════
@@ -3215,6 +3261,588 @@ function closeLogoutModal(){
 function doLogout(){
   closeLogoutModal();
   window._doLogoutFn && window._doLogoutFn();
+}
+
+// ═══════════════════════════════════════
+// TASKS — PRAYAS JEE 2027 SCHEDULE
+// ═══════════════════════════════════════
+// Data format: [dateISO_original, subjectCode, chapterShort, topicShort, lectureNum]
+// subjectCode: P=Physics(shift:2024+1/2025+2), PC=PhysChem, IC=InorgChem, OC=OrgChem, M=Maths, TEST
+// Non-Physics dates: 2025→2026, 2026→2027
+
+var TASK_DATA_RAW = [
+// ── PHYSICS (Prayas 2025 batch, only 2025 dates survive filter) ──
+['2025-01-02','P','Nuclei','Radioactive Decay',171],
+['2025-01-03','P','Semiconductors','Intro/Intrinsic-Extrinsic',172],
+['2025-01-04','P','Semiconductors','PN Junction Diode',173],
+['2025-01-06','P','Semiconductors','PN Junction Applications',174],
+['2025-01-07','P','Wave Optics','Huygens Wave Theory',175],
+['2025-01-08','P','Wave Optics','YDSE & Fringe Visibility',176],
+['2025-01-09','P','Wave Optics','Thin Film Interference',177],
+['2025-01-10','P','Wave Optics','Diffraction & Polarization',178],
+['2025-01-11','P','Wave Optics','Scattering & Doppler',179],
+['2025-01-13','P','Units & Measurements','Dimensional Analysis',180],
+['2025-01-15','P','Units & Measurements','Significant Figures & Errors',181],
+// ── PHYSICAL CHEMISTRY (Prayas 2026 batch) ──
+['2025-06-09','PC','Some Basic Concepts','Nature of Matter/SI Units',1],
+['2025-06-10','PC','Some Basic Concepts','Laws of Chemical Combinations',2],
+['2025-06-11','PC','Some Basic Concepts','Dalton Atomic Theory',3],
+['2025-06-12','PC','Some Basic Concepts','Gram Atomic Mass',4],
+['2025-06-13','PC','Some Basic Concepts','Molecular Mass',5],
+['2025-06-14','PC','Some Basic Concepts','Average Molecular Mass',6],
+['2025-06-16','PC','Some Basic Concepts','Percentage Composition',7],
+['2025-06-17','PC','Some Basic Concepts','Mole Concept',8],
+['2025-06-18','PC','Some Basic Concepts','Concentration Terms',9],
+['2025-06-19','PC','Some Basic Concepts','Stoichiometry',10],
+['2025-06-20','PC','Some Basic Concepts','POAC & Eudiometry',11],
+['2025-06-21','PC','Redox Reaction','Introduction',1],
+['2025-06-23','PC','Redox Reaction','Balancing & n-Factor',2],
+['2025-06-24','PC','Redox Reaction','Law of Equivalence',3],
+['2025-06-25','PC','Redox Reaction','Redox Titration',4],
+['2025-06-26','PC','Redox Reaction','Iodometric Titration',5],
+['2025-06-27','PC','Structure of Atom','Introduction',1],
+['2025-06-28','PC','Structure of Atom','Fundamental Particles',2],
+['2025-06-30','PC','Structure of Atom','Nature of Light/EM Spectrum',3],
+['2025-07-01','PC','Structure of Atom','Bohr Model',4],
+['2025-07-02','PC','Structure of Atom','Ionization Energy',5],
+['2025-07-03','PC','Structure of Atom','Spectrum/Energy Levels',6],
+['2025-07-04','PC','Structure of Atom','Quantum Numbers',7],
+['2025-08-05','PC','Solutions','Binary Solution/Concentration',1],
+['2025-08-06','PC','Solutions','Solubility/Vapour Pressure',2],
+['2025-08-07','PC','Solutions','Vapour Pressure',3],
+['2025-08-09','PC','Solutions','Ideal & Non-ideal Solutions',4],
+['2025-08-11','PC','Solutions','Osmosis/Osmotic Pressure',5],
+['2025-08-12','PC','Solutions','Van\'t Hoff Factor',6],
+['2025-08-13','PC','Solutions','Abnormal Molar Masses',7],
+['2025-08-14','PC','Chemical Kinetics','Rate/Order/Molecularity',1],
+['2025-08-16','PC','Chemical Kinetics','Integrated Rate Equations',2],
+['2025-08-18','PC','Chemical Kinetics','Pseudo First Order',3],
+['2025-08-19','PC','Chemical Kinetics','Activation Energy',4],
+['2025-08-20','PC','Chemical Kinetics','Temperature Dependence',5],
+['2025-08-21','PC','Chemical Kinetics','Parallel & Sequential Decay',6],
+['2025-08-22','PC','Chemical Kinetics','Effect of Catalyst',7],
+['2025-08-23','PC','Thermodynamics','Introduction',1],
+['2025-08-25','PC','Thermodynamics','1st Law/Enthalpy',2],
+['2025-08-26','PC','Thermodynamics','Q/W/ΔU/ΔH Calculations',3],
+['2025-08-28','PC','Thermodynamics','Thermochemistry',4],
+['2025-08-29','PC','Thermodynamics','Enthalpy Changes',5],
+['2025-08-30','PC','Thermodynamics','Calorimetry & Entropy',6],
+['2025-09-01','PC','Thermodynamics','Entropy (Solids/Liquids)',7],
+['2025-09-02','PC','Thermodynamics','Standard Absolute Entropy',8],
+['2025-09-03','PC','Thermodynamics','Comparing Entropies',9],
+['2025-09-04','PC','Thermodynamics','Entropy & Gibbs Free Energy',10],
+['2025-09-05','PC','Chemical Equilibrium','Intro/Law of Mass Action',1],
+['2025-09-06','PC','Chemical Equilibrium','Variation of Kc',2],
+['2025-09-08','PC','Chemical Equilibrium','Reaction Quotient',3],
+['2025-09-09','PC','Chemical Equilibrium','Degree of Dissociation',4],
+['2025-09-10','PC','Chemical Equilibrium','Le Chatelier\'s Principle',5],
+['2025-09-11','PC','Chemical Equilibrium','Free Energy & Physical Eq.',6],
+['2025-09-12','PC','Ionic Equilibrium','Electrolytes/Acid-Base',1],
+['2025-09-13','PC','Ionic Equilibrium','pH Scale',2],
+['2025-09-15','PC','Ionic Equilibrium','Common Ion Effect',3],
+['2025-09-16','PC','Ionic Equilibrium','pH & Buffer Solution',4],
+['2025-09-17','PC','Ionic Equilibrium','Salt Hydrolysis',5],
+['2025-09-18','PC','Ionic Equilibrium','Acid-Base Titration/Ksp',6],
+['2025-09-19','PC','Electrochemistry','Electrochemical Cell',1],
+['2025-09-20','PC','Electrochemistry','Nernst Equation',2],
+['2025-09-22','PC','Electrochemistry','Electrolysis/Faraday\'s Laws',3],
+['2025-09-23','PC','Electrochemistry','Molar Conductivity',4],
+['2025-09-24','PC','Electrochemistry','Kohlrausch\'s Law',5],
+['2025-09-25','PC','Electrochemistry','Conductometric Titrations',6],
+['2025-09-26','PC','Electrochemistry','Commercial Cells/Corrosion',7],
+['2025-12-31','PC','States of Matter','Gas Laws/Kinetic Theory',1],
+['2026-01-02','PC','Solid State','Crystal Structure',1],
+['2026-01-03','PC','Surface Chemistry','Adsorption/Colloids',1],
+// ── INORGANIC CHEMISTRY (Prayas 2026 batch) ──
+['2025-07-05','IC','Periodic Table','Classification/Historical Dev',1],
+['2025-07-07','IC','Periodic Table','Modern Periodic Law',2],
+['2025-07-08','IC','Periodic Table','Electronic Configuration',3],
+['2025-07-09','IC','Periodic Table','Metals/Non-metals',4],
+['2025-07-10','IC','Periodic Table','Diagonal Relationship',5],
+['2025-07-11','IC','Periodic Table','Periodic Properties/ENeg',6],
+['2025-07-12','IC','Periodic Table','Atomic Radius/IP Trends',7],
+['2025-07-14','IC','Periodic Table','Electronegativity Scales',8],
+['2025-07-15','IC','Periodic Table','Application of ENeg',9],
+['2025-07-16','IC','Chemical Bonding','Ionic Bond/Lattice Energy',1],
+['2025-07-17','IC','Chemical Bonding','Kossel-Lewis Approach',2],
+['2025-07-18','IC','Chemical Bonding','VSEPR Theory',3],
+['2025-07-19','IC','Chemical Bonding','Valence Bond Theory (VBT)',4],
+['2025-07-21','IC','Chemical Bonding','VBT & VSEPR',5],
+['2025-07-22','IC','Chemical Bonding','Hybridization',6],
+['2025-07-23','IC','Chemical Bonding','Dipole Moment',7],
+['2025-07-24','IC','Chemical Bonding','Fajan\'s Rule',8],
+['2025-07-25','IC','Chemical Bonding','LCAO',9],
+['2025-07-26','IC','Chemical Bonding','Molecular Orbital Theory',10],
+['2025-07-28','IC','Chemical Bonding','Shapes of MOs',11],
+['2025-07-29','IC','Chemical Bonding','Bond Enthalpy',12],
+['2025-07-30','IC','Chemical Bonding','Bond Enthalpy',13],
+['2025-07-31','IC','Chemical Bonding','Bond Parameters',14],
+['2025-08-01','IC','Chemical Bonding','Hydrogen Bonds',15],
+['2025-08-02','IC','Chemical Bonding','Intermolecular Forces',16],
+['2025-08-04','IC','Chemical Bonding','Back/Bridge Bonding',17],
+['2025-11-24','IC','Coordination Compounds','Double Salt/Complex',1],
+['2025-11-25','IC','Coordination Compounds','Perfect/Imperfect Complex',2],
+['2025-11-26','IC','Coordination Compounds','Terms Used',3],
+['2025-11-27','IC','Coordination Compounds','Ligand Classification',4],
+['2025-11-28','IC','Coordination Compounds','Werner Theory',5],
+['2025-11-29','IC','Coordination Compounds','EAN',6],
+['2025-12-01','IC','Coordination Compounds','Nomenclature/VBT',7],
+['2025-12-02','IC','Coordination Compounds','VBT',8],
+['2025-12-03','IC','Coordination Compounds','Crystal Field Theory',9],
+['2025-12-04','IC','Coordination Compounds','Stability of Complexes',10],
+['2025-12-05','IC','Coordination Compounds','Isomerism',11],
+['2025-12-06','IC','Coordination Compounds','Organometallic Compounds',12],
+['2025-12-08','IC','Coordination Compounds','Applications',13],
+['2025-12-09','IC','Coordination Compounds','Applications',14],
+['2025-12-10','IC','Salt Analysis','Introduction',1],
+['2025-12-11','IC','Salt Analysis','Analysis of Anions',2],
+['2025-12-12','IC','Salt Analysis','Class A Group 1',3],
+['2025-12-13','IC','Salt Analysis','Group 1 Anions',4],
+['2025-12-15','IC','Salt Analysis','Group 1 Anions',5],
+['2025-12-16','IC','Salt Analysis','Class B Radicals',6],
+['2025-12-17','IC','Salt Analysis','Analysis of Cations',7],
+['2025-12-18','IC','Salt Analysis','Basic Radical ID',8],
+['2025-12-19','IC','p-Block Elements','Group 13 & 14',1],
+['2025-12-20','IC','p-Block Elements','Carbon/Silicon',2],
+['2025-12-22','IC','p-Block Elements','Nitrogen Family',3],
+['2025-12-23','IC','p-Block Elements','Phosphorus/Oxygen Family',4],
+['2025-12-24','IC','p-Block Elements','Sulphur/Halogens/Noble Gases',5],
+['2025-12-26','IC','d & f Block','Introduction/Properties',1],
+['2025-12-27','IC','Metallurgy','General Principles',1],
+['2025-12-29','IC','Hydrogen','Dihydrogen/Hydrides/Water',1],
+['2025-12-30','IC','s-Block Elements','Group 1 & 2',1],
+// ── ORGANIC CHEMISTRY (Prayas 2026 batch) ──
+['2025-08-11','OC','IUPAC Nomenclature','Structural Representation',1],
+['2025-08-12','OC','IUPAC Nomenclature','Important Definitions',2],
+['2025-08-13','OC','IUPAC Nomenclature','IUPAC System',3],
+['2025-08-14','OC','IUPAC Nomenclature','IUPAC System',4],
+['2025-08-16','OC','IUPAC Nomenclature','IUPAC System',5],
+['2025-08-18','OC','IUPAC Nomenclature','Hydrocarbons Nomenclature',6],
+['2025-08-19','OC','IUPAC Nomenclature','Non-Carbon Groups',7],
+['2025-08-20','OC','IUPAC Nomenclature','Polyfunctional Groups',8],
+['2025-08-21','OC','IUPAC Nomenclature','Other Compounds',9],
+['2025-08-22','OC','GOC','Bond Fission/Intermediates',1],
+['2025-08-23','OC','GOC','Reaction Reagents',2],
+['2025-08-25','OC','GOC','Electronic Displacement',3],
+['2025-08-26','OC','GOC','Inductive Effect',4],
+['2025-08-28','OC','GOC','Resonance Effect',5],
+['2025-08-29','OC','GOC','Mesomeric Effect',6],
+['2025-08-30','OC','GOC','SIR Effect',7],
+['2025-09-01','OC','GOC','Hyperconjugation',8],
+['2025-09-02','OC','GOC','Electromeric Effect',9],
+['2025-09-03','OC','GOC','Types of Organic Reactions',10],
+['2025-09-04','OC','GOC','Aromaticity',11],
+['2025-09-05','OC','GOC','Acid/Base Strength',12],
+['2025-09-06','OC','Isomerism','Introduction',1],
+['2025-09-08','OC','Isomerism','Conformational Isomerism',2],
+['2025-09-09','OC','Isomerism','Conformational Isomerism',3],
+['2025-09-10','OC','Isomerism','Configurational Isomerism',4],
+['2025-09-11','OC','Isomerism','Geometrical Isomerism',5],
+['2025-09-12','OC','Isomerism','Properties of Geometrical Isomers',6],
+['2025-09-13','OC','Isomerism','Properties of Geometrical Isomers',7],
+['2025-09-15','OC','Isomerism','Nomenclature of Geo Isomers',8],
+['2025-09-16','OC','Isomerism','Nomenclature of Geo Isomers',9],
+['2025-09-17','OC','Isomerism','Optical Isomerism',10],
+['2025-09-18','OC','Isomerism','Optical Isomerism',11],
+['2025-09-19','OC','Isomerism','Optical Isomerism',12],
+['2025-09-20','OC','Isomerism','Optical Isomerism',13],
+['2025-09-22','OC','Isomerism','Optical Isomerism',14],
+['2025-09-23','OC','Hydrocarbons','Alkane Intro/Preparation',1],
+['2025-09-24','OC','Hydrocarbons','Alkane Properties/Uses',2],
+['2025-09-25','OC','Hydrocarbons','Alkene Preparation',3],
+['2025-09-26','OC','Hydrocarbons','Alkene Properties',4],
+['2025-09-27','OC','Hydrocarbons','Alkyne Preparation',5],
+['2025-09-29','OC','Hydrocarbons','Alkyne Properties/Aromatic',6],
+['2025-09-30','OC','Hydrocarbons','Benzene Preparation',7],
+['2025-10-01','OC','Hydrocarbons','Benzene Properties',8],
+['2025-10-03','OC','Hydrocarbons','Electrophilic Substitution',9],
+['2025-10-04','OC','Hydrocarbons','Toluene Preparation',10],
+['2025-10-06','OC','Hydrocarbons','Toluene Properties',11],
+['2025-10-07','OC','Hydrocarbons','Toluene Uses',12],
+['2025-10-08','OC','Haloalkanes','Substitution & Elimination',1],
+['2025-10-09','OC','Haloalkanes','Substitution & Elimination',2],
+['2025-10-10','OC','Haloalkanes','Substitution & Elimination',3],
+['2025-10-11','OC','Haloalkanes','Substitution & Elimination',4],
+['2025-10-13','OC','Haloalkanes','Substitution & Elimination',5],
+['2025-10-14','OC','Haloalkanes','Substitution & Elimination',6],
+['2025-10-15','OC','Haloalkanes','Substitution & Elimination',7],
+['2025-10-16','OC','Haloalkanes','Substitution & Elimination',8],
+['2025-10-17','OC','Alcohols/Phenols','Reduction',1],
+['2025-10-24','OC','Alcohols/Phenols','Reduction',2],
+['2025-10-25','OC','Alcohols/Phenols','Oxidation',3],
+['2025-10-29','OC','Alcohols/Phenols','POC',4],
+['2025-10-30','OC','Alcohols/Phenols','Carbene & Nitrene',5],
+['2025-10-31','OC','Alcohols/Phenols','Carbene & Nitrene',6],
+['2025-11-01','OC','Aldehydes/Ketones','Carbonyl Group/Nomenclature',1],
+['2025-11-03','OC','Aldehydes/Ketones','Nucleophilic Addition',2],
+['2025-11-04','OC','Aldehydes/Ketones','Aldol Condensation/Wittig',3],
+['2025-11-05','OC','Aldehydes/Ketones','Miscellaneous Reactions',4],
+['2025-11-06','OC','Aldehydes/Ketones','Carboxylic Acid Reactions',5],
+['2025-11-07','OC','Aldehydes/Ketones','Carboxylic Acid Derivatives',6],
+['2025-11-08','OC','Amines','Physical Properties/POC',1],
+['2025-11-10','OC','Biomolecules','Carbohydrates/Proteins',1],
+['2025-11-11','OC','Biomolecules','Proteins/Vitamins/Nucleic Acids',2],
+['2025-12-24','OC','Polymers (Rec)','Classification/Polymerisation',1],
+['2025-12-26','OC','Everyday Life (Rec)','Drugs/Chemicals in Food',1],
+['2025-12-27','OC','Environmental (Rec)','Pollution/Green Chemistry',1],
+// ── MATHEMATICS (Prayas 2026 batch) ──
+['2025-06-09','M','Basic Maths','Number System',1],
+['2025-06-10','M','Basic Maths','Number System',2],
+['2025-06-11','M','Basic Maths','Number System',3],
+['2025-06-12','M','Basic Maths','Wavy Curve Method',4],
+['2025-06-13','M','Basic Maths','Wavy Curve Method',5],
+['2025-06-14','M','Basic Maths','Wavy Curve Method',6],
+['2025-06-16','M','Basic Maths','Logarithm',7],
+['2025-06-17','M','Basic Maths','Logarithm',8],
+['2025-06-18','M','Basic Maths','Logarithm',9],
+['2025-06-19','M','Basic Maths','Modulus',10],
+['2025-06-20','M','Basic Maths','Modulus',11],
+['2025-06-21','M','Basic Maths','Modulus',12],
+['2025-06-23','M','Basic Maths','Modulus',13],
+['2025-06-24','M','Quadratic Equations','Introduction',1],
+['2025-06-25','M','Quadratic Equations','Common Roots',2],
+['2025-06-26','M','Quadratic Equations','Theory of Equations',3],
+['2025-06-27','M','Quadratic Equations','Graph of ax²+bx+c',4],
+['2025-06-28','M','Quadratic Equations','Sign of ax²+bx+c',5],
+['2025-06-30','M','Quadratic Equations','Location of Roots',6],
+['2025-07-01','M','Quadratic Equations','Some Results',7],
+['2025-07-02','M','Quadratic Equations','Descartes\' Rule',8],
+['2025-07-03','M','Quadratic Equations','Descartes\' Rule',9],
+['2025-07-04','M','Sequence & Series','Introduction',1],
+['2025-07-05','M','Sequence & Series','AP',2],
+['2025-07-07','M','Sequence & Series','GP',3],
+['2025-07-08','M','Sequence & Series','HP',4],
+['2025-07-09','M','Sequence & Series','Insertion of Means',5],
+['2025-07-10','M','Sequence & Series','AGS',6],
+['2025-07-11','M','Sequence & Series','Method of Difference',7],
+['2025-07-12','M','Sequence & Series','Telescopic Series',8],
+['2025-07-14','M','Sequence & Series','Telescopic Series',9],
+['2025-07-15','M','Trig Functions','Introduction',1],
+['2025-07-16','M','Trig Functions','Basic Identities',2],
+['2025-07-17','M','Trig Functions','Domain & Range',3],
+['2025-07-18','M','Trig Functions','Allied Angles',4],
+['2025-07-19','M','Trig Functions','Transformation Formulae',5],
+['2025-07-21','M','Trig Functions','Transformation/Identities',6],
+['2025-07-22','M','Trig Functions','Max/Min Value',7],
+['2025-07-23','M','Trig Functions','Max/Min Value',8],
+['2025-07-24','M','Trig Equations','Introduction',1],
+['2025-07-25','M','Trig Equations','Solution',2],
+['2025-07-26','M','Trig Equations','Types',3],
+['2025-07-28','M','Trig Equations','Types',4],
+['2025-07-29','M','Trig Equations','Types',5],
+['2025-07-30','M','P & C','Introduction/Permutation',1],
+['2025-07-31','M','P & C','Circular Permutation/Combination',2],
+['2025-08-01','M','P & C','Divisors/Exponent',3],
+['2025-08-02','M','P & C','Division & Distribution',4],
+['2025-08-04','M','P & C','Division & Distribution',5],
+['2025-08-05','M','P & C','Derangement',6],
+['2025-08-06','M','P & C','Derangement',7],
+['2025-08-07','M','P & C','Some Rules',8],
+['2025-08-09','M','Binomial Theorem','Introduction',1],
+['2025-08-11','M','Binomial Theorem','General/Middle Terms',2],
+['2025-08-12','M','Binomial Theorem','Greatest Term',3],
+['2025-08-13','M','Binomial Theorem','Sum of Coefficients',4],
+['2025-08-14','M','Binomial Theorem','Multinomial Theorem',5],
+['2025-08-16','M','Binomial Theorem','Any Index',6],
+['2025-08-18','M','Straight Lines','Introduction/Section Formula',1],
+['2025-08-19','M','Straight Lines','Centres of Triangle',2],
+['2025-08-20','M','Straight Lines','Area & Locus',3],
+['2025-08-21','M','Straight Lines','Straight Line/Slope',4],
+['2025-08-22','M','Straight Lines','Standard Forms',5],
+['2025-08-23','M','Straight Lines','Angle Between Lines',6],
+['2025-08-25','M','Straight Lines','Perp Distance/Family',7],
+['2025-08-26','M','Straight Lines','Pair of Straight Lines',8],
+['2025-08-28','M','Straight Lines','Pair of Straight Lines',9],
+['2025-08-29','M','Circles','Introduction',1],
+['2025-08-30','M','Circles','Intercept/Position',2],
+['2025-09-01','M','Circles','Tangent/Normal',3],
+['2025-09-02','M','Circles','Pair of Tangents/Radical Axis',4],
+['2025-09-03','M','Circles','Family of Circles',5],
+['2025-09-04','M','Circles','Angle of Intersection',6],
+['2025-09-05','M','Circles','Circumscribing',7],
+['2025-09-06','M','Circles','Circumscribing',8],
+['2025-09-08','M','Parabola','Introduction',1],
+['2025-09-09','M','Parabola','Types/General Equation',2],
+['2025-09-10','M','Parabola','Position of Point/Line',3],
+['2025-09-11','M','Parabola','Tangent & Normal',4],
+['2025-09-12','M','Parabola','Chord of Contact',5],
+['2025-09-13','M','Parabola','Director Circle',6],
+['2025-09-15','M','Ellipse','Introduction',1],
+['2025-09-16','M','Ellipse','General Equation',2],
+['2025-09-17','M','Ellipse','Focal Distance',3],
+['2025-09-18','M','Ellipse','Tangent',4],
+['2025-09-19','M','Ellipse','Normal/Director Circle',5],
+['2025-09-20','M','Hyperbola','Introduction',1],
+['2025-09-22','M','Hyperbola','Focal Distance',2],
+['2025-09-23','M','Hyperbola','Tangent/Normal',3],
+['2025-09-24','M','Hyperbola','Asymptotes/Rect Hyperbola',4],
+['2025-09-25','M','Determinants','Introduction/Cofactors',1],
+['2025-09-26','M','Determinants','General Properties',2],
+['2025-09-27','M','Determinants','Addition/Product',3],
+['2025-09-29','M','Determinants','Solution of Equations',4],
+['2025-09-30','M','Matrices','Introduction/Types',1],
+['2025-10-01','M','Matrices','Trace/Operations',2],
+['2025-10-03','M','Matrices','Transpose',3],
+['2025-10-04','M','Matrices','Symmetric/Skew-Symmetric',4],
+['2025-10-06','M','Matrices','Orthogonal/Adjoint',5],
+['2025-10-07','M','Matrices','Inverse/Equation Solving',6],
+['2025-10-08','M','Sets','Introduction',1],
+['2025-10-09','M','Sets','Types & Operations',2],
+['2025-10-10','M','Sets','Algebra of Sets',3],
+['2025-10-11','M','Relations & Functions','Relation Types',1],
+['2025-10-13','M','Relations & Functions','Functions/Domain-Range',2],
+['2025-10-14','M','Relations & Functions','Types of Functions',3],
+['2025-10-15','M','Relations & Functions','Classification',4],
+['2025-10-16','M','Relations & Functions','Composite Function',5],
+['2025-10-17','M','Relations & Functions','Odd/Even Function',6],
+['2025-10-24','M','Relations & Functions','Period of Function',7],
+['2025-10-25','M','Relations & Functions','Inverse of Function',8],
+['2025-10-29','M','Relations & Functions','Some Graphs',9],
+['2025-10-30','M','Inverse Trig','Introduction',1],
+['2025-10-31','M','Inverse Trig','Domain & Range',2],
+['2025-11-01','M','Inverse Trig','Graph',3],
+['2025-11-03','M','Inverse Trig','Properties',4],
+['2025-11-04','M','Inverse Trig','Some Graphs',5],
+['2025-11-05','M','Limits/Continuity','Limit',1],
+['2025-11-06','M','Limits/Continuity','Limit',2],
+['2025-11-07','M','Limits/Continuity','Method Finding Limit',3],
+['2025-11-08','M','Limits/Continuity','Sandwich Theorem',4],
+['2025-11-10','M','Limits/Continuity','Continuity',5],
+['2025-11-11','M','Limits/Continuity','IMVT',6],
+['2025-11-12','M','Limits/Continuity','Differentiability',7],
+['2025-11-13','M','Limits/Continuity','Differentiability',8],
+['2025-11-14','M','Limits/Continuity','Differentiability',9],
+['2025-11-15','M','Differentiation','Differentiation',1],
+['2025-11-17','M','Differentiation','Differentiation',2],
+['2025-11-18','M','Differentiation','Differentiation',3],
+['2025-11-19','M','Differentiation','Differentiation',4],
+['2025-11-20','M','Indefinite Integration','Introduction',1],
+['2025-11-21','M','Indefinite Integration','Integration by Substitution',2],
+['2025-11-22','M','Indefinite Integration','Integration by Parts',3],
+['2025-11-24','M','Indefinite Integration','Algebraic Function',4],
+['2025-11-25','M','Indefinite Integration','Trig/Irrational Forms',5],
+['2025-11-26','M','Application of Deriv','Rate of Change/Tangent',1],
+['2025-11-27','M','Application of Deriv','Shortest Distance',2],
+['2025-11-28','M','Application of Deriv','Monotonicity',3],
+['2025-11-29','M','Application of Deriv','Maxima & Minima',4],
+['2025-12-01','M','Application of Deriv','Concavity/Rolle\'s Theorem',5],
+['2025-12-02','M','Application of Deriv','LMVT/Curve Sketching',6],
+['2025-12-03','M','Definite Integration','Introduction',1],
+['2025-12-04','M','Definite Integration','Properties',2],
+['2025-12-05','M','Definite Integration','Newton-Leibniz',3],
+['2025-12-06','M','Definite Integration','Limit as a Sum',4],
+['2025-12-08','M','Definite Integration','Gamma Function',5],
+['2025-12-09','M','Application of Integrals','Area Between Curves',1],
+['2025-12-10','M','Application of Integrals','Curve Sketching',2],
+['2025-12-11','M','Differential Equations','Introduction',1],
+['2025-12-12','M','Differential Equations','Solution',2],
+['2025-12-13','M','Differential Equations','Orthogonal Trajectory',3],
+['2025-12-15','M','Differential Equations','Applications',4],
+['2025-12-16','M','Vector Algebra','Introduction/Types',1],
+['2025-12-17','M','Vector Algebra','Collinear Vectors',2],
+['2025-12-18','M','Vector Algebra','Coplanar Vectors',3],
+['2025-12-19','M','Vector Algebra','Dot & Cross Product',4],
+['2025-12-19','M','Vector Algebra','Scalar Triple Product',5],
+['2025-12-20','M','Vector Algebra','Reciprocal System',6],
+['2025-12-20','M','3D Geometry','Introduction',1],
+['2025-12-22','M','3D Geometry','Direction Cosines',2],
+['2025-12-23','M','3D Geometry','Angle/Plane',3],
+['2025-12-24','M','3D Geometry','Area/Planes',4],
+['2025-12-26','M','3D Geometry','Family of Planes',5],
+['2025-12-26','M','Complex Numbers','Introduction',1],
+['2025-12-27','M','Complex Numbers','Argand Plane',2],
+['2025-12-27','M','Complex Numbers','Modulus & Argument',3],
+['2025-12-29','M','Complex Numbers','De Moivre\'s Theorem',4],
+['2025-12-30','M','Complex Numbers','nth Root of Unity',5],
+['2025-12-31','M','Complex Numbers','Geometry of Complex',6],
+['2026-01-02','M','Probability','Introduction',1],
+['2026-01-03','M','Probability','Probability',2],
+['2026-01-05','M','Probability','Some Theorems',3],
+['2026-01-06','M','Probability','Conditional Probability',4],
+['2026-01-07','M','Probability','Baye\'s Theorem',5],
+['2026-01-08','M','Probability','Binomial Distribution',6],
+['2026-01-09','M','Statistics','Introduction',1],
+['2026-01-10','M','Statistics','Mean/Mode/Variance',2],
+['2026-01-12','M','Solution of Triangle','Sine/Cosine Rule',1],
+['2026-01-13','M','Solution of Triangle','Napier\'s Analogy',2],
+['2026-01-15','M','Solution of Triangle','Regular Polygon',3],
+// ── TESTS (Prayas 2026 batch) ──
+['2025-06-29','TEST','JEE Main-1','Part Test JEE Main',1],
+['2025-07-13','TEST','JEE Main-2','Part Test JEE Main',2],
+['2025-07-27','TEST','JEE Main-3','Part Test JEE Main',3],
+['2025-08-10','TEST','JEE Advanced-1','Part Test JEE Advanced',4],
+['2025-08-24','TEST','JEE Main-4','Part Test JEE Main',5],
+['2025-09-07','TEST','JEE Main-5','Part Test JEE Main',6],
+['2025-09-21','TEST','AITS-1','Part Test Main',7],
+['2025-09-28','TEST','AITS-2','Part Test Advanced',8],
+['2025-10-05','TEST','JEE Advanced-2','Part Test JEE Advanced',9],
+['2025-10-26','TEST','JEE Main-6','Part Test JEE Main',10],
+['2025-11-02','TEST','AITS-3','Part Test Main',11],
+['2025-11-16','TEST','AITS-4','Part Test Advanced',12],
+['2025-11-30','TEST','JEE Main-7','Part Test JEE Main',13],
+['2025-12-07','TEST','AITS-5','Part Test Main',14],
+['2025-12-28','TEST','AITS-6','Part Test Main',15],
+['2026-01-04','TEST','JEE Main-8','Part Test JEE Main',16],
+['2026-01-11','TEST','AITS-7','Part Test Main',17],
+['2026-01-13','TEST','AITS-8','Full Syllabus Main',18],
+['2026-01-15','TEST','AITS-9','Full Syllabus Main',19],
+['2026-01-18','TEST','AITS-10','Full Syllabus Main',20],
+['2026-01-20','TEST','AITS-11','Full Syllabus Main',21],
+['2026-02-08','TEST','AITS-12','Full Syllabus Main',22],
+['2026-02-15','TEST','AITS-13','Full Syllabus Main',23],
+['2026-02-22','TEST','AITS-14','Full Test Advanced',24],
+['2026-03-01','TEST','AITS-15','Full Test Main',25],
+['2026-03-08','TEST','AITS-16','Full Test Advanced',26],
+['2026-03-22','TEST','AITS-17','Full Test Main',27],
+['2026-03-29','TEST','AITS-18','Full Test Main',28],
+['2026-04-19','TEST','AITS-19','Full Test Advanced',29],
+['2026-04-26','TEST','AITS-20','Full Test Advanced',30],
+['2026-05-03','TEST','AITS-21','Full Test Advanced',31],
+['2026-05-10','TEST','AITS-22','Full Test Advanced',32],
+['2026-05-17','TEST','AITS-23','Full Test Advanced',33]
+];
+
+var tasksDoneState = {};
+var taskFilterCurrent = 'all';
+var TASKS_PAGE_SIZE = 7;
+var tasksShowCount = TASKS_PAGE_SIZE;
+
+function shiftTaskDate(dateISO, subCode){
+  var parts = dateISO.split('-');
+  var y = parseInt(parts[0]), m = parseInt(parts[1])-1, d = parseInt(parts[2]);
+  if(subCode === 'P'){
+    if(y === 2024) y = 2025;
+    else if(y === 2025) y = 2027;
+  } else {
+    if(y === 2025) y = 2026;
+    else if(y === 2026) y = 2027;
+  }
+  return new Date(y, m, d);
+}
+
+function getTaskLabel(subCode){
+  var map = {P:'Physics',PC:'Phys. Chem',IC:'Inorg. Chem',OC:'Org. Chem',M:'Maths',TEST:'Test'};
+  return map[subCode]||subCode;
+}
+function getTaskTagClass(subCode){
+  var map = {P:'tag-phy',PC:'tag-pc',IC:'tag-ioc',OC:'tag-oc',M:'tag-math',TEST:'tag-test'};
+  return map[subCode]||'tag-phy';
+}
+function getTaskEmoji(subCode){
+  var map = {P:'⚡',PC:'🔬',IC:'⚗️',OC:'🌿',M:'📐',TEST:'📝'};
+  return map[subCode]||'📖';
+}
+function fmtTaskDate(d){
+  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+}
+
+function buildTaskList(){
+  var today = new Date(); today.setHours(0,0,0,0);
+  var list = [];
+  TASK_DATA_RAW.forEach(function(r, idx){
+    var shifted = shiftTaskDate(r[0], r[1]);
+    if(shifted >= today){
+      var isTest = (r[1]==='TEST');
+      list.push({
+        id: 'task_'+idx,
+        date: shifted,
+        sub: r[1],
+        chapter: r[2],
+        topic: r[3],
+        num: r[4],
+        type: isTest ? 'test' : 'lecture',
+        title: isTest ? r[2] : r[2]+' L'+r[4]+' — '+r[3]
+      });
+    }
+  });
+  list.sort(function(a,b){ return a.date-b.date; });
+  return list;
+}
+
+function setTaskFilter(code, btn){
+  taskFilterCurrent = code;
+  tasksShowCount = TASKS_PAGE_SIZE;
+  document.querySelectorAll('#taskFilters .acs-fbtn').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderTasks();
+}
+
+function showMoreTasks(){
+  tasksShowCount += 20;
+  renderTasks();
+}
+
+function toggleTask(id){
+  tasksDoneState[id] = !tasksDoneState[id];
+  try{ localStorage.setItem('jee_tasks_done', JSON.stringify(tasksDoneState)); }catch(e){}
+  renderTasks();
+}
+
+function renderTasks(){
+  try{
+    var raw = localStorage.getItem('jee_tasks_done');
+    if(raw) tasksDoneState = JSON.parse(raw);
+  }catch(e){}
+  
+  var all = buildTaskList();
+  var filtered = taskFilterCurrent === 'all' ? all : all.filter(function(t){ return t.sub === taskFilterCurrent; });
+  var total = filtered.length;
+  var doneCount = filtered.filter(function(t){ return tasksDoneState[t.id]; }).length;
+  
+  document.getElementById('taskCounter').textContent = doneCount+'/'+total+' done';
+  
+  var shown = filtered.slice(0, tasksShowCount);
+  var container = document.getElementById('tasksList');
+  container.innerHTML = '';
+  
+  shown.forEach(function(task){
+    var isDone = !!tasksDoneState[task.id];
+    var div = document.createElement('div');
+    div.className = 'task-item' + (isDone ? ' done' : '');
+    div.onclick = function(){ toggleTask(task.id); };
+    
+    var chk = document.createElement('div');
+    chk.className = 'task-chk';
+    chk.textContent = isDone ? '✓' : '';
+    
+    var body = document.createElement('div');
+    body.className = 'task-body';
+    
+    var dateDiv = document.createElement('div');
+    dateDiv.className = 'task-date';
+    dateDiv.textContent = fmtTaskDate(task.date);
+    
+    var titleDiv = document.createElement('div');
+    titleDiv.className = 'task-title';
+    titleDiv.textContent = (task.type==='test'?'📝 ':'📖 ') + task.title;
+    
+    var subDiv = document.createElement('div');
+    subDiv.className = 'task-sub';
+    var tagSpan = document.createElement('span');
+    tagSpan.className = 'task-tag '+getTaskTagClass(task.sub);
+    tagSpan.textContent = getTaskEmoji(task.sub)+' '+getTaskLabel(task.sub);
+    if(task.type !== 'test'){
+      tagSpan.textContent += ' • Lecture '+task.num;
+    }
+    subDiv.appendChild(tagSpan);
+    
+    body.appendChild(dateDiv);
+    body.appendChild(titleDiv);
+    body.appendChild(subDiv);
+    div.appendChild(chk);
+    div.appendChild(body);
+    container.appendChild(div);
+  });
+  
+  var moreBtn = document.getElementById('tasksMoreBtn');
+  if(tasksShowCount < total){
+    moreBtn.style.display = 'block';
+    moreBtn.textContent = '⬇ See More ('+(total-tasksShowCount)+' more remaining)';
+  } else {
+    moreBtn.style.display = 'none';
+  }
 }
 </script>
 
