@@ -136,6 +136,9 @@ body.dark select{background:#111118;color:var(--text);}
 /* Dark mode toggle button */
 .dm-btn{background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 8px;cursor:pointer;font-size:16px;line-height:1;transition:all .2s;}
 body.dark .dm-btn{background:#2a2a3a;border-color:#3a3a4a;}
+/* Dark mode — notification modal */
+body.dark #notifModal > div > div:first-child { background: #2a2a3a !important; }
+body.dark #notifScheduleBox { color: var(--text); }
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:15px;overscroll-behavior:none;}
 
 /* LOGIN */
@@ -666,6 +669,7 @@ body.deep-work .dw-overlay{display:flex;}
   </div>
   <div class="tb-right">
     <div class="streak-badge" id="streakBadge">⭐ 0</div>
+    <button class="dm-btn" id="notifBellBtn" onclick="openNotifSettings()" title="Notifications set karo" style="font-size:16px;">🔔</button>
     <button class="dm-btn" id="dmToggleBtn" onclick="toggleDarkMode()" title="Dark/Light Mode">🌙</button>
     <button id="logoutBtn" onclick="confirmLogout()" style="background:transparent;border:1px solid var(--border);color:var(--text2);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif;">🚪 Logout</button>
     <button id="loginFromGuestBtn" onclick="loginFromGuest()" style="display:none;background:var(--blue);border:none;color:#fff;font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700;font-family:'Inter',sans-serif;">🔑 Login Karo</button>
@@ -1260,6 +1264,24 @@ body.deep-work .dw-overlay{display:flex;}
       <button onclick="closeLogoutModal()" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Cancel</button>
       <button onclick="doLogout()" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Logout</button>
     </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION SETTINGS MODAL -->
+<div id="notifModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.55);align-items:flex-end;justify-content:center;">
+  <div style="background:var(--white);border-radius:24px 24px 0 0;padding:24px 20px 32px;max-width:480px;width:100%;box-shadow:0 -8px 40px rgba(0,0,0,0.25);max-height:90vh;overflow-y:auto;">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 20px;"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div style="font-size:18px;font-weight:900;color:var(--text);">🔔 Daily Reminders</div>
+      <button onclick="closeNotifModal()" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:16px;font-family:'Inter',sans-serif;">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:18px;line-height:1.5;">Roz tujhe yaad dilayenge — padhai ka time, streak mat todna, aur motivation! 🔥</div>
+    <div id="notifStatus" style="font-size:12px;font-weight:700;color:var(--text2);padding:10px 14px;background:var(--bg);border-radius:10px;border:1.5px solid var(--border);margin-bottom:14px;">🔕 Notifications abhi off hain</div>
+    <button id="notifEnableBtn" onclick="enableNotifications()" style="width:100%;padding:13px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:18px;">🔔 Notifications Enable Karo</button>
+    <div style="font-size:11px;font-weight:800;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;">📅 Reminder Schedule</div>
+    <div id="notifScheduleBox"></div>
+    <button onclick="sendTestNotification()" style="width:100%;margin-top:16px;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--blue);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🧪 Test Notification Bhejo</button>
+    <div style="margin-top:14px;padding:10px 12px;background:var(--bluelt);border-radius:10px;font-size:11px;color:var(--blue);line-height:1.6;"><b>💡 Tip:</b> Pehli baar browser permissions allow karni padegi. Uske baad notifications background mein bhi aayengi!</div>
   </div>
 </div>
 
@@ -4561,6 +4583,265 @@ if('serviceWorker' in navigator){
     });
   });
 }
+
+// ═══════════════════════════════════════
+// 🔔 PUSH NOTIFICATION SYSTEM
+// JEE99ile — Daily Reminders
+// ═══════════════════════════════════════
+
+(function(){
+  // ── Config ──
+  var NOTIF_KEY    = 'jee_notif_settings';
+  var SCHEDULE_KEY = 'jee_notif_schedule';
+
+  // Default notification schedule (user can customise)
+  var DEFAULT_SCHEDULE = [
+    { id:'morning', hour:7,  min:0,  label:'🌅 Morning Kick',   enabled:true  },
+    { id:'study',   hour:10, min:0,  label:'📚 Study Reminder', enabled:true  },
+    { id:'evening', hour:18, min:0,  label:'🌙 Evening Push',   enabled:true  },
+    { id:'night',   hour:22, min:0,  label:'🌛 Night Recap',    enabled:false }
+  ];
+
+  // Motivational messages (cycling)
+  var MSGS = [
+    { title:'🔥 Padhai ka time!', body:'IIT Bombay gate tera wait kar raha hai. 25 min focus karo abhi!' },
+    { title:'📚 JEE Reminder', body:'Aaj ka target pura karna hai. Timer start karo!' },
+    { title:'⚡ Physics time!', body:'Ek chapter aur. Consistency hi key hai bhai!' },
+    { title:'🧪 Chemistry padho!', body:'Weak chapters pe focus karo aaj. Revision karo!' },
+    { title:'📐 Maths session!', body:'Calculus ya Algebra? Kuch toh karo abhi!' },
+    { title:'🎯 Mock lagao aaj!', body:'Practice test se hi rank badhti hai. Arena kholo!' },
+    { title:'💪 Streak mat todo!', body:'Aaj bhi padho — kal IITian ban ke enjoy karna!' },
+    { title:'🚀 99 percentile!', body:'Sapna bada hai toh kaam bhi zyada karna padega!' }
+  ];
+
+  var _schedule = [];
+  var _timerIds = [];
+  var _notifGranted = false;
+  var _swReg = null;
+
+  // ── Load saved schedule ──
+  function loadSchedule(){
+    try {
+      var raw = localStorage.getItem(SCHEDULE_KEY);
+      _schedule = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+    } catch(e) {
+      _schedule = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));
+    }
+  }
+
+  function saveSchedule(){
+    try { localStorage.setItem(SCHEDULE_KEY, JSON.stringify(_schedule)); } catch(e){}
+  }
+
+  // ── Request permission ──
+  function requestPermission(cb){
+    if(!('Notification' in window)){ cb && cb(false); return; }
+    if(Notification.permission === 'granted'){ _notifGranted=true; cb && cb(true); return; }
+    if(Notification.permission === 'denied'){ cb && cb(false); return; }
+    Notification.requestPermission().then(function(p){
+      _notifGranted = (p === 'granted');
+      cb && cb(_notifGranted);
+    });
+  }
+
+  // ── Show a notification (via SW if available, else fallback) ──
+  function showNotif(title, body){
+    var opts = { body: body, icon: '/icon-192.png', badge: '/icon-192.png',
+                 vibrate: [200,100,200], tag: 'jee-reminder', requireInteraction: false };
+    if(_swReg && _swReg.showNotification){
+      _swReg.showNotification(title, opts);
+    } else if(_notifGranted) {
+      new Notification(title, opts);
+    }
+  }
+
+  // ── Get today's streak & study info for notification body ──
+  function buildNotifBody(baseMsg){
+    var streak = 0;
+    try { streak = (typeof calcStreak === 'function') ? calcStreak() : 0; } catch(e){}
+    var k = (new Date()).toISOString().split('T')[0];
+    var todayStudy = (typeof studyData !== 'undefined' && studyData[k])
+      ? (studyData[k].physics||0)+(studyData[k].chemistry||0)+(studyData[k].maths||0) : 0;
+    var hoursToday = Math.floor(todayStudy / 3600);
+    var suffix = '';
+    if(streak > 0)  suffix += ' 🔥 '+streak+' din streak!';
+    if(hoursToday > 0) suffix += ' ⏱️ Aaj '+hoursToday+'h padha.';
+    return baseMsg + (suffix ? '\n'+suffix : '');
+  }
+
+  // ── Schedule daily alarms using setTimeout ──
+  function scheduleDailyAlarms(){
+    // Clear old timers
+    _timerIds.forEach(function(id){ clearTimeout(id); });
+    _timerIds = [];
+
+    if(!_notifGranted) return;
+
+    var now = new Date();
+    _schedule.forEach(function(alarm){
+      if(!alarm.enabled) return;
+      var next = new Date();
+      next.setHours(alarm.hour, alarm.min, 0, 0);
+      if(next <= now) next.setDate(next.getDate() + 1); // schedule for tomorrow if time has passed today
+      var ms = next - now;
+
+      var tid = setTimeout(function fire(){
+        var msgIdx = Math.floor(Math.random() * MSGS.length);
+        var m = MSGS[msgIdx];
+        showNotif(m.title, buildNotifBody(m.body));
+        // Re-schedule for next day
+        var nxt2 = setTimeout(fire, 24 * 60 * 60 * 1000);
+        _timerIds.push(nxt2);
+      }, ms);
+      _timerIds.push(tid);
+    });
+  }
+
+  // ── Test notification (fires immediately) ──
+  window.sendTestNotification = function(){
+    if(!_notifGranted){ alert('Pehle notifications allow karo!'); return; }
+    var m = MSGS[Math.floor(Math.random() * MSGS.length)];
+    showNotif(m.title, buildNotifBody(m.body));
+    showToast('✅ Test notification bheji!', 2000);
+  };
+
+  // ── Render the notification settings modal ──
+  function renderNotifModal(){
+    var box = document.getElementById('notifScheduleBox');
+    if(!box) return;
+    var html = '';
+    _schedule.forEach(function(alarm, i){
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">'
+        + '<div style="flex:1;">'
+        +   '<div style="font-size:13px;font-weight:700;color:var(--text);">'+alarm.label+'</div>'
+        +   '<div style="font-size:11px;color:var(--text2);">Roz '+p2(alarm.hour)+':'+p2(alarm.min)+'</div>'
+        + '</div>'
+        + '<input type="time" value="'+p2(alarm.hour)+':'+p2(alarm.min)+'" '
+        +   'style="padding:5px 8px;border-radius:8px;border:1.5px solid var(--border);font-family:Inter,sans-serif;font-size:13px;color:var(--text);background:var(--white);" '
+        +   'onchange="window._notifSetTime('+i+',this.value)">'
+        + '<label style="position:relative;width:44px;height:24px;cursor:pointer;display:inline-block;">'
+        +   '<input type="checkbox" '+(alarm.enabled?'checked':'')
+        +     ' onchange="window._notifToggle('+i+',this.checked)" style="opacity:0;width:0;height:0;">'
+        +   '<span style="position:absolute;inset:0;background:'+(alarm.enabled?'var(--blue)':'#d1d5db')+';border-radius:24px;transition:.3s;" id="notifSlider'+i+'">'
+        +   '<span style="position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;left:'+(alarm.enabled?'23px':'3px')+';top:3px;transition:.3s;" id="notifThumb'+i+'"></span>'
+        +   '</span>'
+        + '</label>'
+        + '</div>';
+    });
+    box.innerHTML = html;
+  }
+
+  // Expose callbacks for inline HTML
+  window._notifToggle = function(idx, val){
+    _schedule[idx].enabled = val;
+    saveSchedule();
+    scheduleDailyAlarms();
+    renderNotifModal(); // re-render to update toggle colors
+  };
+  window._notifSetTime = function(idx, val){
+    var parts = val.split(':');
+    _schedule[idx].hour = parseInt(parts[0])||0;
+    _schedule[idx].min  = parseInt(parts[1])||0;
+    saveSchedule();
+    scheduleDailyAlarms();
+  };
+
+  // ── Open/close notification modal ──
+  window.openNotifSettings = function(){
+    var modal = document.getElementById('notifModal');
+    if(!modal) return;
+
+    // Sync current permission state
+    var status = document.getElementById('notifStatus');
+    var btn    = document.getElementById('notifEnableBtn');
+    if('Notification' in window){
+      if(Notification.permission === 'granted'){
+        _notifGranted = true;
+        if(status) status.textContent = '🔔 Notifications ON — Roz reminders aayenge!';
+        if(btn){ btn.textContent='✅ Enabled'; btn.style.background='var(--green)'; btn.disabled=true; }
+      } else if(Notification.permission === 'denied'){
+        if(status) status.textContent = '❌ Browser ne block kar diya. Settings mein manually allow karo.';
+        if(btn){ btn.textContent='🔔 Notifications Enable Karo'; btn.style.background='var(--blue)'; btn.disabled=false; }
+      } else {
+        if(status) status.textContent = '🔕 Notifications abhi off hain — enable karo!';
+        if(btn){ btn.textContent='🔔 Notifications Enable Karo'; btn.style.background='var(--blue)'; btn.disabled=false; }
+      }
+    } else {
+      if(status) status.textContent = '⚠️ Ye browser notifications support nahi karta.';
+      if(btn) btn.disabled = true;
+    }
+
+    renderNotifModal();
+    modal.style.display = 'flex';
+  };
+  window.closeNotifModal = function(){
+    var modal = document.getElementById('notifModal');
+    if(modal) modal.style.display = 'none';
+  };
+
+  // Close on backdrop click
+  document.addEventListener('click', function(e){
+    var modal = document.getElementById('notifModal');
+    if(modal && e.target === modal) modal.style.display = 'none';
+  });
+
+  // ── Enable notifications flow ──
+  window.enableNotifications = function(){
+    requestPermission(function(granted){
+      if(granted){
+        scheduleDailyAlarms();
+        renderNotifModal();
+        var btn = document.getElementById('notifEnableBtn');
+        var status = document.getElementById('notifStatus');
+        if(btn){ btn.textContent = '✅ Enabled'; btn.style.background='var(--green)'; btn.disabled=true; }
+        if(status) status.textContent = '🔔 Notifications ON — Roz reminders aayenge!';
+        showToast('🔔 Notifications enabled! Roz yaad dilayenge.', 3000);
+      } else {
+        var status = document.getElementById('notifStatus');
+        if(status) status.textContent = '❌ Permission nahi mili. Browser settings mein allow karo.';
+      }
+    });
+  };
+
+  // ── Toast helper (reuse if exists, else simple alert) ──
+  function showToast(msg, ms){
+    if(typeof window.showStatus === 'function'){
+      // Reuse existing status bar
+      var el = document.getElementById('syncStatus');
+      if(el){ var old=el.textContent; el.textContent=msg; setTimeout(function(){el.textContent=old;},ms||2000); return; }
+    }
+    // Fallback mini toast
+    var t = document.createElement('div');
+    t.textContent = msg;
+    Object.assign(t.style, {
+      position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)',
+      background:'#111', color:'#fff', padding:'10px 18px', borderRadius:'10px',
+      fontSize:'13px', fontWeight:'700', zIndex:'9999', pointerEvents:'none',
+      boxShadow:'0 4px 16px rgba(0,0,0,0.3)'
+    });
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, ms || 2500);
+  }
+
+  // ── Init: get SW registration and check existing permission ──
+  window.addEventListener('load', function(){
+    loadSchedule();
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.ready.then(function(reg){ _swReg = reg; });
+    }
+    if(Notification.permission === 'granted'){
+      _notifGranted = true;
+      scheduleDailyAlarms();
+    }
+    // Update bell icon in top bar based on permission
+    var bellBtn = document.getElementById('notifBellBtn');
+    if(bellBtn) bellBtn.title = Notification.permission === 'granted' ? 'Notifications ON 🔔' : 'Notifications set karo';
+  });
+
+  // Make schedule accessible globally for debugging
+  window._getNotifSchedule = function(){ return _schedule; };
+
+})();
 // Jab bhi app background mein jaye ya band ho — timer save karo
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'hidden'){
