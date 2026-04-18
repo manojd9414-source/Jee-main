@@ -88,6 +88,43 @@ body.dark .err-item{background:#1f0a0a;border-color:#7f1d1d;}
 .tasks-more-btn:active{background:var(--bluelt);}
 body.dark .task-item{background:#1a1a24;border-color:#2a2a3a;}
 body.dark .tasks-more-btn{background:#1a1a24;border-color:#2a2a3a;}
+
+/* REVISION TRACKER */
+.rev-sub-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.rev-sub-tab{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.rev-sub-tab.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.rev-prog-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.rev-prog-label{font-size:11px;font-weight:700;color:var(--text2);min-width:80px;}
+.rev-prog-bg{flex:1;background:var(--border);border-radius:99px;height:8px;overflow:hidden;}
+.rev-prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .4s;}
+.rev-prog-pct{font-size:11px;font-weight:800;color:var(--blue);min-width:30px;text-align:right;}
+.rev-ch-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;margin-bottom:6px;}
+.rev-ch-name{flex:1;font-size:13px;font-weight:700;color:var(--text);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rev-stages{display:flex;gap:5px;flex-shrink:0;}
+.rev-stage-btn{width:30px;height:30px;border-radius:7px;border:1.5px solid var(--border);background:#fff;font-size:10px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Inter',sans-serif;color:var(--text3);}
+.rev-stage-btn.s1.on{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8;}
+.rev-stage-btn.s2.on{background:#fef9c3;border-color:#ca8a04;color:#854d0e;}
+.rev-stage-btn.s3.on{background:var(--greenlt);border-color:var(--green);color:var(--green);}
+/* Revision Count widget */
+.rev-count-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;}
+.rev-count-label{font-size:8px;font-weight:800;color:var(--text3);letter-spacing:.3px;text-transform:uppercase;line-height:1;}
+.rev-count-row{display:flex;align-items:center;gap:3px;}
+.rev-count-num{min-width:22px;height:22px;border-radius:6px;background:var(--purplelt);color:var(--purple);font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;border:1.5px solid #ddd6fe;}
+.rev-count-num.hot{background:#fdf4ff;color:#9333ea;border-color:#e879f9;}
+.rev-cnt-btn{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);background:#fff;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);font-family:'Inter',sans-serif;line-height:1;transition:all .15s;padding:0;}
+.rev-cnt-btn.plus{border-color:#c084fc;color:#9333ea;background:#fdf4ff;}
+.rev-cnt-btn.plus:active{background:#e879f9;color:#fff;}
+.rev-cnt-btn.minus{font-size:12px;}
+.rev-cnt-btn.minus:active{background:var(--redlt);border-color:var(--red);color:var(--red);}
+body.dark .rev-ch-item{background:#1a1a24;border-color:#2a2a3a;}
+body.dark .rev-stage-btn{background:#111118;border-color:#2a2a3a;color:var(--text3);}
+body.dark .rev-sub-tab{border-color:#2a2a3a;color:var(--text2);}
+body.dark .rev-count-num{background:#2e1065;border-color:#7c3aed;color:#c084fc;}
+body.dark .rev-cnt-btn{background:#111118;border-color:#2a2a3a;color:var(--text3);}
+body.dark .rev-cnt-btn.plus{background:#2e1065;border-color:#7c3aed;color:#c084fc;}
+.rev-legend{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.rev-leg-item{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--text2);}
+.rev-leg-dot{width:10px;height:10px;border-radius:3px;}
 body.dark .fc-back{background:#1a1a24;border-color:#2a2a3a;}
 body.dark .fc-back .fc-a{color:#818cf8;}
 body.dark .hm-cell{border-color:#2a2a3a!important;}
@@ -122,7 +159,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .streak-badge{display:flex;align-items:center;gap:4px;background:var(--orangelt);border:1px solid #fed7aa;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700;color:var(--orange);}
 
 /* MAIN WRAP */
-.wrap{max-width:520px;margin:0 auto;padding:70px 14px 90px;}
+.wrap{max-width:520px;margin:0 auto;padding:70px 14px 100px;}
 
 /* CARDS */
 .card{background:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow2);border:1px solid var(--border);}
@@ -145,14 +182,18 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .cd-sel{width:100%;margin-top:8px;padding:6px 8px;border-radius:8px;border:1px solid #c7d2fe;background:#fff;font-size:13px;font-weight:600;color:var(--blue);outline:none;font-family:'Inter',sans-serif;}
 
 /* BOTTOM NAV */
-#bottomNav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:#fff;border-top:1px solid var(--border);display:flex;box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding-bottom:env(safe-area-inset-bottom);}
-.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-family:'Inter',sans-serif;transition:color .15s;touch-action:manipulation;-webkit-tap-highlight-color:rgba(79,70,229,.12);}
+#bottomNav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:#fff;border-top:1px solid var(--border);display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding-bottom:env(safe-area-inset-bottom);}
+#bottomNav::-webkit-scrollbar{display:none;}
+.nav-btn{flex:0 0 auto;min-width:56px;padding:5px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:1px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-family:'Inter',sans-serif;transition:color .15s;touch-action:manipulation;-webkit-tap-highlight-color:rgba(79,70,229,.12);}
 .nav-btn.on{color:var(--blue);}
-.nav-icon{font-size:19px;line-height:1;}
-.nav-label{font-size:9px;font-weight:700;letter-spacing:.3px;}
+.nav-icon{font-size:16px;line-height:1;}
+.nav-label{font-size:8px;font-weight:700;letter-spacing:.3px;white-space:nowrap;}
 
 /* SECTIONS */
 .sec{display:none;}.sec.on{display:block;}
+#sec-revise,#sec-tasks{padding-bottom:40px;}
+#revChList{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#tasksList,#completedList{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
 /* STUDY TIMER */
 .timer-hero{background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:var(--r);padding:24px 16px;text-align:center;margin-bottom:12px;color:#fff;}
@@ -1059,6 +1100,41 @@ body.deep-work .dw-overlay{display:flex;}
     </div>
   </div>
 
+  <!-- REVISION TRACKER SECTION -->
+  <div class="sec" id="sec-revise">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="card-title" style="margin-bottom:0;">📓 Revision Tracker</div>
+        <div id="revTotalBadge" style="font-size:11px;font-weight:800;color:var(--purple);"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:12px;">Har chapter ke liye teen stages track karo</div>
+
+      <!-- Legend -->
+      <div class="rev-legend">
+        <div class="rev-leg-item"><div class="rev-leg-dot" style="background:#3b82f6;"></div>1st Read</div>
+        <div class="rev-leg-item"><div class="rev-leg-dot" style="background:#ca8a04;"></div>Revision</div>
+        <div class="rev-leg-item"><div class="rev-leg-dot" style="background:var(--green);"></div>Mock Done</div>
+      </div>
+
+      <!-- Subject tabs -->
+      <div class="rev-sub-tabs">
+        <button class="rev-sub-tab on" onclick="setRevSub('physics',this)">⚡ Physics</button>
+        <button class="rev-sub-tab" onclick="setRevSub('chemistry',this)">🧪 Chemistry</button>
+        <button class="rev-sub-tab" onclick="setRevSub('maths',this)">📐 Maths</button>
+      </div>
+
+      <!-- Progress bar -->
+      <div id="revProgRow" class="rev-prog-row">
+        <div class="rev-prog-label" id="revProgLabel">Physics</div>
+        <div class="rev-prog-bg"><div class="rev-prog-fill" id="revProgFill" style="width:0%"></div></div>
+        <div class="rev-prog-pct" id="revProgPct">0%</div>
+      </div>
+
+      <!-- Chapter list -->
+      <div id="revChList"></div>
+    </div>
+  </div>
+
 </div><!-- end .wrap -->
 
 <!-- BOTTOM NAV -->
@@ -1070,6 +1146,7 @@ body.deep-work .dw-overlay{display:flex;}
   <button class="nav-btn" onclick="showNav('stats',this)"><div class="nav-icon">📊</div><div class="nav-label">Stats</div></button>
   <button class="nav-btn" onclick="showNav('ai',this)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></button>
   <button class="nav-btn" onclick="showNav('tasks',this)"><div class="nav-icon">📋</div><div class="nav-label">Tasks</div></button>
+  <button class="nav-btn" onclick="showNav('revise',this)"><div class="nav-icon">📓</div><div class="nav-label">Revise</div></button>
 </div>
 
 <!-- LOGOUT CONFIRM MODAL -->
@@ -1331,23 +1408,44 @@ setInterval(tick,1000); tick();
 // ═══════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════
-function showNav(name,btn){
+var _currentNavSection = 'home';
+var _currentNavBtn = null;
+
+function showNav(name, btn, skipHistory){
   document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('on');});
   var sec=document.getElementById('sec-'+name);
   if(sec) sec.classList.add('on');
   btn.classList.add('on');
+  _currentNavSection = name;
+  _currentNavBtn = btn;
+  // Push to history so Android back button works
+  if(!skipHistory){
+    history.pushState({section: name}, '', '#'+name);
+  }
   if(name==='syl'){renderSylChapList();updProg();}
   if(name==='timer'){renderStudyUI();renderPlanChapList();}
   if(name==='stats'){renderStats();renderArenaChapterStats();renderHeatmap();renderErrorBook();renderBadges();refreshLeaderboard();renderDailyArenaStats();}
+  if(name==='revise'){renderRevTracker();}
   if(name==='home'){renderChecklist();renderBadges();renderSpacedRepReminders();}
   if(name==='tasks'){renderTasks();}
 }
+
+// Handle Android/browser back button via popstate
+window.addEventListener('popstate', function(e){
+  var section = (e.state && e.state.section) ? e.state.section : 'home';
+  var navBtn = document.querySelector('.nav-btn[onclick*="\''+section+'\'"]');
+  if(navBtn){
+    showNav(section, navBtn, true);
+  }
+});
 
 // ═══════════════════════════════════════
 // INIT & SAVE
 // ═══════════════════════════════════════
 window.initApp = async function(){
+  // Seed initial history entry so popstate always has a home to return to
+  history.replaceState({section:'home'}, '', '#home');
   window.showStatus('loading');
   done={}; mocks=[]; studyData={}; arenaChapterStats={}; dailyArenaStats={}; checklist=[]; errorBook=[]; spacedRep={}; lecLinks={};
 
@@ -4070,9 +4168,227 @@ function renderTasks(){
 </script>
 
 <script>
+// ═══════════════════════════════════════
+// REVISION TRACKER
+// ═══════════════════════════════════════
+// State: revState[sub][chIdx] = 0-7 (3 bits: bit0=read, bit1=revision, bit2=mock)
+var revState = {};
+var revCount = {}; // revCount[sub][chIdx] = number of revisions done
+var revCurrentSub = 'physics';
 
-// SERVICE WORKER -->
+function revLoad(){
+  try{
+    var raw = localStorage.getItem('jee_rev_state');
+    if(raw) revState = JSON.parse(raw);
+  }catch(e){}
+  try{
+    var rc = localStorage.getItem('jee_rev_count');
+    if(rc) revCount = JSON.parse(rc);
+  }catch(e){}
+  ['physics','chemistry','maths'].forEach(function(s){
+    if(!revState[s]) revState[s] = {};
+    if(!revCount[s]) revCount[s] = {};
+  });
+}
+
+function revSave(){
+  try{ localStorage.setItem('jee_rev_state', JSON.stringify(revState)); }catch(e){}
+}
+
+function revCountSave(){
+  try{ localStorage.setItem('jee_rev_count', JSON.stringify(revCount)); }catch(e){}
+}
+
+function revGetStage(sub, idx){
+  return revState[sub][idx] || 0;
+}
+
+function revGetCount(sub, idx){
+  return revCount[sub][idx] || 0;
+}
+
+function revAddCount(sub, idx, delta){
+  var cur = revGetCount(sub, idx);
+  var nv = Math.max(0, cur + delta);
+  revCount[sub][idx] = nv;
+  revCountSave();
+  // Update just the count widget in-place (no full re-render, avoids flicker)
+  var numEl = document.getElementById('rcc-'+sub+'-'+idx);
+  var minBtn = document.getElementById('rcm-'+sub+'-'+idx);
+  if(numEl){
+    numEl.textContent = nv;
+    numEl.className = 'rev-count-num' + (nv >= 3 ? ' hot' : '');
+  }
+  if(minBtn) minBtn.style.display = nv > 0 ? 'flex' : 'none';
+}
+
+function revToggleStage(sub, idx, bit){
+  var cur = revGetStage(sub, idx);
+  var mask = 1 << bit;
+  // Stage gating: can't do revision without read, can't do mock without revision
+  if(bit === 1 && !(cur & 1)) return; // need read first
+  if(bit === 2 && !(cur & 2)) return; // need revision first
+  revState[sub][idx] = cur ^ mask;
+  // If un-checking, cascade down
+  if(!(revState[sub][idx] & mask)){
+    if(bit === 0){ revState[sub][idx] &= ~6; } // clear rev+mock
+    if(bit === 1){ revState[sub][idx] &= ~4; } // clear mock
+  }
+  revSave();
+  renderRevTracker();
+}
+
+function setRevSub(sub, btn){
+  revCurrentSub = sub;
+  document.querySelectorAll('.rev-sub-tab').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  renderRevTracker();
+}
+
+function revCalcProgress(sub){
+  var chs = SYL[sub].chapters;
+  var total = chs.length * 3; // 3 stages each
+  var done = 0;
+  chs.forEach(function(ch, i){
+    var s = revGetStage(sub, i);
+    if(s & 1) done++;
+    if(s & 2) done++;
+    if(s & 4) done++;
+  });
+  return total > 0 ? Math.round(done/total*100) : 0;
+}
+
+function revTotalDone(){
+  var d = 0, t = 0;
+  ['physics','chemistry','maths'].forEach(function(sub){
+    SYL[sub].chapters.forEach(function(ch, i){
+      t += 3;
+      var s = revGetStage(sub, i);
+      if(s & 1) d++;
+      if(s & 2) d++;
+      if(s & 4) d++;
+    });
+  });
+  return {done: d, total: t};
+}
+
+// Total revisions done across all subjects
+function revTotalCount(){
+  var n = 0;
+  ['physics','chemistry','maths'].forEach(function(sub){
+    Object.keys(revCount[sub]||{}).forEach(function(k){ n += revCount[sub][k]||0; });
+  });
+  return n;
+}
+
+function renderRevTracker(){
+  revLoad();
+  var sub = revCurrentSub;
+  var chs = SYL[sub].chapters;
+  var pct = revCalcProgress(sub);
+
+  // Progress bar
+  document.getElementById('revProgLabel').textContent = SYL[sub].name;
+  document.getElementById('revProgFill').style.width = pct + '%';
+  document.getElementById('revProgPct').textContent = pct + '%';
+
+  // Total badge — now shows stage progress + total revision count
+  var tot = revTotalDone();
+  var tc = revTotalCount();
+  document.getElementById('revTotalBadge').textContent = tot.done + '/' + tot.total + ' stages • 🔁 ' + tc + 'x';
+
+  // Chapter list
+  var list = document.getElementById('revChList');
+  list.innerHTML = '';
+
+  chs.forEach(function(ch, i){
+    var s = revGetStage(sub, i);
+    var r1 = !!(s & 1), r2 = !!(s & 2), r3 = !!(s & 4);
+    var cnt = revGetCount(sub, i);
+
+    var item = document.createElement('div');
+    item.className = 'rev-ch-item';
+
+    // Chapter name
+    var name = document.createElement('div');
+    name.className = 'rev-ch-name';
+    name.title = ch;
+    var dot = r3 ? '🟢' : r2 ? '🟡' : r1 ? '🔵' : '⚪';
+    name.textContent = dot + ' ' + ch;
+
+    // Stage buttons (R / ✓ / M)
+    var stages = document.createElement('div');
+    stages.className = 'rev-stages';
+
+    var labels = ['R','✓','M'];
+    var classes = ['s1','s2','s3'];
+    var titles = ['1st Read','Revision','Mock Done'];
+    var bits = [0, 1, 2];
+    var vals = [r1, r2, r3];
+
+    bits.forEach(function(bit){
+      var btn = document.createElement('button');
+      btn.className = 'rev-stage-btn ' + classes[bit] + (vals[bit] ? ' on' : '');
+      btn.textContent = labels[bit];
+      btn.title = titles[bit];
+      var locked = (bit===1 && !r1) || (bit===2 && !r2);
+      if(locked) btn.style.opacity = '0.35';
+      (function(b){ btn.onclick = function(){ revToggleStage(sub, i, b); }; })(bit);
+      stages.appendChild(btn);
+    });
+
+    // ── Revision Count widget ──
+    var countWrap = document.createElement('div');
+    countWrap.className = 'rev-count-wrap';
+
+    var cLabel = document.createElement('div');
+    cLabel.className = 'rev-count-label';
+    cLabel.textContent = 'REV';
+
+    var cRow = document.createElement('div');
+    cRow.className = 'rev-count-row';
+
+    // Minus button (hidden when count is 0)
+    var minBtn = document.createElement('button');
+    minBtn.className = 'rev-cnt-btn minus';
+    minBtn.id = 'rcm-'+sub+'-'+i;
+    minBtn.textContent = '−';
+    minBtn.title = 'Ek kam karo';
+    minBtn.style.display = cnt > 0 ? 'flex' : 'none';
+    (function(sub2, idx){ minBtn.onclick = function(e){ e.stopPropagation(); revAddCount(sub2, idx, -1); }; })(sub, i);
+
+    // Count display
+    var numEl = document.createElement('div');
+    numEl.className = 'rev-count-num' + (cnt >= 3 ? ' hot' : '');
+    numEl.id = 'rcc-'+sub+'-'+i;
+    numEl.textContent = cnt;
+
+    // Plus button
+    var plusBtn = document.createElement('button');
+    plusBtn.className = 'rev-cnt-btn plus';
+    plusBtn.textContent = '+';
+    plusBtn.title = 'Revision ki ek baar aur';
+    (function(sub2, idx){ plusBtn.onclick = function(e){ e.stopPropagation(); revAddCount(sub2, idx, +1); }; })(sub, i);
+
+    cRow.appendChild(minBtn);
+    cRow.appendChild(numEl);
+    cRow.appendChild(plusBtn);
+    countWrap.appendChild(cLabel);
+    countWrap.appendChild(cRow);
+
+    item.appendChild(name);
+    item.appendChild(stages);
+    item.appendChild(countWrap);
+    list.appendChild(item);
+  });
+}
+
+revLoad();
+
+</script>
+
 <script>
+// SERVICE WORKER -->
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('./sw.js').catch(function(err){
