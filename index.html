@@ -159,7 +159,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .streak-badge{display:flex;align-items:center;gap:4px;background:var(--orangelt);border:1px solid #fed7aa;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700;color:var(--orange);}
 
 /* MAIN WRAP */
-.wrap{max-width:520px;margin:0 auto;padding:70px 14px 100px;}
+.wrap{max-width:520px;margin:0 auto;padding:70px 14px 155px;}
 
 /* CARDS */
 .card{background:#fff;border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow2);border:1px solid var(--border);}
@@ -181,19 +181,105 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .cd-u{font-size:9px;color:var(--text3);margin-top:2px;font-weight:600;}
 .cd-sel{width:100%;margin-top:8px;padding:6px 8px;border-radius:8px;border:1px solid #c7d2fe;background:#fff;font-size:13px;font-weight:600;color:var(--blue);outline:none;font-family:'Inter',sans-serif;}
 
-/* BOTTOM NAV */
-#bottomNav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:#fff;border-top:1px solid var(--border);display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;box-shadow:0 -2px 12px rgba(0,0,0,0.06);padding-bottom:env(safe-area-inset-bottom);}
-#bottomNav::-webkit-scrollbar{display:none;}
-.nav-btn{flex:0 0 auto;min-width:56px;padding:5px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:1px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-family:'Inter',sans-serif;transition:color .15s;touch-action:manipulation;-webkit-tap-highlight-color:rgba(79,70,229,.12);}
-.nav-btn.on{color:var(--blue);}
-.nav-icon{font-size:16px;line-height:1;}
-.nav-label{font-size:8px;font-weight:700;letter-spacing:.3px;white-space:nowrap;}
+/* BOTTOM NAV — PW style colored tiles, 2×4 grid */
+#bottomNav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:#f8f8fc;border-top:1.5px solid #e5e7eb;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  box-shadow:0 -4px 24px rgba(0,0,0,0.10);
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom)) 4px;
+  gap:2px;
+}
+body.dark #bottomNav{background:#12121a;border-color:#2a2a3a;}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;padding:5px 2px 4px;border:none;background:transparent;
+  cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all .15s;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  border-radius:12px;
+}
+.nav-btn:active{transform:scale(0.93);}
+/* Icon tile — the coloured square */
+.nav-icon-wrap{
+  width:46px;height:46px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;transition:all .18s;
+  background:#e8e8f0;
+  box-shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+/* Each button gets its own tile colour */
+.nav-btn[data-sec="home"]    .nav-icon-wrap{background:#e0e7ff;}
+.nav-btn[data-sec="timer"]   .nav-icon-wrap{background:#fef3c7;}
+.nav-btn[data-sec="syl"]     .nav-icon-wrap{background:#dbeafe;}
+.nav-btn[data-sec="arena"]   .nav-icon-wrap{background:#fee2e2;}
+.nav-btn[data-sec="stats"]   .nav-icon-wrap{background:#dcfce7;}
+.nav-btn[data-sec="ai"]      .nav-icon-wrap{background:#f5f3ff;}
+.nav-btn[data-sec="tasks"]   .nav-icon-wrap{background:#fef9c3;}
+.nav-btn[data-sec="revise"]  .nav-icon-wrap{background:#fde8d8;}
+/* Active state — deeper colour + glow */
+.nav-btn.on[data-sec="home"]   .nav-icon-wrap{background:#4f46e5;box-shadow:0 3px 12px rgba(79,70,229,0.40);}
+.nav-btn.on[data-sec="timer"]  .nav-icon-wrap{background:#d97706;box-shadow:0 3px 12px rgba(217,119,6,0.40);}
+.nav-btn.on[data-sec="syl"]    .nav-icon-wrap{background:#2563eb;box-shadow:0 3px 12px rgba(37,99,235,0.40);}
+.nav-btn.on[data-sec="arena"]  .nav-icon-wrap{background:#dc2626;box-shadow:0 3px 12px rgba(220,38,38,0.40);}
+.nav-btn.on[data-sec="stats"]  .nav-icon-wrap{background:#16a34a;box-shadow:0 3px 12px rgba(22,163,74,0.40);}
+.nav-btn.on[data-sec="ai"]     .nav-icon-wrap{background:#7c3aed;box-shadow:0 3px 12px rgba(124,58,237,0.40);}
+.nav-btn.on[data-sec="tasks"]  .nav-icon-wrap{background:#ca8a04;box-shadow:0 3px 12px rgba(202,138,4,0.40);}
+.nav-btn.on[data-sec="revise"] .nav-icon-wrap{background:#ea580c;box-shadow:0 3px 12px rgba(234,88,12,0.40);}
+/* Label */
+.nav-label{
+  font-size:9px;font-weight:700;letter-spacing:.2px;
+  white-space:nowrap;line-height:1;color:#9ca3af;transition:color .15s;
+}
+.nav-btn.on .nav-label{color:#111827;}
+body.dark .nav-label{color:#6b7280;}
+body.dark .nav-btn.on .nav-label{color:#e5e7eb;}
+body.dark .nav-icon-wrap{background:#1e1e2e;}
 
 /* SECTIONS */
 .sec{display:none;}.sec.on{display:block;}
 #sec-revise,#sec-tasks{padding-bottom:40px;}
 #revChList{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #tasksList,#completedList{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+/* ── Full-screen Revise mode ── */
+#bottomNav{transition:transform .32s cubic-bezier(.4,0,.2,1);}
+#bottomNav.nav-gone{transform:translateY(110%);}
+.wrap.nav-gone{padding-bottom:20px;}
+/* Sticky back bar inside revise section */
+#revBackBar{
+  position:sticky;top:62px;z-index:150;
+  background:#fff;border-bottom:1.5px solid var(--border);
+  display:none;align-items:center;gap:10px;
+  padding:10px 14px;margin:-16px -16px 14px -16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+body.dark #revBackBar{background:#1a1a24;border-color:#2a2a3a;}
+#revBackBar.show{display:flex;}
+.rev-back-btn{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--bluelt);border:1.5px solid #c7d2fe;
+  color:var(--blue);font-size:18px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;line-height:1;
+}
+.rev-back-title{font-size:14px;font-weight:800;color:var(--text);flex:1;}
+.rev-back-badge{font-size:11px;font-weight:700;color:var(--purple);white-space:nowrap;}
+
+/* ── Global Back Bar (all non-home sections) ── */
+#globalBackBar{
+  position:sticky;top:62px;z-index:150;
+  background:#fff;border-bottom:1.5px solid var(--border);
+  display:none;align-items:center;gap:10px;
+  padding:10px 14px;
+  margin:-16px -14px 14px -14px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+body.dark #globalBackBar{background:#1a1a24;border-color:#2a2a3a;}
+#globalBackBar.show{display:flex;}
+.gbb-icon{font-size:18px;flex-shrink:0;}
+.gbb-title{font-size:14px;font-weight:800;color:var(--text);flex:1;}
+.gbb-badge{font-size:11px;font-weight:700;color:var(--text2);white-space:nowrap;}
 
 /* STUDY TIMER */
 .timer-hero{background:linear-gradient(135deg,#1e1b4b,#4f46e5);border-radius:var(--r);padding:24px 16px;text-align:center;margin-bottom:12px;color:#fff;}
@@ -588,6 +674,14 @@ body.deep-work .dw-overlay{display:flex;}
 
 <!-- MAIN APP -->
 <div class="wrap" id="mainApp" style="display:none">
+
+  <!-- GLOBAL BACK BAR — shows for all non-home sections -->
+  <div id="globalBackBar">
+    <button class="rev-back-btn" onclick="navGoBack()">←</button>
+    <div class="gbb-icon" id="globalBackIcon">🏠</div>
+    <div class="gbb-title" id="globalBackTitle">Home</div>
+    <div class="gbb-badge" id="globalBackBadge"></div>
+  </div>
 
   <!-- QUOTE -->
   <div class="quote-card">
@@ -1103,6 +1197,13 @@ body.deep-work .dw-overlay{display:flex;}
   <!-- REVISION TRACKER SECTION -->
   <div class="sec" id="sec-revise">
     <div class="card">
+      <!-- Sticky back bar — shown when nav is hidden -->
+      <div id="revBackBar">
+        <button class="rev-back-btn" onclick="revGoBack()">←</button>
+        <div class="rev-back-title">📓 Revision Tracker</div>
+        <div class="rev-back-badge" id="revBackBadge"></div>
+      </div>
+
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div class="card-title" style="margin-bottom:0;">📓 Revision Tracker</div>
         <div id="revTotalBadge" style="font-size:11px;font-weight:800;color:var(--purple);"></div>
@@ -1139,14 +1240,14 @@ body.deep-work .dw-overlay{display:flex;}
 
 <!-- BOTTOM NAV -->
 <div id="bottomNav" style="display:none">
-  <button class="nav-btn on" onclick="showNav('home',this)"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></button>
-  <button class="nav-btn" onclick="showNav('timer',this)"><div class="nav-icon">⏱️</div><div class="nav-label">Timer</div></button>
-  <button class="nav-btn" onclick="showNav('syl',this)"><div class="nav-icon">📚</div><div class="nav-label">Syllabus</div></button>
-  <button class="nav-btn" onclick="showNav('arena',this)"><div class="nav-icon">⚔️</div><div class="nav-label">Arena</div></button>
-  <button class="nav-btn" onclick="showNav('stats',this)"><div class="nav-icon">📊</div><div class="nav-label">Stats</div></button>
-  <button class="nav-btn" onclick="showNav('ai',this)"><div class="nav-icon">🤖</div><div class="nav-label">AI</div></button>
-  <button class="nav-btn" onclick="showNav('tasks',this)"><div class="nav-icon">📋</div><div class="nav-label">Tasks</div></button>
-  <button class="nav-btn" onclick="showNav('revise',this)"><div class="nav-icon">📓</div><div class="nav-label">Revise</div></button>
+  <button class="nav-btn on" data-sec="home"   onclick="showNav('home',this)"><div class="nav-icon-wrap">🏠</div><div class="nav-label">Home</div></button>
+  <button class="nav-btn"    data-sec="timer"  onclick="showNav('timer',this)"><div class="nav-icon-wrap">⏱️</div><div class="nav-label">Timer</div></button>
+  <button class="nav-btn"    data-sec="syl"    onclick="showNav('syl',this)"><div class="nav-icon-wrap">📚</div><div class="nav-label">Syllabus</div></button>
+  <button class="nav-btn"    data-sec="arena"  onclick="showNav('arena',this)"><div class="nav-icon-wrap">⚔️</div><div class="nav-label">Arena</div></button>
+  <button class="nav-btn"    data-sec="stats"  onclick="showNav('stats',this)"><div class="nav-icon-wrap">📊</div><div class="nav-label">Stats</div></button>
+  <button class="nav-btn"    data-sec="revise" onclick="showNav('revise',this)"><div class="nav-icon-wrap">📓</div><div class="nav-label">Revise</div></button>
+  <button class="nav-btn"    data-sec="tasks"  onclick="showNav('tasks',this)"><div class="nav-icon-wrap">📋</div><div class="nav-label">Tasks</div></button>
+  <button class="nav-btn"    data-sec="ai"     onclick="showNav('ai',this)"><div class="nav-icon-wrap">🤖</div><div class="nav-label">AI</div></button>
 </div>
 
 <!-- LOGOUT CONFIRM MODAL -->
@@ -1411,17 +1512,80 @@ setInterval(tick,1000); tick();
 var _currentNavSection = 'home';
 var _currentNavBtn = null;
 
+// Section titles & icons for the global back bar
+var _SEC_META = {
+  timer:  { icon:'⏱️', title:'Study Timer' },
+  syl:    { icon:'📚', title:'Syllabus' },
+  arena:  { icon:'⚔️', title:'Arena' },
+  stats:  { icon:'📊', title:'Stats & Mocks' },
+  revise: { icon:'📓', title:'Revision Tracker' },
+  tasks:  { icon:'📋', title:'Tasks' },
+  ai:     { icon:'🤖', title:'AI Tutor' }
+};
+
+function _setNavVisible(visible, sectionName){
+  var nav = document.getElementById('bottomNav');
+  var wrap = document.getElementById('mainApp');
+  var gBar = document.getElementById('globalBackBar');
+  // Legacy revBackBar — keep always hidden (replaced by global bar)
+  var revBackBar = document.getElementById('revBackBar');
+  if(revBackBar) revBackBar.classList.remove('show');
+
+  if(visible){
+    nav.classList.remove('nav-gone');
+    wrap.classList.remove('nav-gone');
+    if(gBar) gBar.classList.remove('show');
+  } else {
+    nav.classList.add('nav-gone');
+    wrap.classList.add('nav-gone');
+    if(gBar){
+      var meta = _SEC_META[sectionName] || { icon:'📌', title: sectionName };
+      var iconEl  = document.getElementById('globalBackIcon');
+      var titleEl = document.getElementById('globalBackTitle');
+      var badgeEl = document.getElementById('globalBackBadge');
+      if(iconEl)  iconEl.textContent  = meta.icon;
+      if(titleEl) titleEl.textContent = meta.title;
+      // For revise section, show stage badge
+      if(sectionName === 'revise'){
+        var tb = document.getElementById('revTotalBadge');
+        if(badgeEl && tb) badgeEl.textContent = tb.textContent;
+      } else {
+        if(badgeEl) badgeEl.textContent = '';
+      }
+      gBar.classList.add('show');
+    }
+  }
+}
+
+// Universal back — restore nav and go to previous section
+function navGoBack(){
+  _setNavVisible(true);
+  var prev = history.state && history.state.prev ? history.state.prev : 'home';
+  var navBtn = document.querySelector('.nav-btn[data-sec="'+prev+'"]');
+  if(!navBtn) navBtn = document.querySelector('.nav-btn[data-sec="home"]');
+  if(navBtn) showNav(prev, navBtn, false);
+}
+
+// Legacy alias kept for any existing onclick="revGoBack()"
+function revGoBack(){ navGoBack(); }
+
 function showNav(name, btn, skipHistory){
   document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('on');});
   var sec=document.getElementById('sec-'+name);
   if(sec) sec.classList.add('on');
   btn.classList.add('on');
+  // Hide nav for every section except home
+  if(name === 'home'){
+    _setNavVisible(true);
+  } else {
+    _setNavVisible(false, name);
+  }
+  var prevSection = _currentNavSection;
   _currentNavSection = name;
   _currentNavBtn = btn;
-  // Push to history so Android back button works
   if(!skipHistory){
-    history.pushState({section: name}, '', '#'+name);
+    history.pushState({section: name, prev: prevSection}, '', '#'+name);
   }
   if(name==='syl'){renderSylChapList();updProg();}
   if(name==='timer'){renderStudyUI();renderPlanChapList();}
@@ -1434,10 +1598,9 @@ function showNav(name, btn, skipHistory){
 // Handle Android/browser back button via popstate
 window.addEventListener('popstate', function(e){
   var section = (e.state && e.state.section) ? e.state.section : 'home';
-  var navBtn = document.querySelector('.nav-btn[onclick*="\''+section+'\'"]');
-  if(navBtn){
-    showNav(section, navBtn, true);
-  }
+  var navBtn = document.querySelector('.nav-btn[data-sec="'+section+'"]');
+  if(!navBtn) navBtn = document.querySelector('.nav-btn[data-sec="home"]');
+  if(navBtn) showNav(section, navBtn, true);
 });
 
 // ═══════════════════════════════════════
@@ -4296,6 +4459,8 @@ function renderRevTracker(){
   var tot = revTotalDone();
   var tc = revTotalCount();
   document.getElementById('revTotalBadge').textContent = tot.done + '/' + tot.total + ' stages • 🔁 ' + tc + 'x';
+  var bb = document.getElementById('revBackBadge');
+  if(bb) bb.textContent = tot.done + '/' + tot.total + ' stages • 🔁 ' + tc + 'x';
 
   // Chapter list
   var list = document.getElementById('revChList');
