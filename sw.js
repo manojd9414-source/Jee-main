@@ -1,22 +1,30 @@
 // ═══════════════════════════════════════
-// JEE99ile — Service Worker v2.0
-// Push Notifications + Offline Cache
+// JEE99ile — Service Worker v3.0
+// Full Offline Support + Push Notifications
 // ═══════════════════════════════════════
 
-var CACHE_NAME = 'jee99ile-v2';
-var OFFLINE_URLS = ['/', '/index.html'];
+var CACHE_NAME = 'jee99ile-v3';
+var OFFLINE_URLS = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
+];
 
-// ── Install ──
+// ── Install: Cache everything ──
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(OFFLINE_URLS).catch(function() {});
+      return cache.addAll(OFFLINE_URLS).catch(function(err) {
+        console.warn('Cache error:', err);
+      });
     })
   );
   self.skipWaiting();
 });
 
-// ── Activate ──
+// ── Activate: Clean old caches ──
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
@@ -29,41 +37,51 @@ self.addEventListener('activate', function(e) {
   self.clients.claim();
 });
 
-// ── Fetch (offline fallback) ──
+// ── Fetch: Cache first, then network ──
 self.addEventListener('fetch', function(e) {
+  // Skip non-GET and Firebase/Google requests (unhe cache mat karo)
   if (e.request.method !== 'GET') return;
+  var url = e.request.url;
+  if (url.includes('firestore.googleapis.com') ||
+      url.includes('firebase') ||
+      url.includes('googleapis.com') ||
+      url.includes('gstatic.com')) return;
+
   e.respondWith(
-    fetch(e.request).catch(function() {
-      return caches.match(e.request);
+    caches.match(e.request).then(function(cached) {
+      // Cache mein hai toh seedha do
+      if (cached) return cached;
+
+      // Nahi hai toh network se lo aur cache mein save karo
+      return fetch(e.request).then(function(response) {
+        if (!response || response.status !== 200) return response;
+        var clone = response.clone();
+        caches.open(CACHE_NAME).then(function(cache) {
+          cache.put(e.request, clone);
+        });
+        return response;
+      }).catch(function() {
+        // Network bhi nahi — index.html do (offline fallback)
+        return caches.match('/index.html');
+      });
     })
   );
 });
 
-// ── Push Notification handler ──
+// ── Push Notification ──
 self.addEventListener('push', function(e) {
   var data = {};
   try { data = e.data ? e.data.json() : {}; } catch(err) {}
-
-  var title   = data.title   || '📚 JEE99ile';
-  var body    = data.body    || 'Padhai ka time ho gaya bhai! 🔥';
-  var icon    = data.icon    || '/icon-192.png';
-  var badge   = data.badge   || '/icon-192.png';
-  var tag     = data.tag     || 'jee-reminder';
-  var url     = data.url     || '/';
-
+  var title = data.title || '📚 JEE99ile';
+  var body  = data.body  || 'Padhai ka time ho gaya bhai! 🔥';
   e.waitUntil(
     self.registration.showNotification(title, {
-      body    : body,
-      icon    : icon,
-      badge   : badge,
-      tag     : tag,
-      data    : { url: url },
-      vibrate : [200, 100, 200],
-      requireInteraction: false,
-      actions : [
-        { action: 'open',    title: '📖 Padhai Shuru Karo' },
-        { action: 'dismiss', title: '⏰ Baad Mein'          }
-      ]
+      body: body,
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      tag: 'jee-reminder',
+      vibrate: [200, 100, 200],
+      requireInteraction: false
     })
   );
 });
@@ -71,28 +89,12 @@ self.addEventListener('push', function(e) {
 // ── Notification click ──
 self.addEventListener('notificationclick', function(e) {
   e.notification.close();
-  if (e.action === 'dismiss') return;
-
-  var targetUrl = (e.notification.data && e.notification.data.url) || '/';
   e.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+    clients.matchAll({ type: 'window' }).then(function(list) {
       for (var i = 0; i < list.length; i++) {
-        if (list[i].url.includes(self.location.origin) && 'focus' in list[i]) {
-          return list[i].focus();
-        }
+        if ('focus' in list[i]) return list[i].focus();
       }
-      if (clients.openWindow) return clients.openWindow(targetUrl);
+      if (clients.openWindow) return clients.openWindow('/');
     })
   );
-});
-
-// ── Background Sync: schedule local reminders ──
-// Clients can postMessage to schedule timed notifications
-self.addEventListener('message', function(e) {
-  if (!e.data) return;
-
-  // Ping-pong to confirm SW is alive
-  if (e.data.type === 'PING') {
-    e.ports[0] && e.ports[0].postMessage({ type: 'PONG' });
-  }
 });

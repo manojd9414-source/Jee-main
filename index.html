@@ -1303,7 +1303,7 @@ body.deep-work .dw-overlay{display:flex;}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, setDoc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 var app = initializeApp({
   apiKey:"AIzaSyDWIKEUfsdplqu7f6YQKPZ19SUbDTFeFeQ",
@@ -1314,7 +1314,22 @@ var app = initializeApp({
   appId:"1:53875825948:web:a199bb3ae362f918aceed9"
 });
 var auth = getAuth(app);
-var db = getFirestore(app);
+
+// ✅ Offline Persistence — internet band ho toh bhi kaam karega!
+var db;
+try {
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager()
+    })
+  });
+  console.log('✅ Offline persistence enabled!');
+} catch(e) {
+  // Fallback agar browser support nahi karta
+  db = getFirestore(app);
+  console.warn('⚠️ Offline persistence nahi chali, normal mode mein:', e);
+}
+
 var gp = new GoogleAuthProvider();
 
 // Fix: Keep user logged in persistently
