@@ -1,0 +1,71 @@
+{
+  "id": "jee99ile-tracker-2027",
+  "name": "JEE 99ile Tracker",
+  "short_name": "JEE99ile",
+  "description": "JEE 2027 preparation tracker — syllabus, timer, mocks, revision aur AI tutor sab ek jagah!",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#4f46e5",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "JEE 99ile Tracker Home Screen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Study Timer",
+      "short_name": "Timer",
+      "description": "Study timer seedha kholo",
+      "url": "/#timer",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Arena Practice",
+      "short_name": "Arena",
+      "description": "Practice questions solve karo",
+      "url": "/#arena",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
+}
