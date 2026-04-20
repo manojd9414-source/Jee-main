@@ -139,6 +139,23 @@ body.dark .dm-btn{background:#2a2a3a;border-color:#3a3a4a;}
 /* Dark mode — notification modal */
 body.dark #notifModal > div > div:first-child { background: #2a2a3a !important; }
 body.dark #notifScheduleBox { color: var(--text); }
+/* MCQ Generator styles */
+@keyframes mcqSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.mcq-q-card{background:#fff;border-radius:12px;border:1.5px solid var(--border);padding:14px;margin-bottom:10px;}
+body.dark .mcq-q-card{background:#1a1a24;border-color:#2a2a3a;}
+.mcq-q-num{font-size:10px;font-weight:800;color:var(--blue);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;}
+.mcq-q-text{font-size:13px;font-weight:700;color:var(--text);line-height:1.55;margin-bottom:10px;}
+.mcq-opt{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;border:1.5px solid var(--border);margin-bottom:5px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text);background:#fff;user-select:none;transition:all .15s;font-family:'Inter',sans-serif;text-align:left;width:100%;}
+.mcq-opt:active{transform:scale(.98);}
+.mcq-opt.sel{border-color:var(--blue);background:var(--bluelt);color:var(--blue);}
+.mcq-opt.correct{border-color:var(--green);background:var(--greenlt);color:var(--green);}
+.mcq-opt.wrong{border-color:var(--red);background:var(--redlt);color:var(--red);}
+body.dark .mcq-opt{background:#111118;border-color:#2a2a3a;color:var(--text);}
+body.dark .mcq-opt.sel{background:#1e1b4b;border-color:#6366f1;color:#818cf8;}
+.mcq-opt-label{width:22px;height:22px;border-radius:6px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;border:1.5px solid var(--border);}
+.mcq-exp{font-size:11px;color:var(--text2);background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:8px;line-height:1.6;display:none;}
+.mcq-exp.on{display:block;}
+
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:15px;overscroll-behavior:none;}
 
 /* LOGIN */
@@ -184,16 +201,51 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .cd-u{font-size:9px;color:var(--text3);margin-top:2px;font-weight:600;}
 .cd-sel{width:100%;margin-top:8px;padding:6px 8px;border-radius:8px;border:1px solid #c7d2fe;background:#fff;font-size:13px;font-weight:600;color:var(--blue);outline:none;font-family:'Inter',sans-serif;}
 
-/* BOTTOM NAV — PW style colored tiles, 2×4 grid */
+/* BOTTOM NAV — 4 main + more button */
 #bottomNav{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
   background:#f8f8fc;border-top:1.5px solid #e5e7eb;
-  display:grid;grid-template-columns:repeat(4,1fr);
+  display:grid;grid-template-columns:repeat(4,1fr) 56px;
   box-shadow:0 -4px 24px rgba(0,0,0,0.10);
   padding:6px 4px calc(6px + env(safe-area-inset-bottom)) 4px;
   gap:2px;
 }
 body.dark #bottomNav{background:#12121a;border-color:#2a2a3a;}
+/* More button */
+#navMoreBtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:5px 2px 4px;border:none;background:transparent;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border-radius:12px;}
+#navMoreBtn:active{transform:scale(0.93);}
+#navMoreBtn .nav-icon-wrap{background:#e8e8f0;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .18s;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+#navMoreBtn.open .nav-icon-wrap{background:#4f46e5;box-shadow:0 3px 12px rgba(79,70,229,.4);}
+body.dark #navMoreBtn .nav-icon-wrap{background:#1e1e2e;}
+#navMoreBtn .nav-label{font-size:9px;font-weight:700;letter-spacing:.2px;white-space:nowrap;line-height:1;color:#9ca3af;transition:color .15s;}
+#navMoreBtn.open .nav-label{color:#111827;}
+body.dark #navMoreBtn.open .nav-label{color:#e5e7eb;}
+/* App Drawer overlay */
+#appDrawer{position:fixed;inset:0;z-index:190;display:none;flex-direction:column;justify-content:flex-end;}
+#appDrawer.open{display:flex;}
+#drawerBackdrop{position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+#drawerPanel{position:relative;z-index:1;background:#f8f8fc;border-radius:24px 24px 0 0;padding:16px 12px calc(100px + env(safe-area-inset-bottom)) 12px;box-shadow:0 -8px 40px rgba(0,0,0,.2);transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);}
+#appDrawer.open #drawerPanel{transform:translateY(0);}
+body.dark #drawerPanel{background:#12121a;}
+#drawerHandle{width:40px;height:4px;background:#d1d5db;border-radius:4px;margin:0 auto 14px;}
+body.dark #drawerHandle{background:#3a3a4a;}
+#drawerTitle{font-size:11px;font-weight:800;color:#9ca3af;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;text-align:center;}
+#drawerGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.drawer-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border:none;background:transparent;cursor:pointer;font-family:'Inter',sans-serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border-radius:14px;transition:all .15s;width:100%;}
+.drawer-btn:active{transform:scale(0.92);}
+.drawer-btn .nav-icon-wrap{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;transition:all .18s;box-shadow:0 2px 8px rgba(0,0,0,.10);}
+.drawer-btn .nav-label{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.2px;white-space:nowrap;}
+.drawer-btn.on .nav-label{color:#111827;font-weight:800;}
+body.dark .drawer-btn .nav-label{color:#9ca3af;}
+body.dark .drawer-btn.on .nav-label{color:#e5e7eb;}
+.drawer-btn[data-sec="revise"] .nav-icon-wrap{background:#fde8d8;}
+.drawer-btn[data-sec="tasks"]  .nav-icon-wrap{background:#fef9c3;}
+.drawer-btn[data-sec="ai"]     .nav-icon-wrap{background:#f5f3ff;}
+.drawer-btn[data-sec="mcq"]    .nav-icon-wrap{background:#fce7f3;}
+.drawer-btn.on[data-sec="revise"] .nav-icon-wrap{background:#ea580c;box-shadow:0 3px 12px rgba(234,88,12,.40);}
+.drawer-btn.on[data-sec="tasks"]  .nav-icon-wrap{background:#ca8a04;box-shadow:0 3px 12px rgba(202,138,4,.40);}
+.drawer-btn.on[data-sec="ai"]     .nav-icon-wrap{background:#7c3aed;box-shadow:0 3px 12px rgba(124,58,237,.40);}
+.drawer-btn.on[data-sec="mcq"]    .nav-icon-wrap{background:#db2777;box-shadow:0 3px 12px rgba(219,39,119,.40);}
 .nav-btn{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:4px;padding:5px 2px 4px;border:none;background:transparent;
@@ -219,7 +271,7 @@ body.dark #bottomNav{background:#12121a;border-color:#2a2a3a;}
 .nav-btn[data-sec="stats"]   .nav-icon-wrap{background:#dcfce7;}
 .nav-btn[data-sec="ai"]      .nav-icon-wrap{background:#f5f3ff;}
 .nav-btn[data-sec="tasks"]   .nav-icon-wrap{background:#fef9c3;}
-.nav-btn[data-sec="revise"]  .nav-icon-wrap{background:#fde8d8;}
+.nav-btn[data-sec="mcq"]    .nav-icon-wrap{background:#fce7f3;}
 /* Active state — deeper colour + glow */
 .nav-btn.on[data-sec="home"]   .nav-icon-wrap{background:#4f46e5;box-shadow:0 3px 12px rgba(79,70,229,0.40);}
 .nav-btn.on[data-sec="timer"]  .nav-icon-wrap{background:#d97706;box-shadow:0 3px 12px rgba(217,119,6,0.40);}
@@ -228,7 +280,7 @@ body.dark #bottomNav{background:#12121a;border-color:#2a2a3a;}
 .nav-btn.on[data-sec="stats"]  .nav-icon-wrap{background:#16a34a;box-shadow:0 3px 12px rgba(22,163,74,0.40);}
 .nav-btn.on[data-sec="ai"]     .nav-icon-wrap{background:#7c3aed;box-shadow:0 3px 12px rgba(124,58,237,0.40);}
 .nav-btn.on[data-sec="tasks"]  .nav-icon-wrap{background:#ca8a04;box-shadow:0 3px 12px rgba(202,138,4,0.40);}
-.nav-btn.on[data-sec="revise"] .nav-icon-wrap{background:#ea580c;box-shadow:0 3px 12px rgba(234,88,12,0.40);}
+.nav-btn.on[data-sec="mcq"]  .nav-icon-wrap{background:#db2777;box-shadow:0 3px 12px rgba(219,39,119,0.40);}
 /* Label */
 .nav-label{
   font-size:9px;font-weight:700;letter-spacing:.2px;
@@ -240,7 +292,7 @@ body.dark .nav-btn.on .nav-label{color:#e5e7eb;}
 body.dark .nav-icon-wrap{background:#1e1e2e;}
 
 /* SECTIONS */
-.sec{display:none;}.sec.on{display:block;}
+.sec{display:none!important;}.sec.on{display:block!important;}
 #sec-revise,#sec-tasks{padding-bottom:40px;}
 #revChList{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #tasksList,#completedList{overflow-y:auto;-webkit-overflow-scrolling:touch;}
@@ -1242,16 +1294,125 @@ body.deep-work .dw-overlay{display:flex;}
 
 </div><!-- end .wrap -->
 
+<!-- MOCK TEST SECTION -->
+<div class="sec" id="sec-mcq">
+  <div style="max-width:520px;margin:0 auto;padding:70px 14px 155px;">
+
+  <!-- VIEW: Upload / Bank -->
+  <div id="mockBankView">
+    <!-- Upload Card -->
+    <div class="card">
+      <div class="card-title">📝 Mock Test Bank</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6;">
+        Apna test HTML file upload karo — questions render honge, test do, result save hoga! 🎯
+      </div>
+      <label id="mockHtmlLabel" for="mockHtmlInput" style="display:block;border:2px dashed var(--border);border-radius:12px;padding:24px 16px;text-align:center;cursor:pointer;background:var(--bg);transition:all .2s;"
+        ondragover="event.preventDefault();this.style.borderColor='var(--blue)';this.style.background='var(--bluelt)';"
+        ondragleave="this.style.borderColor='var(--border)';this.style.background='var(--bg)';"
+        ondrop="mockHandleDrop(event)">
+        <div style="font-size:36px;margin-bottom:8px;" id="mockHtmlIcon">📄</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);" id="mockHtmlText">HTML test file yahan drop karo ya tap karo</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">Sirf .html file • Max 75 questions</div>
+      </label>
+      <input type="file" id="mockHtmlInput" accept=".html,text/html" style="display:none;" onchange="mockHtmlChosen(this)">
+      <div style="margin-top:12px;">
+        <label class="cfg-lbl" style="display:block;margin-bottom:4px;">Test ka Naam</label>
+        <input type="text" id="mockTestName" class="cfg-in" placeholder="e.g. Physics Mock 1" style="width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;font-weight:600;outline:none;font-family:'Inter',sans-serif;">
+      </div>
+      <button id="mockStartBtn" onclick="mockStartTest()" class="gen-btn" style="width:100%;margin-top:12px;padding:13px;font-size:14px;border-radius:10px;opacity:.5;cursor:not-allowed;" disabled>
+        🚀 Test Shuru Karo
+      </button>
+    </div>
+
+    <!-- Past Results Card -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="card-title" style="margin-bottom:0;">📊 Past Mock Results</div>
+        <button onclick="mockLoadHistory()" style="background:transparent;border:1px solid var(--border);color:var(--blue);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;font-weight:600;font-family:'Inter',sans-serif;">🔄 Refresh</button>
+      </div>
+      <div id="mockHistoryList"><div style="text-align:center;color:var(--text3);font-size:13px;padding:14px 0;">Koi result nahi abhi • Pehle test do!</div></div>
+    </div>
+  </div>
+
+  <!-- VIEW: Active Test -->
+  <div id="mockTestView" style="display:none;">
+    <!-- Test Header -->
+    <div class="card" style="padding:12px 16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div style="font-size:13px;font-weight:800;color:var(--text);" id="mockActiveTitle">Test</div>
+        <button onclick="mockAbort()" style="background:var(--red);color:#fff;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">✕ Quit</button>
+      </div>
+      <div style="display:flex;gap:10px;font-size:12px;font-weight:700;">
+        <span style="color:var(--blue);" id="mockQProgress">0 / 0 answered</span>
+        <span style="color:var(--text3);">•</span>
+        <span style="color:var(--orange);" id="mockTimer">00:00</span>
+      </div>
+    </div>
+
+    <!-- Questions -->
+    <div id="mockQuestionList"></div>
+
+    <!-- Submit -->
+    <button id="mockSubmitBtn" onclick="mockSubmitTest()" style="width:100%;padding:14px;background:var(--green);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;margin-top:10px;">
+      ✅ Submit & Result Dekho
+    </button>
+  </div>
+
+  <!-- VIEW: Result -->
+  <div id="mockResultView" style="display:none;">
+    <!-- Score Card -->
+    <div class="card" style="border:2px solid var(--green);text-align:center;padding:20px;">
+      <div style="font-size:40px;margin-bottom:8px;">🎯</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text2);" id="mockResultTitle"></div>
+      <div style="font-size:40px;font-weight:900;color:var(--green);margin:8px 0;" id="mockResultScore"></div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0;">
+        <div style="background:var(--greenlt);border-radius:8px;padding:8px 14px;"><div style="font-size:18px;font-weight:900;color:var(--green);" id="mrCorr">0</div><div style="font-size:10px;color:var(--green);font-weight:700;">CORRECT</div></div>
+        <div style="background:var(--redlt);border-radius:8px;padding:8px 14px;"><div style="font-size:18px;font-weight:900;color:var(--red);" id="mrWrong">0</div><div style="font-size:10px;color:var(--red);font-weight:700;">WRONG</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px 14px;"><div style="font-size:18px;font-weight:900;color:var(--text2);" id="mrSkip">0</div><div style="font-size:10px;color:var(--text2);font-weight:700;">SKIPPED</div></div>
+        <div style="background:var(--purplelt);border-radius:8px;padding:8px 14px;"><div style="font-size:18px;font-weight:900;color:var(--purple);" id="mrAcc">0%</div><div style="font-size:10px;color:var(--purple);font-weight:700;">ACCURACY</div></div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px;" id="mrMsg"></div>
+      <div style="font-size:11px;color:var(--text3);" id="mrTime"></div>
+      <!-- Firebase save status -->
+      <div id="mrSaveStatus" style="margin-top:10px;font-size:12px;font-weight:700;color:var(--blue);">⏳ Result save ho raha hai...</div>
+    </div>
+    <!-- Review answers -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:10px 0 6px;">
+      <div style="font-size:13px;font-weight:800;color:var(--text);">📋 Answer Review</div>
+      <button onclick="mockGoBack()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">🏠 Back</button>
+    </div>
+    <div id="mockReviewList"></div>
+  </div>
+
+  </div>
+</div>
+
 <!-- BOTTOM NAV -->
 <div id="bottomNav" style="display:none">
   <button class="nav-btn on" data-sec="home"   onclick="showNav('home',this)"><div class="nav-icon-wrap">🏠</div><div class="nav-label">Home</div></button>
   <button class="nav-btn"    data-sec="timer"  onclick="showNav('timer',this)"><div class="nav-icon-wrap">⏱️</div><div class="nav-label">Timer</div></button>
   <button class="nav-btn"    data-sec="syl"    onclick="showNav('syl',this)"><div class="nav-icon-wrap">📚</div><div class="nav-label">Syllabus</div></button>
   <button class="nav-btn"    data-sec="arena"  onclick="showNav('arena',this)"><div class="nav-icon-wrap">⚔️</div><div class="nav-label">Arena</div></button>
-  <button class="nav-btn"    data-sec="stats"  onclick="showNav('stats',this)"><div class="nav-icon-wrap">📊</div><div class="nav-label">Stats</div></button>
-  <button class="nav-btn"    data-sec="revise" onclick="showNav('revise',this)"><div class="nav-icon-wrap">📓</div><div class="nav-label">Revise</div></button>
-  <button class="nav-btn"    data-sec="tasks"  onclick="showNav('tasks',this)"><div class="nav-icon-wrap">📋</div><div class="nav-label">Tasks</div></button>
-  <button class="nav-btn"    data-sec="ai"     onclick="showNav('ai',this)"><div class="nav-icon-wrap">🤖</div><div class="nav-label">AI</div></button>
+  <button id="navMoreBtn" onclick="toggleAppDrawer()">
+    <div class="nav-icon-wrap">⋯</div>
+    <div class="nav-label">More</div>
+  </button>
+</div>
+
+<!-- APP DRAWER (slide-up panel with all extra tabs) -->
+<div id="appDrawer">
+  <div id="drawerBackdrop" onclick="closeAppDrawer()"></div>
+  <div id="drawerPanel">
+    <div id="drawerHandle"></div>
+    <div id="drawerTitle">All Sections</div>
+    <div id="drawerGrid">
+      <button class="drawer-btn" data-sec="stats"  onclick="drawerNav('stats',this)"><div class="nav-icon-wrap">📊</div><div class="nav-label">Stats</div></button>
+      <button class="drawer-btn" data-sec="revise" onclick="drawerNav('revise',this)"><div class="nav-icon-wrap">📓</div><div class="nav-label">Revise</div></button>
+      <button class="drawer-btn" data-sec="tasks"  onclick="drawerNav('tasks',this)"><div class="nav-icon-wrap">📋</div><div class="nav-label">Tasks</div></button>
+      <button class="drawer-btn" data-sec="ai"     onclick="drawerNav('ai',this)"><div class="nav-icon-wrap">🤖</div><div class="nav-label">AI Tutor</div></button>
+      <button class="drawer-btn" data-sec="mcq"    onclick="drawerNav('mcq',this)"><div class="nav-icon-wrap">📝</div><div class="nav-label">Mocks</div></button>
+    </div>
+  </div>
 </div>
 
 <!-- LOGOUT CONFIRM MODAL -->
@@ -1429,7 +1590,10 @@ window.FS = {
   async saveLecLinks(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','lecLinks'),{links:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
   async loadLecLinks(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','lecLinks')); if(s.exists()&&s.data().links)return JSON.parse(s.data().links); return{};}catch(e){return{};} },
   async saveDailyArena(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','dailyArenaStats'),{stats:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){console.error('DAS save err',e);} },
-  async loadDailyArena(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','dailyArenaStats')); if(s.exists()&&s.data().stats)return JSON.parse(s.data().stats); return{};}catch(e){return{};} }
+  async loadDailyArena(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','dailyArenaStats')); if(s.exists()&&s.data().stats)return JSON.parse(s.data().stats); return{};}catch(e){return{};} },
+  // Mock Test Bank Results
+  async saveMockResult(r){ var uid=window._uid; if(!uid)return false; try{await addDoc(collection(db,'users',uid,'mockResults'),Object.assign({},r,{createdAt:serverTimestamp()})); return true;}catch(e){console.error('mockResult save err',e); return false;} },
+  async loadMockResults(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(query(collection(db,'users',uid,'mockResults'),orderBy('createdAt','desc'),limit(30))); var list=[]; snap.forEach(function(d){list.push(Object.assign({id:d.id},d.data()));}); return list;}catch(e){return[];} }
 };
 
 onAuthStateChanged(auth, async function(user){
@@ -1557,7 +1721,8 @@ var _SEC_META = {
   stats:  { icon:'📊', title:'Stats & Mocks' },
   revise: { icon:'📓', title:'Revision Tracker' },
   tasks:  { icon:'📋', title:'Tasks' },
-  ai:     { icon:'🤖', title:'AI Tutor' }
+  ai:     { icon:'🤖', title:'AI Tutor' },
+  mcq:    { icon:'📄', title:'MCQ Generator' }
 };
 
 function _setNavVisible(visible, sectionName){
@@ -1594,13 +1759,17 @@ function _setNavVisible(visible, sectionName){
   }
 }
 
-// Universal back — restore nav and go to previous section
+// Universal back — go to previous section or home
 function navGoBack(){
-  _setNavVisible(true);
   var prev = history.state && history.state.prev ? history.state.prev : 'home';
   var navBtn = document.querySelector('.nav-btn[data-sec="'+prev+'"]');
-  if(!navBtn) navBtn = document.querySelector('.nav-btn[data-sec="home"]');
-  if(navBtn) showNav(prev, navBtn, false);
+  var drawerBtn = document.querySelector('.drawer-btn[data-sec="'+prev+'"]');
+  if(navBtn){ showNav(prev, navBtn, false); }
+  else if(drawerBtn){ drawerNav(prev, drawerBtn); }
+  else {
+    var homeBtn = document.querySelector('.nav-btn[data-sec="home"]');
+    if(homeBtn) showNav('home', homeBtn, false);
+  }
 }
 
 // Legacy alias kept for any existing onclick="revGoBack()"
@@ -1612,11 +1781,34 @@ function showNav(name, btn, skipHistory){
   var sec=document.getElementById('sec-'+name);
   if(sec) sec.classList.add('on');
   btn.classList.add('on');
-  // Hide nav for every section except home
-  if(name === 'home'){
-    _setNavVisible(true);
+  // If it's a main nav button, close drawer and deactivate more btn
+  var drawerSecs = ['stats','revise','tasks','ai','mcq'];
+  if(drawerSecs.indexOf(name)===-1){
+    closeAppDrawer && closeAppDrawer();
+    var mb=document.getElementById('navMoreBtn');
+    if(mb) mb.classList.remove('open');
+  }
+  // Always keep nav visible — we use global back bar for context
+  _setNavVisible(true);
+  // But show global back bar for non-home sections
+  if(name !== 'home'){
+    var gBar = document.getElementById('globalBackBar');
+    if(gBar){
+      var meta = _SEC_META[name] || { icon:'📌', title: name };
+      var iconEl  = document.getElementById('globalBackIcon');
+      var titleEl = document.getElementById('globalBackTitle');
+      var badgeEl = document.getElementById('globalBackBadge');
+      if(iconEl)  iconEl.textContent  = meta.icon;
+      if(titleEl) titleEl.textContent = meta.title;
+      if(name==='revise'){
+        var tb = document.getElementById('revTotalBadge');
+        if(badgeEl && tb) badgeEl.textContent = tb.textContent;
+      } else { if(badgeEl) badgeEl.textContent = ''; }
+      gBar.classList.add('show');
+    }
   } else {
-    _setNavVisible(false, name);
+    var gBar2 = document.getElementById('globalBackBar');
+    if(gBar2) gBar2.classList.remove('show');
   }
   var prevSection = _currentNavSection;
   _currentNavSection = name;
@@ -4160,39 +4352,39 @@ var TASK_DATA_RAW = [
 ['2026-01-13','M','Solution of Triangle','Napier\'s Analogy',2],
 ['2026-01-15','M','Solution of Triangle','Regular Polygon',3],
 // ── TESTS (Prayas 2026 batch) ──
-['2025-06-29','TEST','JEE Main-1','Part Test JEE Main',1],
-['2025-07-13','TEST','JEE Main-2','Part Test JEE Main',2],
-['2025-07-27','TEST','JEE Main-3','Part Test JEE Main',3],
-['2025-08-10','TEST','JEE Advanced-1','Part Test JEE Advanced',4],
-['2025-08-24','TEST','JEE Main-4','Part Test JEE Main',5],
-['2025-09-07','TEST','JEE Main-5','Part Test JEE Main',6],
-['2025-09-21','TEST','AITS-1','Part Test Main',7],
-['2025-09-28','TEST','AITS-2','Part Test Advanced',8],
-['2025-10-05','TEST','JEE Advanced-2','Part Test JEE Advanced',9],
-['2025-10-26','TEST','JEE Main-6','Part Test JEE Main',10],
-['2025-11-02','TEST','AITS-3','Part Test Main',11],
-['2025-11-16','TEST','AITS-4','Part Test Advanced',12],
-['2025-11-30','TEST','JEE Main-7','Part Test JEE Main',13],
-['2025-12-07','TEST','AITS-5','Part Test Main',14],
-['2025-12-28','TEST','AITS-6','Part Test Main',15],
-['2026-01-04','TEST','JEE Main-8','Part Test JEE Main',16],
-['2026-01-11','TEST','AITS-7','Part Test Main',17],
-['2026-01-13','TEST','AITS-8','Full Syllabus Main',18],
-['2026-01-15','TEST','AITS-9','Full Syllabus Main',19],
-['2026-01-18','TEST','AITS-10','Full Syllabus Main',20],
-['2026-01-20','TEST','AITS-11','Full Syllabus Main',21],
-['2026-02-08','TEST','AITS-12','Full Syllabus Main',22],
-['2026-02-15','TEST','AITS-13','Full Syllabus Main',23],
-['2026-02-22','TEST','AITS-14','Full Test Advanced',24],
-['2026-03-01','TEST','AITS-15','Full Test Main',25],
-['2026-03-08','TEST','AITS-16','Full Test Advanced',26],
-['2026-03-22','TEST','AITS-17','Full Test Main',27],
-['2026-03-29','TEST','AITS-18','Full Test Main',28],
-['2026-04-19','TEST','AITS-19','Full Test Advanced',29],
-['2026-04-26','TEST','AITS-20','Full Test Advanced',30],
-['2026-05-03','TEST','AITS-21','Full Test Advanced',31],
-['2026-05-10','TEST','AITS-22','Full Test Advanced',32],
-['2026-05-17','TEST','AITS-23','Full Test Advanced',33]
+['2025-05-03','TEST','JEE Main-1','Part Test JEE Main',1],
+['2025-05-17','TEST','JEE Main-2','Part Test JEE Main',2],
+['2025-05-31','TEST','JEE Main-3','Part Test JEE Main',3],
+['2025-06-14','TEST','JEE Advanced-1','Part Test JEE Advanced',4],
+['2025-06-28','TEST','JEE Main-4','Part Test JEE Main',5],
+['2025-07-12','TEST','JEE Main-5','Part Test JEE Main',6],
+['2025-07-26','TEST','AITS-1','Part Test Main',7],
+['2025-08-02','TEST','AITS-2','Part Test Advanced',8],
+['2025-08-09','TEST','JEE Advanced-2','Part Test JEE Advanced',9],
+['2025-08-30','TEST','JEE Main-6','Part Test JEE Main',10],
+['2025-09-06','TEST','AITS-3','Part Test Main',11],
+['2025-09-20','TEST','AITS-4','Part Test Advanced',12],
+['2025-10-04','TEST','JEE Main-7','Part Test JEE Main',13],
+['2025-10-11','TEST','AITS-5','Part Test Main',14],
+['2025-11-01','TEST','AITS-6','Part Test Main',15],
+['2025-11-08','TEST','JEE Main-8','Part Test JEE Main',16],
+['2025-11-15','TEST','AITS-7','Part Test Main',17],
+['2025-11-17','TEST','AITS-8','Full Syllabus Main',18],
+['2025-11-19','TEST','AITS-9','Full Syllabus Main',19],
+['2025-11-22','TEST','AITS-10','Full Syllabus Main',20],
+['2025-11-24','TEST','AITS-11','Full Syllabus Main',21],
+['2025-12-13','TEST','AITS-12','Full Syllabus Main',22],
+['2025-12-20','TEST','AITS-13','Full Syllabus Main',23],
+['2025-12-27','TEST','AITS-14','Full Test Advanced',24],
+['2026-01-03','TEST','AITS-15','Full Test Main',25],
+['2026-01-10','TEST','AITS-16','Full Test Advanced',26],
+['2026-01-24','TEST','AITS-17','Full Test Main',27],
+['2026-01-31','TEST','AITS-18','Full Test Main',28],
+['2026-02-21','TEST','AITS-19','Full Test Advanced',29],
+['2026-02-28','TEST','AITS-20','Full Test Advanced',30],
+['2026-03-07','TEST','AITS-21','Full Test Advanced',31],
+['2026-03-14','TEST','AITS-22','Full Test Advanced',32],
+['2026-03-21','TEST','AITS-23','Full Test Advanced',33]
 ];
 
 var tasksDoneState = {};
@@ -4857,7 +5049,522 @@ if('serviceWorker' in navigator){
   window._getNotifSchedule = function(){ return _schedule; };
 
 })();
-// Jab bhi app background mein jaye ya band ho — timer save karo
+// ═══════════════════════════════════════
+// APP DRAWER (More button slide-up panel)
+// ═══════════════════════════════════════
+var _drawerOpen = false;
+function toggleAppDrawer(){
+  _drawerOpen ? closeAppDrawer() : openAppDrawer();
+}
+function openAppDrawer(){
+  _drawerOpen=true;
+  var d=document.getElementById('appDrawer');
+  var btn=document.getElementById('navMoreBtn');
+  if(d) d.classList.add('open');
+  if(btn) btn.classList.add('open');
+  // Sync active state on drawer buttons
+  document.querySelectorAll('.drawer-btn').forEach(function(b){
+    b.classList.toggle('on', b.dataset.sec === window._currentNavSection);
+  });
+}
+function closeAppDrawer(){
+  _drawerOpen=false;
+  var d=document.getElementById('appDrawer');
+  var btn=document.getElementById('navMoreBtn');
+  if(d) d.classList.remove('open');
+  if(btn) btn.classList.remove('open');
+}
+function drawerNav(name, btn){
+  closeAppDrawer();
+  // Deactivate main nav buttons
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('on');});
+  // Mark more button as active since this section is in the drawer
+  var moreBtn=document.getElementById('navMoreBtn');
+  if(moreBtn) moreBtn.classList.add('open');
+  showNav(name, btn, false);
+}
+
+
+// ═══════════════════════════════════════
+// 📝 MOCK TEST BANK — HTML Upload System
+// ═══════════════════════════════════════
+(function(){
+  var _mockQuestions = [];
+  var _mockAnswers   = {};
+  var _mockSubmitted = false;
+  var _mockStartTime = null;
+  var _mockTimerIv   = null;
+  var _mockTestName  = '';
+
+  window.mockHandleDrop = function(e){
+    e.preventDefault();
+    document.getElementById('mockHtmlLabel').style.borderColor='var(--border)';
+    document.getElementById('mockHtmlLabel').style.background='var(--bg)';
+    var file = e.dataTransfer.files[0];
+    if(!file || !file.name.match(/\.html?$/i)){ alert('Sirf .html file drop karo!'); return; }
+    _readHtml(file);
+  };
+
+  window.mockHtmlChosen = function(inp){
+    var file = inp.files[0];
+    if(!file) return;
+    _readHtml(file);
+  };
+
+  function _readHtml(file){
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var html = ev.target.result;
+      var qs = _parseQuestions(html);
+      if(!qs || qs.length === 0){
+        alert('Koi question nahi mila HTML mein!\n\nSupported formats:\n1. data-correct attribute wale divs\n2. JSON script tag\n3. JS variable: var questions = [...]');
+        return;
+      }
+      if(qs.length > 75) qs = qs.slice(0, 75);
+      _mockQuestions = qs;
+      document.getElementById('mockHtmlIcon').textContent = '✅';
+      document.getElementById('mockHtmlText').textContent = file.name + ' — ' + qs.length + ' questions!';
+      var btn = document.getElementById('mockStartBtn');
+      btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+    };
+    reader.readAsText(file);
+  }
+
+  function _parseQuestions(html){
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(html, 'text/html');
+    var qs = [];
+
+    // Format A: divs with data-correct
+    var qDivs = doc.querySelectorAll('[data-correct],[data-answer],.mcq-question');
+    if(qDivs.length > 0){
+      qDivs.forEach(function(div){
+        var correct = parseInt(div.getAttribute('data-correct')||div.getAttribute('data-answer')||'0');
+        var qEl = div.querySelector('.question-text,.q-text,.qtext,p,h3,h4');
+        var qText = qEl ? qEl.textContent.trim() : div.childNodes[0] && div.childNodes[0].textContent ? div.childNodes[0].textContent.trim() : '';
+        var optEls = div.querySelectorAll('.option,.opt,.choice,.answer-option,li');
+        if(optEls.length < 2 || !qText) return;
+        var options = Array.from(optEls).map(function(o){ return o.textContent.trim().replace(/^[A-Da-d][.)]\s*/,''); });
+        var exp = div.querySelector('.explanation,.exp');
+        qs.push({q:qText, options:options, correct:isNaN(correct)?0:correct, explanation:exp?exp.textContent.trim():''});
+      });
+      if(qs.length > 0) return qs;
+    }
+
+    // Format B: JSON in script tag
+    var scripts = doc.querySelectorAll('script');
+    for(var s=0;s<scripts.length;s++){
+      var code = scripts[s].textContent.trim();
+      // Try direct JSON array
+      if(code.startsWith('[')){
+        try{ var a=JSON.parse(code); if(Array.isArray(a)&&a.length>0&&(a[0].q||a[0].question)){ return a.map(_normalizeQ); } }catch(e){}
+      }
+      // Try var questions = [...]
+      var m = code.match(/(?:var|let|const)\s+\w*(?:questions?|mcqs?|qs)\w*\s*=\s*(\[[\s\S]*?\])\s*;/i);
+      if(m){ try{ var b=JSON.parse(m[1]); if(Array.isArray(b)&&b.length>0){ return b.map(_normalizeQ); } }catch(e){} }
+      // Try script type application/json
+      if(scripts[s].type==='application/json'){ try{ var c=JSON.parse(code); if(Array.isArray(c)&&c.length>0){ return c.map(_normalizeQ); } }catch(e){} }
+    }
+
+    return qs;
+  }
+
+  function _normalizeQ(q){
+    return {
+      q: q.q || q.question || q.text || '',
+      options: q.options || q.choices || [],
+      correct: typeof q.correct==='number' ? q.correct : typeof q.answer==='number' ? q.answer : 0,
+      explanation: q.explanation || q.exp || ''
+    };
+  }
+
+  window.mockStartTest = function(){
+    if(_mockQuestions.length === 0){ alert('Pehle HTML file upload karo!'); return; }
+    _mockTestName = document.getElementById('mockTestName').value.trim() || ('Mock ' + new Date().toLocaleDateString('en-IN'));
+    _mockAnswers = {}; _mockSubmitted = false; _mockStartTime = Date.now();
+
+    var list = document.getElementById('mockQuestionList');
+    list.innerHTML = '';
+    var labels = ['A','B','C','D','E'];
+    _mockQuestions.forEach(function(q, qi){
+      var optsHtml = q.options.map(function(opt, oi){
+        return '<button class="mcq-opt" onclick="mockSelect('+qi+','+oi+',this)" id="mtOpt_'+qi+'_'+oi+'">'
+          + '<span class="mcq-opt-label" id="mtLbl_'+qi+'_'+oi+'">'+(labels[oi]||oi)+'</span>'
+          + opt.replace(/^[A-Da-d][.)]\s*/,'')
+          + '</button>';
+      }).join('');
+      list.innerHTML += '<div class="mcq-q-card" id="mtCard_'+qi+'">'
+        + '<div class="mcq-q-num">Q '+(qi+1)+' of '+_mockQuestions.length+'</div>'
+        + '<div class="mcq-q-text">'+q.q+'</div>'
+        + optsHtml
+        + '</div>';
+    });
+
+    document.getElementById('mockBankView').style.display   = 'none';
+    document.getElementById('mockResultView').style.display = 'none';
+    document.getElementById('mockTestView').style.display   = 'block';
+    document.getElementById('mockActiveTitle').textContent  = _mockTestName;
+    _updateProgress();
+
+    clearInterval(_mockTimerIv);
+    _mockTimerIv = setInterval(function(){
+      var elapsed = Math.floor((Date.now() - _mockStartTime)/1000);
+      var m=Math.floor(elapsed/60), s=elapsed%60;
+      var el=document.getElementById('mockTimer');
+      if(el) el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+    }, 1000);
+
+    document.getElementById('mockTestView').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+
+  window.mockSelect = function(qi, oi, btn){
+    if(_mockSubmitted) return;
+    for(var i=0;i<_mockQuestions[qi].options.length;i++){
+      var ob=document.getElementById('mtOpt_'+qi+'_'+i);
+      var lb=document.getElementById('mtLbl_'+qi+'_'+i);
+      if(ob) ob.classList.remove('sel');
+      if(lb){ lb.style.background=''; lb.style.color=''; lb.style.borderColor=''; }
+    }
+    btn.classList.add('sel');
+    var lbl=document.getElementById('mtLbl_'+qi+'_'+oi);
+    if(lbl){ lbl.style.background='var(--blue)'; lbl.style.color='#fff'; lbl.style.borderColor='var(--blue)'; }
+    _mockAnswers[qi] = oi;
+    _updateProgress();
+  };
+
+  function _updateProgress(){
+    var el=document.getElementById('mockQProgress');
+    if(el) el.textContent=Object.keys(_mockAnswers).length+' / '+_mockQuestions.length+' answered';
+  }
+
+  window.mockSubmitTest = function(){
+    if(_mockSubmitted) return;
+    var notAns=[];
+    for(var i=0;i<_mockQuestions.length;i++){ if(_mockAnswers[i]===undefined) notAns.push(i+1); }
+    if(notAns.length>0){ if(!confirm('Q '+notAns.join(', ')+' chhoot gaye! Submit karo?')) return; }
+    clearInterval(_mockTimerIv);
+    _mockSubmitted = true;
+    var elapsed = Math.floor((Date.now()-_mockStartTime)/1000);
+    var correct=0, wrong=0, skip=0;
+    var labels=['A','B','C','D','E'];
+    var reviewHtml='';
+
+    _mockQuestions.forEach(function(q,qi){
+      var ua=_mockAnswers[qi], ca=q.correct;
+      var isC=(ua===ca), isS=(ua===undefined);
+      if(isC) correct++; else if(isS) skip++; else wrong++;
+      var bdr=isC?'var(--green)':isS?'var(--border)':'var(--red)';
+      var icon=isC?'✅':isS?'⬜':'❌';
+      var optsR=q.options.map(function(opt,oi){
+        var bg='';
+        if(oi===ca) bg='background:var(--greenlt);border-color:var(--green);color:var(--green);';
+        else if(oi===ua&&!isC) bg='background:var(--redlt);border-color:var(--red);color:var(--red);';
+        return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);margin-bottom:4px;font-size:12px;font-weight:600;'+bg+'">'
+          +'<span style="font-weight:800;min-width:18px;">'+(labels[oi]||oi)+'</span>'
+          +opt.replace(/^[A-Da-d][.)]\s*/,'')+(oi===ca?' ✓':'')+'</div>';
+      }).join('');
+      reviewHtml+='<div class="mcq-q-card" style="border:2px solid '+bdr+';margin-bottom:10px;">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">'
+        +'<div class="mcq-q-num">Q '+(qi+1)+'</div><div style="font-size:16px;">'+icon+'</div></div>'
+        +'<div class="mcq-q-text">'+q.q+'</div>'+optsR
+        +(q.explanation?'<div class="mcq-exp on" style="display:block;">💡 '+q.explanation+'</div>':'')
+        +'</div>';
+    });
+
+    var total=_mockQuestions.length, pct=Math.round(correct/total*100);
+    var msg=pct>=80?'🔥 Zabardast!':pct>=60?'👍 Achha hai!':pct>=40?'📚 Aur mehnat karo!':'💪 Haar mat!';
+    var mm=Math.floor(elapsed/60), ss=elapsed%60;
+
+    document.getElementById('mockResultTitle').textContent = _mockTestName;
+    document.getElementById('mockResultScore').textContent = correct+'/'+total+' ('+pct+'%)';
+    document.getElementById('mrCorr').textContent  = correct;
+    document.getElementById('mrWrong').textContent = wrong;
+    document.getElementById('mrSkip').textContent  = skip;
+    document.getElementById('mrAcc').textContent   = pct+'%';
+    document.getElementById('mrMsg').textContent   = msg;
+    document.getElementById('mrTime').textContent  = '⏱ Time: '+(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;
+    document.getElementById('mockReviewList').innerHTML = reviewHtml;
+    document.getElementById('mrSaveStatus').textContent = '⏳ Firebase mein save ho raha hai...';
+
+    document.getElementById('mockTestView').style.display   = 'none';
+    document.getElementById('mockBankView').style.display   = 'none';
+    document.getElementById('mockResultView').style.display = 'block';
+    document.getElementById('mockResultView').scrollIntoView({behavior:'smooth',block:'start'});
+
+    var rd={name:_mockTestName,date:new Date().toISOString().split('T')[0],total:total,correct:correct,wrong:wrong,skip:skip,acc:pct,timeSec:elapsed};
+    if(!window._isGuest && window.FS && window.FS.saveMockResult){
+      window.FS.saveMockResult(rd).then(function(ok){
+        document.getElementById('mrSaveStatus').textContent = ok?'✅ Firebase mein save ho gaya!':'❌ Save error — net check karo.';
+      });
+    } else {
+      document.getElementById('mrSaveStatus').textContent = window._isGuest?'⚠️ Guest mode — login karo to save!':'✅ Done!';
+    }
+  };
+
+  window.mockAbort = function(){
+    if(!confirm('Test quit karna hai?')) return;
+    clearInterval(_mockTimerIv);
+    _mockSubmitted=false; _mockAnswers={};
+    document.getElementById('mockTestView').style.display   = 'none';
+    document.getElementById('mockResultView').style.display = 'none';
+    document.getElementById('mockBankView').style.display   = 'block';
+  };
+
+  window.mockGoBack = function(){
+    _mockQuestions=[]; _mockAnswers={}; _mockSubmitted=false;
+    document.getElementById('mockHtmlIcon').textContent='📄';
+    document.getElementById('mockHtmlText').textContent='HTML test file yahan drop karo ya tap karo';
+    document.getElementById('mockHtmlInput').value='';
+    document.getElementById('mockTestName').value='';
+    var btn=document.getElementById('mockStartBtn');
+    btn.disabled=true; btn.style.opacity='.5'; btn.style.cursor='not-allowed';
+    document.getElementById('mockResultView').style.display='none';
+    document.getElementById('mockTestView').style.display='none';
+    document.getElementById('mockBankView').style.display='block';
+    mockLoadHistory();
+  };
+
+  window.mockLoadHistory = async function(){
+    var el=document.getElementById('mockHistoryList');
+    if(!el) return;
+    if(window._isGuest||!window.FS||!window.FS.loadMockResults){
+      el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:10px;">Login karo results dekhne ke liye!</div>';
+      return;
+    }
+    el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:10px;">⏳ Load ho raha hai...</div>';
+    var results = await window.FS.loadMockResults();
+    if(!results||results.length===0){
+      el.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:14px;">Koi result nahi • Pehle test do!</div>';
+      return;
+    }
+    var html='';
+    results.forEach(function(r){
+      var ac=r.acc>=80?'var(--green)':r.acc>=60?'var(--orange)':'var(--red)';
+      var mm=Math.floor((r.timeSec||0)/60), ss=(r.timeSec||0)%60;
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);margin-bottom:6px;">'
+        +'<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(r.name||'Mock Test')+'</div>'
+        +'<div style="font-size:11px;color:var(--text3);">'+(r.date||'')+(r.timeSec?' • ⏱ '+(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss:'')+'</div></div>'
+        +'<div style="text-align:right;"><div style="font-size:16px;font-weight:900;color:'+ac+';">'+r.acc+'%</div>'
+        +'<div style="font-size:10px;color:var(--text3);">'+(r.correct||0)+'/'+r.total+' correct</div></div></div>';
+    });
+    el.innerHTML=html;
+  };
+
+  // Auto-load history after login
+  setTimeout(function(){ if(window._uid) mockLoadHistory(); }, 3000);
+
+  // DEAD stubs so old HTML refs don't throw errors
+  window.mcqFileChosen=function(){};
+  window.mcqHandleDrop=function(e){e.preventDefault();};
+
+  window.mcqHandleDrop = function(e){
+    e.preventDefault();
+    document.getElementById('mcqUploadLabel').style.borderColor='var(--border)';
+    document.getElementById('mcqUploadLabel').style.background='var(--bg)';
+    var file = e.dataTransfer.files[0];
+    if(!file || file.type !== 'application/pdf'){ alert('Sirf PDF drop karo!'); return; }
+    if(file.size > 10*1024*1024){ alert('File 10MB se badi hai!'); return; }
+    _readPDF(file);
+  };
+
+  function _readPDF(file){
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      _pdfBase64 = ev.target.result.split(',')[1];
+      document.getElementById('mcqUploadIcon').textContent = '✅';
+      document.getElementById('mcqUploadText').textContent = file.name;
+      var btn = document.getElementById('mcqGenBtn');
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  window.mcqGenerate = async function(){
+    if(!_pdfBase64){ alert('Pehle PDF upload karo!'); return; }
+    var count = document.getElementById('mcqCount').value;
+    var diff  = document.getElementById('mcqDiff').value;
+    var lang  = document.getElementById('mcqLang').value;
+
+    // Show loading
+    document.getElementById('mcqLoading').style.display='block';
+    document.getElementById('mcqResults').style.display='none';
+    document.getElementById('mcqGenBtn').disabled=true;
+    document.getElementById('mcqGenBtn').style.opacity='.5';
+    _mcqList=[]; _userAnswers={}; _submitted=false;
+
+    var loadMsgs = [
+      'PDF padha ja raha hai... 📖',
+      'Topics dhundhe ja rahe hain... 🔍',
+      'MCQs ban rahe hain... ✍️',
+      'Options shuffle ho rahe hain... 🔀',
+      'Last check ho raha hai... ✅'
+    ];
+    var li=0;
+    var loadIv = setInterval(function(){
+      li=(li+1)%loadMsgs.length;
+      var el=document.getElementById('mcqLoadText');
+      if(el) el.textContent=loadMsgs[li];
+    }, 2000);
+
+    var langInstr = lang==='hinglish' ? 'Use Hinglish (mix of Hindi and English) for questions and options.'
+                  : lang==='hindi'    ? 'Use pure Hindi (Devanagari) for questions and options.'
+                  : 'Use English for questions and options.';
+    var diffMap = {easy:'easy/basic conceptual',medium:'medium JEE Mains level',hard:'hard JEE Advanced level'};
+
+    var prompt = 'You are a JEE exam expert. Analyze the uploaded question paper PDF and generate exactly '+count+' high-quality MCQs based on its content.\n\n'+
+      'Rules:\n'+
+      '- Difficulty: '+diffMap[diff]+'\n'+
+      '- '+langInstr+'\n'+
+      '- Each MCQ must have exactly 4 options (A, B, C, D)\n'+
+      '- One correct answer per question\n'+
+      '- Include a brief explanation for the correct answer\n'+
+      '- Base questions on the actual content/topics in the PDF\n\n'+
+      'Respond ONLY with a valid JSON array, no markdown, no backticks, no extra text:\n'+
+      '[{"q":"Question text","options":["A. option1","B. option2","C. option3","D. option4"],"correct":0,"explanation":"Why this is correct"},...]\n'+
+      '"correct" is the 0-based index of the correct option.';
+
+    try {
+      var resp = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:4000,
+          messages:[{
+            role:'user',
+            content:[
+              {type:'document',source:{type:'base64',media_type:'application/pdf',data:_pdfBase64}},
+              {type:'text',text:prompt}
+            ]
+          }]
+        })
+      });
+      clearInterval(loadIv);
+      var data = await resp.json();
+      if(data.error){ throw new Error(data.error.message||'API Error'); }
+      var raw = data.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+      // Clean JSON
+      var clean = raw.replace(/```json|```/g,'').trim();
+      // Extract JSON array
+      var start = clean.indexOf('['), end = clean.lastIndexOf(']');
+      if(start===-1||end===-1) throw new Error('JSON nahi mila response mein');
+      _mcqList = JSON.parse(clean.slice(start,end+1));
+      if(!Array.isArray(_mcqList)||_mcqList.length===0) throw new Error('MCQ list empty hai');
+      _renderMCQs();
+    } catch(err){
+      clearInterval(loadIv);
+      document.getElementById('mcqLoading').style.display='none';
+      var btn=document.getElementById('mcqGenBtn');
+      btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer';
+      alert('Error: '+err.message+'\nPhir try karo!');
+    }
+  };
+
+  function _renderMCQs(){
+    document.getElementById('mcqLoading').style.display='none';
+    document.getElementById('mcqScoreBar').style.display='none';
+    document.getElementById('mcqSubmitBtn').style.display='block';
+    var list = document.getElementById('mcqQuestionList');
+    list.innerHTML='';
+    _mcqList.forEach(function(q,qi){
+      var labels=['A','B','C','D'];
+      var optsHtml = q.options.map(function(opt,oi){
+        // Strip leading "A. " etc if present
+        var txt = opt.replace(/^[A-D][.)]\s*/,'');
+        return '<button class="mcq-opt" onclick="mcqSelect('+qi+','+oi+',this)" id="mcqOpt_'+qi+'_'+oi+'">'
+          +'<span class="mcq-opt-label" id="mcqLbl_'+qi+'_'+oi+'">'+labels[oi]+'</span>'
+          +txt
+          +'</button>';
+      }).join('');
+      var card = '<div class="mcq-q-card" id="mcqCard_'+qi+'">'
+        +'<div class="mcq-q-num">Q '+(qi+1)+' of '+_mcqList.length+'</div>'
+        +'<div class="mcq-q-text">'+q.q+'</div>'
+        +optsHtml
+        +(q.explanation?'<div class="mcq-exp" id="mcqExp_'+qi+'">💡 '+q.explanation+'</div>':'')
+        +'</div>';
+      list.innerHTML+=card;
+    });
+    document.getElementById('mcqResults').style.display='block';
+    // Scroll to results
+    document.getElementById('mcqResults').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  window.mcqSelect = function(qi, oi, btn){
+    if(_submitted) return;
+    // Remove previous selection for this question
+    var labels=['A','B','C','D'];
+    for(var i=0;i<4;i++){
+      var ob=document.getElementById('mcqOpt_'+qi+'_'+i);
+      var lb=document.getElementById('mcqLbl_'+qi+'_'+i);
+      if(ob){ ob.classList.remove('sel'); }
+      if(lb){ lb.style.background=''; lb.style.color=''; lb.style.borderColor=''; }
+    }
+    btn.classList.add('sel');
+    var lbl=document.getElementById('mcqLbl_'+qi+'_'+oi);
+    if(lbl){ lbl.style.background='var(--blue)'; lbl.style.color='#fff'; lbl.style.borderColor='var(--blue)'; }
+    _userAnswers[qi]=oi;
+  };
+
+  window.mcqSubmit = function(){
+    if(_submitted) return;
+    var notAnswered=[];
+    for(var i=0;i<_mcqList.length;i++){
+      if(_userAnswers[i]===undefined) notAnswered.push(i+1);
+    }
+    if(notAnswered.length>0){
+      if(!confirm('Q '+notAnswered.join(', ')+' chhoot gaye hain. Phir bhi submit karo?')) return;
+    }
+    _submitted=true;
+    document.getElementById('mcqSubmitBtn').style.display='none';
+    var correct=0;
+    _mcqList.forEach(function(q,qi){
+      var userAns = _userAnswers[qi];
+      var corrAns = q.correct;
+      // Show correct answer
+      var corrBtn=document.getElementById('mcqOpt_'+qi+'_'+corrAns);
+      var corrLbl=document.getElementById('mcqLbl_'+qi+'_'+corrAns);
+      if(corrBtn){ corrBtn.classList.remove('sel'); corrBtn.classList.add('correct'); }
+      if(corrLbl){ corrLbl.style.background='var(--green)'; corrLbl.style.color='#fff'; corrLbl.style.borderColor='var(--green)'; }
+      if(userAns!==undefined && userAns!==corrAns){
+        var wrongBtn=document.getElementById('mcqOpt_'+qi+'_'+userAns);
+        var wrongLbl=document.getElementById('mcqLbl_'+qi+'_'+userAns);
+        if(wrongBtn){ wrongBtn.classList.remove('sel'); wrongBtn.classList.add('wrong'); }
+        if(wrongLbl){ wrongLbl.style.background='var(--red)'; wrongLbl.style.color='#fff'; wrongLbl.style.borderColor='var(--red)'; }
+      }
+      if(userAns===corrAns) correct++;
+      // Show explanation
+      var expEl=document.getElementById('mcqExp_'+qi);
+      if(expEl) expEl.classList.add('on');
+    });
+    // Show score
+    var pct=Math.round(correct/_mcqList.length*100);
+    document.getElementById('mcqScoreVal').textContent=correct+'/'+_mcqList.length;
+    var msg = pct>=80?'🔥 Zabardast! Tu JEE crack karega!':pct>=60?'👍 Achha hai! Thoda aur practice karo.':pct>=40?'📚 Mehnat chahiye bhai. Dobara padhle!':'💪 Koi baat nahi! Galtiyan seekhne ke liye hoti hain.';
+    document.getElementById('mcqScoreMsg').textContent=msg;
+    document.getElementById('mcqScoreBar').style.display='block';
+    document.getElementById('mcqScoreBar').scrollIntoView({behavior:'smooth',block:'center'});
+  };
+
+  window.mcqReset = function(){
+    _pdfBase64=null; _mcqList=[]; _userAnswers={}; _submitted=false;
+    document.getElementById('mcqUploadIcon').textContent='📄';
+    document.getElementById('mcqUploadText').textContent='PDF yahan drop karo ya tap karke choose karo';
+    document.getElementById('mcqFileInput').value='';
+    document.getElementById('mcqResults').style.display='none';
+    document.getElementById('mcqLoading').style.display='none';
+    document.getElementById('mcqScoreBar').style.display='none';
+    var btn=document.getElementById('mcqGenBtn');
+    btn.disabled=true; btn.style.opacity='.5'; btn.style.cursor='not-allowed';
+  };
+
+  window.mcqRetry = function(){
+    _userAnswers={}; _submitted=false;
+    mcqGenerate();
+  };
+})();
+
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'hidden'){
     saveTimerState();
