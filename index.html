@@ -687,8 +687,19 @@ body.deep-work .dw-overlay{display:flex;}
   </div>
 </div>
 
+<!-- LOADING SCREEN — shown while Firebase checks auth state -->
+<div id="loadingScreen" style="position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);">
+  <div style="text-align:center;color:#fff;">
+    <div style="font-size:56px;margin-bottom:16px;">🎯</div>
+    <div style="font-size:20px;font-weight:900;margin-bottom:8px;">JEE 99ile Tracker</div>
+    <div style="font-size:13px;opacity:.7;margin-bottom:24px;">Loading your data...</div>
+    <div style="width:40px;height:40px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;"></div>
+  </div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
 <!-- LOGIN SCREEN -->
-<div id="loginScreen">
+<div id="loginScreen" style="display:none;">
   <div class="login-card">
     <div class="login-logo">🎯</div>
     <div class="login-title">JEE 99ile Tracker</div>
@@ -1593,10 +1604,17 @@ window.FS = {
   async loadDailyArena(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','dailyArenaStats')); if(s.exists()&&s.data().stats)return JSON.parse(s.data().stats); return{};}catch(e){return{};} },
   // Mock Test Bank Results
   async saveMockResult(r){ var uid=window._uid; if(!uid)return false; try{await addDoc(collection(db,'users',uid,'mockResults'),Object.assign({},r,{createdAt:serverTimestamp()})); return true;}catch(e){console.error('mockResult save err',e); return false;} },
-  async loadMockResults(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(query(collection(db,'users',uid,'mockResults'),orderBy('createdAt','desc'),limit(30))); var list=[]; snap.forEach(function(d){list.push(Object.assign({id:d.id},d.data()));}); return list;}catch(e){return[];} }
+  async loadMockResults(){ var uid=window._uid; if(!uid)return[]; try{var snap=await getDocs(query(collection(db,'users',uid,'mockResults'),orderBy('createdAt','desc'),limit(30))); var list=[]; snap.forEach(function(d){list.push(Object.assign({id:d.id},d.data()));}); return list;}catch(e){return[];} },
+  // Tasks Done State (Prayas schedule ticks)
+  async saveTasksDone(d){ var uid=window._uid; if(!uid)return; try{await setDoc(doc(db,'users',uid,'data','tasksDone'),{state:JSON.stringify(d),updatedAt:serverTimestamp()},{merge:true});}catch(e){} },
+  async loadTasksDone(){ var uid=window._uid; if(!uid)return{}; try{var s=await getDoc(doc(db,'users',uid,'data','tasksDone')); if(s.exists()&&s.data().state)return JSON.parse(s.data().state); return{};}catch(e){return{};} }
 };
 
 onAuthStateChanged(auth, async function(user){
+  // Hide loading screen always
+  var loadingScr = document.getElementById('loadingScreen');
+  if(loadingScr) loadingScr.style.display='none';
+
   if(user){
     window._uid = user.uid;
     window._currentUser = user;
@@ -1611,11 +1629,14 @@ onAuthStateChanged(auth, async function(user){
     try{ await setDoc(doc(db,'users',user.uid,'data','profile'),{displayName:user.displayName||'',email:user.email||'',photoURL:user.photoURL||'',lastLogin:serverTimestamp()},{merge:true});}catch(e){}
     window.initApp();
   } else {
-    window._uid=null; window._currentUser=null;
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('mainApp').style.display='none';
-    document.getElementById('topbar').style.display='none';
-    document.getElementById('bottomNav').style.display='none';
+    // Only show login if not guest mode already
+    if(!window._isGuest){
+      window._uid=null; window._currentUser=null;
+      document.getElementById('loginScreen').style.display='flex';
+      document.getElementById('mainApp').style.display='none';
+      document.getElementById('topbar').style.display='none';
+      document.getElementById('bottomNav').style.display='none';
+    }
   }
 });
 </script>
@@ -1879,6 +1900,7 @@ window.initApp = async function(){
   try{ spacedRep=await window.FS.loadSpacedRep(); }catch(e){}
   try{ lecLinks=await window.FS.loadLecLinks(); }catch(e){}
   try{ dailyArenaStats=await window.FS.loadDailyArena(); }catch(e){}
+  try{ var fsTasksDone=await window.FS.loadTasksDone(); if(fsTasksDone&&Object.keys(fsTasksDone).length>0){ tasksDoneState=fsTasksDone; try{localStorage.setItem('jee_tasks_done',JSON.stringify(tasksDoneState));}catch(e2){} } }catch(e){}
   var gi=document.getElementById('goalInp'); if(gi) gi.value=dailyGoalHrs;
   var mi=document.getElementById('mockDate'); if(mi) mi.value=today();
   window.showStatus('synced');
@@ -3080,7 +3102,27 @@ function renderChecklist(){
       +'<button onclick="event.stopPropagation();deleteChkItem('+i+')" style="background:transparent;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0 4px;line-height:1;">×</button>'
       +'</div>';
   });
+  // Clear all button
+  html+='<button onclick="clearAllChecklistItems()" style="width:100%;margin-top:6px;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--text3);font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;">🗑 Saari tasks clear karo</button>';
   el.innerHTML=html;
+}
+function clearAllChecklistItems(){
+  dconfirmShow({
+    icon:'✅',
+    title:'Saari Tasks Clear?',
+    msg:'Aaj ka poora checklist delete ho jaayega.',
+    title2:'Pakka clear karna hai?',
+    msg2:'Yeh saari tasks hamesha ke liye hata di jaayengi!',
+    okText:'Haan, Clear Karo',
+    okText2:'CONFIRM — Haan Clear Karo',
+    onConfirm: function(){
+      checklist=[];
+      saveLocal();
+      if(!window._isGuest) window.FS.saveChecklist(checklist);
+      renderChecklist();
+      renderBadges();
+    }
+  });
 }
 function addChecklistItem(){
   var inp=document.getElementById('newTaskInp');
@@ -4462,6 +4504,8 @@ function showMoreTasks(){
 function toggleTask(id){
   tasksDoneState[id] = !tasksDoneState[id];
   try{ localStorage.setItem('jee_tasks_done', JSON.stringify(tasksDoneState)); }catch(e){}
+  // Firestore mein bhi save karo — permanently persist
+  if(!window._isGuest && window.FS && window._uid) window.FS.saveTasksDone(tasksDoneState);
   renderTasks();
 }
 
